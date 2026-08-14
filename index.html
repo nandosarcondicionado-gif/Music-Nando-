@@ -203,7 +203,11 @@
     document.getElementById('deviceIdDisplay').innerText = "ID Aparelho: " + deviceId;
 
     // Verificar se este aparelho já está autorizado
-    function verificarAutorizacaoAparelho() {
+        function verificarAutorizacaoAparelho() {
+      // 1. FORÇA O MODAL A ABRIR IMEDIATAMENTE NA TELA
+      document.getElementById('authModal').classList.add('active');
+
+      // 2. Consulta o Firebase para ver se o aparelho já é autorizado
       db.ref('dispositivos_autorizados').once('value', snapshot => {
         let autorizados = snapshot.val() || {};
         let meuCodigoAtivo = null;
@@ -215,14 +219,15 @@
           }
         }
 
-        if (!meuCodigoAtivo) {
-          // Aparelho não autorizado, abre modal de bloqueio
-          document.getElementById('authModal').classList.add('active');
-        } else {
+        // 3. Se já estiver autorizado, fecha o modal automaticamente
+        if (meuCodigoAtivo) {
           document.getElementById('authModal').classList.remove('active');
         }
+      }).catch(error => {
+        console.error("Erro de conexão com o Firebase:", error);
       });
     }
+
 
     // Validar código digitado pelo usuário
     function validarCodigoUsuario() {
