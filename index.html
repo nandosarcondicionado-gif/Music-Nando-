@@ -22,6 +22,8 @@ rel="stylesheet">
 
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <style>
@@ -60,7 +62,7 @@ header{
     padding:15px 20px;
     border-bottom:1px solid rgba(255,255,255,.06);
     display:flex;
-    justify-content:center;
+    justify-content:space-between;
     align-items:center;
 }
 
@@ -70,21 +72,12 @@ header{
     background:linear-gradient(135deg,#a855f7,#ec4899);
     -webkit-background-clip:text;
     -webkit-text-fill-color:transparent;
-}
-
-.admin-btn,
-.filter-btn,
-.btn{
-    border:none;
     cursor:pointer;
-    color:white;
+    user-select:none;
 }
 
 .admin-btn{
-    background:rgba(168,85,247,.18);
-    border:1px solid #a855f7;
-    padding:8px 14px;
-    border-radius:8px;
+    display:none;
 }
 
 .filter-bar{
@@ -93,6 +86,13 @@ header{
     padding:14px 20px;
     overflow-x:auto;
     background:#101729;
+}
+
+.filter-btn,
+.btn{
+    border:none;
+    cursor:pointer;
+    color:white;
 }
 
 .filter-btn{
@@ -180,7 +180,7 @@ header{
 }
 
 #adminModal{
-    z-index:2000;
+    z-index:3000;
 }
 
 .modal-content{
@@ -354,6 +354,13 @@ select:focus{
     color:#94a3b8;
 }
 
+.secret-hint{
+    text-align:center;
+    margin-top:10px;
+    color:#64748b;
+    font-size:.65rem;
+}
+
 </style>
 
 </head>
@@ -362,9 +369,14 @@ select:focus{
 
 <header>
 
-<div class="logo">
+<div
+class="logo"
+id="logoAdm"
+title="Nando's Music">
+
 <i class="fa-solid fa-headphones"></i>
 Nando's Music
+
 </div>
 
 </header>
@@ -574,7 +586,76 @@ class="message">
 
 
 <!-- =========================
-     ADMIN
+     MODAL CHAVE ADM
+========================= -->
+
+<div
+class="modal"
+id="secretModal">
+
+<div
+class="modal-content"
+style="text-align:center">
+
+<h2>
+
+<i
+class="fa-solid fa-key"
+style="color:#a855f7">
+</i>
+
+Acesso administrativo
+
+</h2>
+
+<p
+class="small"
+style="margin:10px 0 15px">
+
+Digite a chave secreta.
+
+</p>
+
+<input
+type="password"
+id="secretKey"
+placeholder="Chave secreta"
+autocomplete="off"
+style="
+text-align:center;
+letter-spacing:2px;
+">
+
+<button
+class="btn"
+type="button"
+onclick="validarChaveSecreta()">
+
+Continuar
+
+</button>
+
+<button
+class="btn btn-secondary"
+type="button"
+onclick="fecharSecretModal()">
+
+Cancelar
+
+</button>
+
+<div
+id="secretMessage"
+class="message">
+</div>
+
+</div>
+
+</div>
+
+
+<!-- =========================
+     LOGIN ADM
 ========================= -->
 
 <div
@@ -610,22 +691,27 @@ onclick="fecharAdmin()">
 </div>
 
 
-<!-- LOGIN ADM -->
-
 <div id="adminLogin">
 
 <p
 class="small"
 style="margin:12px 0">
 
-Senha do administrador
+Login do administrador
 
 </p>
 
 <input
+type="email"
+id="adminEmail"
+placeholder="E-mail do administrador"
+autocomplete="username"
+value="nandosarcondicionado@gmail.com">
+
+<input
 type="password"
 id="adminPassword"
-placeholder="Digite a senha"
+placeholder="Senha"
 autocomplete="current-password">
 
 <button
@@ -645,7 +731,9 @@ class="message">
 </div>
 
 
-<!-- PAINEL ADM -->
+<!-- =========================
+     PAINEL ADM
+========================= -->
 
 <div
 id="adminPanel"
@@ -896,32 +984,20 @@ Configurações
 </h3>
 
 <p class="small">
-Alterar senha do administrador.
+
+A senha do administrador agora é controlada
+pelo Firebase Authentication.
+
 </p>
 
-<input
-type="password"
-id="newAdminPassword"
-placeholder="Nova senha">
+<p
+class="small"
+style="margin-top:10px">
 
-<input
-type="password"
-id="confirmAdminPassword"
-placeholder="Confirme a nova senha">
+Para alterar a senha, use a opção de redefinição
+de senha do Firebase.
 
-<button
-class="btn"
-type="button"
-onclick="alterarSenhaAdmin()">
-
-Alterar senha
-
-</button>
-
-<div
-id="configMessage"
-class="message">
-</div>
+</p>
 
 <hr
 style="
@@ -981,53 +1057,32 @@ const firebaseConfig = {
 
 };
 
-
 try{
 
     firebase.initializeApp(firebaseConfig);
 
 }catch(error){
 
-    console.error(
-        "Firebase já inicializado:",
-        error
-    );
+    console.error(error);
 
 }
 
-
 const db =
 firebase.database();
+
+const auth =
+firebase.auth();
 
 
 /* =====================================================
    CONFIGURAÇÃO ADM
 ===================================================== */
 
-const SENHA_ADMIN_PADRAO = "1234";
-
-
-/*
-   CHAVE SECRETA DO ADM
-
-   Pode ser digitada:
-   NANDOMADM2026
-   nandomadm2026
-   NaNdOmAdM2026
-
-   Todas serão aceitas.
-*/
-
-const CHAVE_SECRETA_ADM =
+const CHAVE_SECRETA =
 "NANDOMADM2026";
 
-
-let senhaAdmin =
-localStorage.getItem(
-    "nando_admin_password"
-) ||
-SENHA_ADMIN_PADRAO;
-
+const EMAIL_ADMIN =
+"nandosarcondicionado@gmail.com";
 
 let adminLogado = false;
 
@@ -1040,7 +1095,6 @@ let deviceId =
 localStorage.getItem(
     "nando_device_id"
 );
-
 
 if(!deviceId){
 
@@ -1058,6 +1112,10 @@ if(!deviceId){
 
 }
 
+
+/* =====================================================
+   VARIÁVEIS
+===================================================== */
 
 let allSongs = [];
 
@@ -1085,7 +1143,7 @@ document.getElementById(
 
 
 /* =====================================================
-   MENSAGEM
+   MENSAGENS
 ===================================================== */
 
 function mostrarMensagem(
@@ -1144,76 +1202,186 @@ db.ref(".info/connected")
 
 
 /* =====================================================
-   ABRIR ADM
+   LOGO - 5 TOQUES PARA ABRIR ADM
+===================================================== */
+
+let cliquesLogo = 0;
+
+let ultimoCliqueLogo = 0;
+
+document
+.getElementById("logoAdm")
+.addEventListener(
+    "click",
+    function(){
+
+        const agora =
+        Date.now();
+
+        if(
+            agora -
+            ultimoCliqueLogo >
+            2000
+        ){
+
+            cliquesLogo = 0;
+
+        }
+
+        ultimoCliqueLogo =
+        agora;
+
+        cliquesLogo++;
+
+        if(cliquesLogo >= 5){
+
+            cliquesLogo = 0;
+
+            abrirChaveAdm();
+
+        }
+
+    }
+);
+
+
+/* =====================================================
+   ABRIR CHAVE ADM
+===================================================== */
+
+function abrirChaveAdm(){
+
+    document
+    .getElementById("secretModal")
+    .classList.add("active");
+
+    document
+    .getElementById("secretKey")
+    .value = "";
+
+    document
+    .getElementById("secretMessage")
+    .className =
+    "message";
+
+    setTimeout(()=>{
+
+        document
+        .getElementById("secretKey")
+        .focus();
+
+    },100);
+
+}
+
+
+/* =====================================================
+   FECHAR CHAVE ADM
+===================================================== */
+
+function fecharSecretModal(){
+
+    document
+    .getElementById("secretModal")
+    .classList.remove("active");
+
+}
+
+
+/* =====================================================
+   VALIDAR CHAVE SECRETA
+===================================================== */
+
+function validarChaveSecreta(){
+
+    const campo =
+    document.getElementById(
+        "secretKey"
+    );
+
+    const chave =
+    campo.value.trim().toUpperCase();
+
+    if(!chave){
+
+        mostrarMensagem(
+            "secretMessage",
+            "Digite a chave secreta.",
+            "error"
+        );
+
+        return;
+
+    }
+
+    if(chave !== CHAVE_SECRETA){
+
+        mostrarMensagem(
+            "secretMessage",
+            "Chave secreta incorreta.",
+            "error"
+        );
+
+        campo.select();
+
+        return;
+
+    }
+
+    fecharSecretModal();
+
+    abrirAdmin();
+
+}
+
+
+/* =====================================================
+   ABRIR ADMIN
 ===================================================== */
 
 function abrirAdmin(){
-
-    const auth =
-    document.getElementById(
-        "authModal"
-    );
 
     const admin =
     document.getElementById(
         "adminModal"
     );
 
+    admin.classList.add(
+        "active"
+    );
 
-    if(auth){
-
-        auth.classList.remove(
-            "active"
-        );
-
-        auth.style.display =
-        "none";
-
-    }
-
-
-    if(admin){
-
-        admin.classList.add(
-            "active"
-        );
-
-        admin.style.display =
-        "flex";
-
-    }
-
+    admin.style.display =
+    "flex";
 
     if(!adminLogado){
 
-        document.getElementById(
+        document
+        .getElementById(
             "adminLogin"
-        ).style.display =
+        )
+        .style.display =
         "block";
 
-
-        document.getElementById(
+        document
+        .getElementById(
             "adminPanel"
-        ).style.display =
+        )
+        .style.display =
         "none";
 
-
-        document.getElementById(
+        document
+        .getElementById(
             "adminPassword"
-        ).value = "";
-
-
-        document.getElementById(
-            "adminLoginMessage"
-        ).className =
-        "message";
-
+        )
+        .value = "";
 
         setTimeout(()=>{
 
-            document.getElementById(
+            document
+            .getElementById(
                 "adminPassword"
-            ).focus();
+            )
+            .focus();
 
         },100);
 
@@ -1223,205 +1391,50 @@ function abrirAdmin(){
 
 
 /* =====================================================
-   FECHAR ADM
+   FECHAR ADMIN
 ===================================================== */
 
 function fecharAdmin(){
 
-    const admin =
-    document.getElementById(
+    document
+    .getElementById(
         "adminModal"
-    );
-
-
-    if(admin){
-
-        admin.classList.remove(
-            "active"
-        );
-
-        admin.style.display =
-        "none";
-
-    }
-
-}
-
-
-/* =====================================================
-   CLIENTE -> ADM
-===================================================== */
-
-function fecharClienteAbrirAdmin(){
-
-    const auth =
-    document.getElementById(
-        "authModal"
-    );
-
-
-    if(auth){
-
-        auth.classList.remove(
-            "active"
-        );
-
-        auth.style.display =
-        "none";
-
-    }
-
-
-    abrirAdmin();
-
-}
-
-
-/* =====================================================
-   VOLTAR PARA CLIENTE
-===================================================== */
-
-function abrirCliente(){
-
-    fecharAdmin();
-
-
-    const auth =
-    document.getElementById(
-        "authModal"
-    );
-
-
-    if(auth){
-
-        auth.classList.add(
-            "active"
-        );
-
-        auth.style.display =
-        "flex";
-
-    }
-
-}
-
-
-/* =====================================================
-   VERIFICAR AUTORIZAÇÃO
-===================================================== */
-
-function verificarAutorizacao(){
-
-    db.ref(
-        "dispositivos_autorizados"
     )
-    .once("value")
-
-    .then(snapshot=>{
-
-        const dados =
-        snapshot.val() || {};
-
-        let autorizado = false;
-
-
-        Object.keys(dados)
-        .forEach(codigo=>{
-
-            const item =
-            dados[codigo];
-
-
-            if(
-                item &&
-                item.deviceId === deviceId
-            ){
-
-                autorizado = true;
-
-            }
-
-        });
-
-
-        if(autorizado){
-
-            const auth =
-            document.getElementById(
-                "authModal"
-            );
-
-
-            auth.classList.remove(
-                "active"
-            );
-
-
-            auth.style.display =
-            "none";
-
-        }else{
-
-            const auth =
-            document.getElementById(
-                "authModal"
-            );
-
-
-            auth.classList.add(
-                "active"
-            );
-
-
-            auth.style.display =
-            "flex";
-
-        }
-
-    })
-
-    .catch(error=>{
-
-        console.error(
-            "Erro autorização:",
-            error
-        );
-
-
-        mostrarMensagem(
-            "authMessage",
-            "Não foi possível verificar o acesso. Verifique sua conexão com a internet.",
-            "error"
-        );
-
-    });
+    .classList.remove(
+        "active"
+    );
 
 }
 
 
 /* =====================================================
-   VALIDAR CÓDIGO DO CLIENTE
+   ENTRAR ADM COM FIREBASE
 ===================================================== */
 
-function validarCodigoUsuario(){
+function entrarAdmin(){
 
-    const input =
-    document.getElementById(
-        "userAccessCode"
-    );
-
-
-    const codigo =
-    input.value
+    const email =
+    document
+    .getElementById(
+        "adminEmail"
+    )
+    .value
     .trim()
-    .toUpperCase();
+    .toLowerCase();
+
+    const senha =
+    document
+    .getElementById(
+        "adminPassword"
+    )
+    .value;
 
 
-    if(!codigo){
+    if(!email){
 
         mostrarMensagem(
-            "authMessage",
-            "Digite o código recebido do administrador.",
+            "adminLoginMessage",
+            "Digite o e-mail.",
             "error"
         );
 
@@ -1430,30 +1443,24 @@ function validarCodigoUsuario(){
     }
 
 
-    /*
-       A chave secreta nunca é enviada
-       para o Firebase como código de cliente.
-    */
+    if(!senha){
 
-    if(
-        codigo ===
-        CHAVE_SECRETA_ADM
-        .trim()
-        .toUpperCase()
-    ){
-
-        abrirLoginAdminPelaChave();
+        mostrarMensagem(
+            "adminLoginMessage",
+            "Digite a senha.",
+            "error"
+        );
 
         return;
 
     }
 
 
-    if(!codigo.startsWith("ND-")){
+    if(email !== EMAIL_ADMIN){
 
         mostrarMensagem(
-            "authMessage",
-            "O código deve começar com ND-.",
+            "adminLoginMessage",
+            "E-mail de administrador não autorizado.",
             "error"
         );
 
@@ -1463,272 +1470,113 @@ function validarCodigoUsuario(){
 
 
     mostrarMensagem(
-        "authMessage",
-        "Verificando código...",
+        "adminLoginMessage",
+        "Entrando no painel...",
         "success"
     );
 
 
-    db.ref(
-        "codigos_gerados/" + codigo
+    auth
+    .signInWithEmailAndPassword(
+        email,
+        senha
     )
-    .once("value")
 
-    .then(snapshot=>{
+    .then(userCredential=>{
 
-        const dados =
-        snapshot.val();
-
-
-        if(!dados){
-
-            throw new Error(
-                "Código inválido ou não encontrado."
-            );
-
-        }
-
-
-        if(
-            dados.usado === true &&
-            dados.deviceId !== deviceId
-        ){
-
-            throw new Error(
-                "Esse código já está vinculado a outro aparelho."
-            );
-
-        }
-
-
-        return Promise.all([
-
-            db.ref(
-                "codigos_gerados/" + codigo
-            )
-            .update({
-
-                usado:true,
-
-                deviceId:
-                deviceId,
-
-                ultimoAcesso:
-                Date.now()
-
-            }),
-
-            db.ref(
-                "dispositivos_autorizados/" + codigo
-            )
-            .set({
-
-                deviceId:
-                deviceId,
-
-                codigo:
-                codigo,
-
-                data:
-                Date.now()
-
-            })
-
-        ]);
-
-    })
-
-    .then(()=>{
+        adminLogado = true;
 
         document
         .getElementById(
-            "authModal"
-        )
-        .classList
-        .remove("active");
-
-
-        document
-        .getElementById(
-            "authModal"
+            "adminLogin"
         )
         .style.display =
         "none";
 
+        document
+        .getElementById(
+            "adminPanel"
+        )
+        .style.display =
+        "block";
 
-        input.value = "";
+        document
+        .getElementById(
+            "adminLoginMessage"
+        )
+        .className =
+        "message";
 
+        carregarListaAdmin();
 
-        mostrarMensagem(
-            "authMessage",
-            "",
-            "success"
-        );
-
-
-        alert(
-            "Aparelho autorizado com sucesso!"
-        );
+        carregarCodigosAdmin();
 
     })
 
     .catch(error=>{
 
         console.error(
-            "Erro ao validar:",
+            "Erro Firebase Auth:",
             error
         );
 
+        let mensagem =
+        "Não foi possível entrar.";
+
+        if(
+            error.code ===
+            "auth/invalid-credential"
+        ){
+
+            mensagem =
+            "E-mail ou senha incorretos.";
+
+        }
+
+        else if(
+            error.code ===
+            "auth/user-not-found"
+        ){
+
+            mensagem =
+            "Usuário não encontrado.";
+
+        }
+
+        else if(
+            error.code ===
+            "auth/wrong-password"
+        ){
+
+            mensagem =
+            "Senha incorreta.";
+
+        }
+
+        else if(
+            error.code ===
+            "auth/too-many-requests"
+        ){
+
+            mensagem =
+            "Muitas tentativas. Aguarde alguns minutos.";
+
+        }
+
+        else{
+
+            mensagem =
+            error.message;
+
+        }
 
         mostrarMensagem(
-            "authMessage",
-            error.message ||
-            "Não foi possível validar o código.",
+            "adminLoginMessage",
+            mensagem,
             "error"
         );
 
     });
-
-}
-
-
-/* =====================================================
-   ABRIR LOGIN ADM PELA CHAVE SECRETA
-===================================================== */
-
-function abrirLoginAdminPelaChave(){
-
-    const input =
-    document.getElementById(
-        "userAccessCode"
-    );
-
-
-    if(input){
-
-        input.value = "";
-
-    }
-
-
-    const auth =
-    document.getElementById(
-        "authModal"
-    );
-
-
-    if(auth){
-
-        auth.classList.remove(
-            "active"
-        );
-
-        auth.style.display =
-        "none";
-
-    }
-
-
-    abrirAdmin();
-
-
-    setTimeout(()=>{
-
-        const senha =
-        document.getElementById(
-            "adminPassword"
-        );
-
-
-        if(senha){
-
-            senha.focus();
-
-        }
-
-    },150);
-
-}
-
-
-/* =====================================================
-   ENTRAR ADM
-===================================================== */
-
-function entrarAdmin(){
-
-    const campo =
-    document.getElementById(
-        "adminPassword"
-    );
-
-
-    const senha =
-    campo.value.trim();
-
-
-    if(!senha){
-
-        mostrarMensagem(
-            "adminLoginMessage",
-            "Digite a senha do administrador.",
-            "error"
-        );
-
-
-        campo.focus();
-
-        return;
-
-    }
-
-
-    if(senha !== senhaAdmin){
-
-        mostrarMensagem(
-            "adminLoginMessage",
-            "Senha incorreta.",
-            "error"
-        );
-
-
-        campo.select();
-
-        return;
-
-    }
-
-
-    adminLogado = true;
-
-
-    document
-    .getElementById(
-        "adminLogin"
-    )
-    .style.display =
-    "none";
-
-
-    document
-    .getElementById(
-        "adminPanel"
-    )
-    .style.display =
-    "block";
-
-
-    document
-    .getElementById(
-        "adminLoginMessage"
-    )
-    .className =
-    "message";
-
-
-    carregarListaAdmin();
-
-    carregarCodigosAdmin();
 
 }
 
@@ -1739,36 +1587,35 @@ function entrarAdmin(){
 
 function sairAdmin(){
 
-    adminLogado = false;
+    auth
+    .signOut()
+    .finally(()=>{
 
+        adminLogado = false;
 
-    document
-    .getElementById(
-        "adminPanel"
-    )
-    .style.display =
-    "none";
+        document
+        .getElementById(
+            "adminPanel"
+        )
+        .style.display =
+        "none";
 
+        document
+        .getElementById(
+            "adminLogin"
+        )
+        .style.display =
+        "block";
 
-    document
-    .getElementById(
-        "adminLogin"
-    )
-    .style.display =
-    "block";
+        document
+        .getElementById(
+            "adminPassword"
+        )
+        .value = "";
 
+        fecharAdmin();
 
-    document
-    .getElementById(
-        "adminPassword"
-    )
-    .value = "";
-
-
-    fecharAdmin();
-
-
-    verificarAutorizacao();
+    });
 
 }
 
@@ -1794,12 +1641,10 @@ function abaAdmin(
 
     });
 
-
     const aba =
     document.getElementById(
         "aba-" + nome
     );
-
 
     if(aba){
 
@@ -1808,7 +1653,6 @@ function abaAdmin(
         );
 
     }
-
 
     document
     .querySelectorAll(
@@ -1822,7 +1666,6 @@ function abaAdmin(
 
     });
 
-
     if(btn){
 
         btn.classList.add(
@@ -1831,101 +1674,11 @@ function abaAdmin(
 
     }
 
-
     if(nome === "codigos"){
 
         carregarCodigosAdmin();
 
     }
-
-}
-
-
-/* =====================================================
-   ALTERAR SENHA
-===================================================== */
-
-function alterarSenhaAdmin(){
-
-    if(!adminLogado){
-
-        return;
-
-    }
-
-
-    const nova =
-    document
-    .getElementById(
-        "newAdminPassword"
-    )
-    .value
-    .trim();
-
-
-    const confirma =
-    document
-    .getElementById(
-        "confirmAdminPassword"
-    )
-    .value
-    .trim();
-
-
-    if(nova.length < 4){
-
-        mostrarMensagem(
-            "configMessage",
-            "A senha precisa ter pelo menos 4 caracteres.",
-            "error"
-        );
-
-        return;
-
-    }
-
-
-    if(nova !== confirma){
-
-        mostrarMensagem(
-            "configMessage",
-            "As senhas não são iguais.",
-            "error"
-        );
-
-        return;
-
-    }
-
-
-    senhaAdmin = nova;
-
-
-    localStorage.setItem(
-        "nando_admin_password",
-        nova
-    );
-
-
-    document
-    .getElementById(
-        "newAdminPassword"
-    )
-    .value = "";
-
-
-    document
-    .getElementById(
-        "confirmAdminPassword"
-    )
-    .value = "";
-
-
-    mostrarMensagem(
-        "configMessage",
-        "Senha alterada com sucesso neste aparelho.",
-        "success"
-    );
 
 }
 
@@ -1939,20 +1692,17 @@ function gerarCodigoCliente(){
     if(!adminLogado){
 
         alert(
-            "Acesso de administrador necessário."
+            "Você precisa estar logado como administrador."
         );
 
         return;
 
     }
 
-
     const chars =
     "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 
-
     let codigo = "ND-";
-
 
     for(
         let i = 0;
@@ -1970,36 +1720,29 @@ function gerarCodigoCliente(){
 
     }
 
-
     const codeBox =
     document.getElementById(
         "generatedCodeBox"
     );
-
 
     const generatedCode =
     document.getElementById(
         "generatedCode"
     );
 
-
     const copyMessage =
     document.getElementById(
         "copyMessage"
     );
 
-
     generatedCode.innerText =
     codigo;
-
 
     codeBox.style.display =
     "block";
 
-
     copyMessage.innerText =
-    "Salvando código no servidor...";
-
+    "Salvando código...";
 
     db.ref(
         "codigos_gerados/" + codigo
@@ -2020,7 +1763,6 @@ function gerarCodigoCliente(){
         copyMessage.innerText =
         "✓ Código salvo com sucesso!";
 
-
         carregarCodigosAdmin();
 
     })
@@ -2028,7 +1770,6 @@ function gerarCodigoCliente(){
     .catch(error=>{
 
         console.error(error);
-
 
         copyMessage.innerText =
         "Erro: " +
@@ -2052,9 +1793,7 @@ function copiarCodigo(){
     )
     .innerText;
 
-
     if(!codigo)return;
-
 
     if(
         navigator.clipboard &&
@@ -2063,7 +1802,6 @@ function copiarCodigo(){
 
         navigator.clipboard
         .writeText(codigo)
-
         .then(()=>{
 
             document
@@ -2074,7 +1812,6 @@ function copiarCodigo(){
             "✓ Código copiado!";
 
         })
-
         .catch(()=>{
 
             copiarFallback(codigo);
@@ -2097,25 +1834,20 @@ function copiarFallback(codigo){
         "textarea"
     );
 
-
     textarea.value =
     codigo;
-
 
     document.body.appendChild(
         textarea
     );
 
-
     textarea.select();
-
 
     try{
 
         document.execCommand(
             "copy"
         );
-
 
         document
         .getElementById(
@@ -2133,7 +1865,6 @@ function copiarFallback(codigo){
 
     }
 
-
     textarea.remove();
 
 }
@@ -2145,37 +1876,27 @@ function copiarFallback(codigo){
 
 function carregarCodigosAdmin(){
 
-    if(!adminLogado){
-
-        return;
-
-    }
-
+    if(!adminLogado)return;
 
     const container =
     document.getElementById(
         "codesAdminList"
     );
 
-
     if(!container)return;
-
 
     db.ref(
         "codigos_gerados"
     )
     .once("value")
-
     .then(snapshot=>{
 
         const dados =
         snapshot.val() || {};
 
-
         const ids =
         Object.keys(dados)
         .reverse();
-
 
         if(ids.length === 0){
 
@@ -2186,19 +1907,15 @@ function carregarCodigosAdmin(){
 
         }
 
-
         let html = "";
-
 
         ids.forEach(id=>{
 
             const item =
             dados[id] || {};
 
-
             const usado =
             item.usado === true;
-
 
             html += `
 
@@ -2247,7 +1964,7 @@ function carregarCodigosAdmin(){
 
                     <button
                     style="background:#334155"
-                    onclick="copiarCodigoDireto('${id}')">
+                    onclick="copiarCodigoDireto('${escapar(id)}')">
 
                         <i class="fa-solid fa-copy"></i>
 
@@ -2255,7 +1972,7 @@ function carregarCodigosAdmin(){
 
                     <button
                     style="background:#ef4444"
-                    onclick="excluirCodigo('${id}')">
+                    onclick="excluirCodigo('${escapar(id)}')">
 
                         <i class="fa-solid fa-trash"></i>
 
@@ -2269,18 +1986,16 @@ function carregarCodigosAdmin(){
 
         });
 
-
         container.innerHTML =
         html;
 
     })
-
     .catch(error=>{
+
+        console.error(error);
 
         container.innerHTML =
         '<div class="empty">Erro ao carregar códigos.</div>';
-
-        console.error(error);
 
     });
 
@@ -2288,17 +2003,10 @@ function carregarCodigosAdmin(){
 
 
 /* =====================================================
-   COPIAR DA LISTA
+   COPIAR LISTA
 ===================================================== */
 
 function copiarCodigoDireto(codigo){
-
-    if(!adminLogado){
-
-        return;
-
-    }
-
 
     if(
         navigator.clipboard &&
@@ -2307,7 +2015,6 @@ function copiarCodigoDireto(codigo){
 
         navigator.clipboard
         .writeText(codigo)
-
         .then(()=>{
 
             alert(
@@ -2317,7 +2024,6 @@ function copiarCodigoDireto(codigo){
             );
 
         })
-
         .catch(()=>{
 
             copiarFallback(codigo);
@@ -2341,30 +2047,13 @@ function excluirCodigo(codigo){
 
     if(!adminLogado){
 
-        return;
-
-    }
-
-
-    const senha =
-    prompt(
-        "Digite a senha do administrador para excluir o código:"
-    );
-
-
-    if(senha === null)return;
-
-
-    if(senha !== senhaAdmin){
-
         alert(
-            "Senha incorreta."
+            "Acesso administrativo necessário."
         );
 
         return;
 
     }
-
 
     const confirmar =
     confirm(
@@ -2373,9 +2062,7 @@ function excluirCodigo(codigo){
         "?"
     );
 
-
     if(!confirmar)return;
-
 
     Promise.all([
 
@@ -2392,23 +2079,243 @@ function excluirCodigo(codigo){
         .remove()
 
     ])
-
     .then(()=>{
 
         alert(
             "Código excluído com sucesso."
         );
 
-
         carregarCodigosAdmin();
 
     })
-
     .catch(error=>{
 
         alert(
             "Erro ao excluir:\n" +
             error.message
+        );
+
+    });
+
+}
+
+
+/* =====================================================
+   VALIDAR CÓDIGO CLIENTE
+===================================================== */
+
+function validarCodigoUsuario(){
+
+    const input =
+    document.getElementById(
+        "userAccessCode"
+    );
+
+    const codigo =
+    input.value
+    .trim()
+    .toUpperCase();
+
+    if(!codigo){
+
+        mostrarMensagem(
+            "authMessage",
+            "Digite o código recebido.",
+            "error"
+        );
+
+        return;
+
+    }
+
+    if(!codigo.startsWith("ND-")){
+
+        mostrarMensagem(
+            "authMessage",
+            "O código deve começar com ND-.",
+            "error"
+        );
+
+        return;
+
+    }
+
+    mostrarMensagem(
+        "authMessage",
+        "Verificando código...",
+        "success"
+    );
+
+    db.ref(
+        "codigos_gerados/" + codigo
+    )
+    .once("value")
+    .then(snapshot=>{
+
+        const dados =
+        snapshot.val();
+
+        if(!dados){
+
+            throw new Error(
+                "Código inválido ou não encontrado."
+            );
+
+        }
+
+        if(
+            dados.usado === true &&
+            dados.deviceId !== deviceId
+        ){
+
+            throw new Error(
+                "Esse código já está vinculado a outro aparelho."
+            );
+
+        }
+
+        return Promise.all([
+
+            db.ref(
+                "codigos_gerados/" + codigo
+            )
+            .update({
+
+                usado:true,
+
+                deviceId:
+                deviceId,
+
+                ultimoAcesso:
+                Date.now()
+
+            }),
+
+            db.ref(
+                "dispositivos_autorizados/" + codigo
+            )
+            .set({
+
+                deviceId:
+                deviceId,
+
+                codigo:
+                codigo,
+
+                data:
+                Date.now()
+
+            })
+
+        ]);
+
+    })
+    .then(()=>{
+
+        document
+        .getElementById(
+            "authModal"
+        )
+        .classList
+        .remove("active");
+
+        input.value = "";
+
+        mostrarMensagem(
+            "authMessage",
+            "",
+            "success"
+        );
+
+        alert(
+            "Aparelho autorizado com sucesso!"
+        );
+
+    })
+    .catch(error=>{
+
+        console.error(
+            "Erro ao validar:",
+            error
+        );
+
+        mostrarMensagem(
+            "authMessage",
+            error.message ||
+            "Não foi possível validar o código.",
+            "error"
+        );
+
+    });
+
+}
+
+
+/* =====================================================
+   VERIFICAR AUTORIZAÇÃO
+===================================================== */
+
+function verificarAutorizacao(){
+
+    db.ref(
+        "dispositivos_autorizados"
+    )
+    .once("value")
+    .then(snapshot=>{
+
+        const dados =
+        snapshot.val() || {};
+
+        let autorizado = false;
+
+        Object.keys(dados)
+        .forEach(codigo=>{
+
+            const item =
+            dados[codigo];
+
+            if(
+                item &&
+                item.deviceId === deviceId
+            ){
+
+                autorizado = true;
+
+            }
+
+        });
+
+        const authModal =
+        document.getElementById(
+            "authModal"
+        );
+
+        if(autorizado){
+
+            authModal
+            .classList
+            .remove("active");
+
+        }else{
+
+            authModal
+            .classList
+            .add("active");
+
+        }
+
+    })
+    .catch(error=>{
+
+        console.error(
+            "Erro autorização:",
+            error
+        );
+
+        mostrarMensagem(
+            "authMessage",
+            "Não foi possível verificar o acesso. Verifique sua internet.",
+            "error"
         );
 
     });
@@ -2425,13 +2332,12 @@ function salvarMusica(){
     if(!adminLogado){
 
         alert(
-            "Acesso de administrador necessário."
+            "Você precisa estar logado como administrador."
         );
 
         return;
 
     }
-
 
     const title =
     document
@@ -2441,7 +2347,6 @@ function salvarMusica(){
     .value
     .trim();
 
-
     const url =
     document
     .getElementById(
@@ -2450,14 +2355,12 @@ function salvarMusica(){
     .value
     .trim();
 
-
     const category =
     document
     .getElementById(
         "songCategory"
     )
     .value;
-
 
     if(!title || !url){
 
@@ -2468,7 +2371,6 @@ function salvarMusica(){
         return;
 
     }
-
 
     db.ref(
         "musicas"
@@ -2485,7 +2387,6 @@ function salvarMusica(){
         Date.now()
 
     })
-
     .then(()=>{
 
         document
@@ -2494,20 +2395,17 @@ function salvarMusica(){
         )
         .value = "";
 
-
         document
         .getElementById(
             "songUrl"
         )
         .value = "";
 
-
         alert(
             "Música adicionada com sucesso!"
         );
 
     })
-
     .catch(error=>{
 
         alert(
@@ -2529,13 +2427,12 @@ function salvarFundo(){
     if(!adminLogado){
 
         alert(
-            "Acesso de administrador necessário."
+            "Você precisa estar logado como administrador."
         );
 
         return;
 
     }
-
 
     const url =
     document
@@ -2544,7 +2441,6 @@ function salvarFundo(){
     )
     .value
     .trim();
-
 
     if(!url){
 
@@ -2555,7 +2451,6 @@ function salvarFundo(){
         return;
 
     }
-
 
     db.ref(
         "background_videos"
@@ -2568,7 +2463,6 @@ function salvarFundo(){
         Date.now()
 
     })
-
     .then(()=>{
 
         document
@@ -2577,13 +2471,11 @@ function salvarFundo(){
         )
         .value = "";
 
-
         alert(
             "Vídeo de fundo adicionado!"
         );
 
     })
-
     .catch(error=>{
 
         alert(
@@ -2604,21 +2496,18 @@ function tocar(url,title){
 
     if(!url)return;
 
-
     musicPlayer.src =
     url;
 
-
     nowPlaying.innerText =
     title;
-
 
     musicPlayer
     .play()
     .catch(error=>{
 
         console.warn(
-            "Autoplay bloqueado:",
+            "Autoplay:",
             error
         );
 
@@ -2631,14 +2520,11 @@ function pararPlayer(){
 
     musicPlayer.pause();
 
-
     musicPlayer.removeAttribute(
         "src"
     );
 
-
     musicPlayer.load();
-
 
     nowPlaying.innerText =
     "Nenhuma música reproduzindo";
@@ -2663,7 +2549,6 @@ function tocarFundoAleatorio(){
 
     }
 
-
     const escolhido =
     bgVideos[
         Math.floor(
@@ -2672,18 +2557,14 @@ function tocarFundoAleatorio(){
         )
     ];
 
-
     backgroundPlayer.src =
     escolhido.url;
-
 
     backgroundPlayer.muted =
     true;
 
-
     backgroundPlayer.loop =
     false;
-
 
     backgroundPlayer
     .play()
@@ -2706,7 +2587,7 @@ backgroundPlayer.addEventListener(
 
 
 /* =====================================================
-   MUSICAS FIREBASE
+   FIREBASE MUSICAS
 ===================================================== */
 
 db.ref(
@@ -2718,10 +2599,8 @@ db.ref(
 
         allSongs = [];
 
-
         const dados =
         snapshot.val() || {};
-
 
         Object.keys(dados)
         .forEach(id=>{
@@ -2736,11 +2615,9 @@ db.ref(
 
         });
 
-
         renderizarMusicas(
             allSongs
         );
-
 
         renderizarAdminPlayer();
 
@@ -2761,7 +2638,6 @@ function renderizarMusicas(lista){
         "playlistContainer"
     );
 
-
     if(!lista.length){
 
         container.innerHTML =
@@ -2771,9 +2647,7 @@ function renderizarMusicas(lista){
 
     }
 
-
     let html = "";
-
 
     lista.forEach(song=>{
 
@@ -2786,7 +2660,6 @@ function renderizarMusicas(lista){
         const category =
         escapar(song.category);
 
-
         html += `
 
         <div class="song-item">
@@ -2796,15 +2669,11 @@ function renderizarMusicas(lista){
             onclick="tocar('${url}','${title}')">
 
                 <div class="song-title">
-
                     ${title}
-
                 </div>
 
                 <div class="song-category">
-
                     ${category}
-
                 </div>
 
             </div>
@@ -2824,7 +2693,6 @@ function renderizarMusicas(lista){
                 <i
                 class="fa-solid fa-play icon"
                 onclick="tocar('${url}','${title}')">
-
                 </i>
 
             </div>
@@ -2834,7 +2702,6 @@ function renderizarMusicas(lista){
         `;
 
     });
-
 
     container.innerHTML =
     html;
@@ -2853,12 +2720,9 @@ function renderizarAdminPlayer(){
         "adminPlayerList"
     );
 
-
     if(!container)return;
 
-
     let html = "";
-
 
     allSongs.forEach(song=>{
 
@@ -2884,7 +2748,6 @@ function renderizarAdminPlayer(){
 
     });
 
-
     container.innerHTML =
     html ||
     '<div class="empty">Nenhuma música cadastrada.</div>';
@@ -2903,12 +2766,9 @@ function carregarListaAdmin(){
         "musicAdminList"
     );
 
-
     if(!container)return;
 
-
     let html = "";
-
 
     allSongs.forEach(song=>{
 
@@ -2934,7 +2794,6 @@ function carregarListaAdmin(){
 
     });
 
-
     container.innerHTML =
     html ||
     '<div class="empty">Nenhuma música.</div>';
@@ -2950,10 +2809,13 @@ function excluirMusica(id){
 
     if(!adminLogado){
 
+        alert(
+            "Acesso administrativo necessário."
+        );
+
         return;
 
     }
-
 
     if(
         !confirm(
@@ -2965,12 +2827,10 @@ function excluirMusica(id){
 
     }
 
-
     db.ref(
         "musicas/" + id
     )
     .remove()
-
     .then(()=>{
 
         alert(
@@ -2978,7 +2838,6 @@ function excluirMusica(id){
         );
 
     })
-
     .catch(error=>{
 
         alert(
@@ -3004,10 +2863,8 @@ db.ref(
 
         bgVideos = [];
 
-
         const dados =
         snapshot.val() || {};
-
 
         Object.keys(dados)
         .forEach(id=>{
@@ -3022,17 +2879,14 @@ db.ref(
 
         });
 
-
         const container =
         document.getElementById(
             "backgroundAdminList"
         );
 
-
         if(container){
 
             let html = "";
-
 
             bgVideos.forEach(video=>{
 
@@ -3060,13 +2914,11 @@ db.ref(
 
             });
 
-
             container.innerHTML =
             html ||
             '<div class="empty">Nenhum vídeo.</div>';
 
         }
-
 
         if(
             backgroundPlayer.paused &&
@@ -3090,10 +2942,13 @@ function excluirFundo(id){
 
     if(!adminLogado){
 
+        alert(
+            "Acesso administrativo necessário."
+        );
+
         return;
 
     }
-
 
     if(
         !confirm(
@@ -3105,12 +2960,10 @@ function excluirFundo(id){
 
     }
 
-
     db.ref(
         "background_videos/" + id
     )
     .remove()
-
     .then(()=>{
 
         alert(
@@ -3118,7 +2971,6 @@ function excluirFundo(id){
         );
 
     })
-
     .catch(error=>{
 
         alert(
@@ -3152,11 +3004,9 @@ function filtrar(
 
     });
 
-
     btn.classList.add(
         "active"
     );
-
 
     if(cat === "Todas"){
 
@@ -3167,7 +3017,6 @@ function filtrar(
         return;
 
     }
-
 
     renderizarMusicas(
 
@@ -3195,7 +3044,6 @@ function escapar(texto){
         return "";
 
     }
-
 
     return String(texto)
 
@@ -3228,95 +3076,55 @@ function escapar(texto){
 
 
 /* =====================================================
-   CHAVE SECRETA + ENTER CLIENTE
+   ENTER CLIENTE
 ===================================================== */
 
-const campoAcesso =
-document.getElementById(
+document
+.getElementById(
     "userAccessCode"
-);
-
-
-/*
-   Verificação automática enquanto digita.
-*/
-
-campoAcesso.addEventListener(
-    "input",
-    function(){
-
-        const digitado =
-        this.value
-        .trim()
-        .toUpperCase();
-
-
-        const chave =
-        CHAVE_SECRETA_ADM
-        .trim()
-        .toUpperCase();
-
-
-        if(
-            digitado === chave
-        ){
-
-            abrirLoginAdminPelaChave();
-
-        }
-
-    }
-);
-
-
-/*
-   ENTER no campo de acesso.
-*/
-
-campoAcesso.addEventListener(
+)
+.addEventListener(
     "keydown",
     function(event){
 
         if(
-            event.key !== "Enter"
+            event.key === "Enter"
         ){
 
-            return;
+            validarCodigoUsuario();
 
         }
-
-
-        const digitado =
-        this.value
-        .trim()
-        .toUpperCase();
-
-
-        const chave =
-        CHAVE_SECRETA_ADM
-        .trim()
-        .toUpperCase();
-
-
-        if(
-            digitado === chave
-        ){
-
-            abrirLoginAdminPelaChave();
-
-            return;
-
-        }
-
-
-        validarCodigoUsuario();
 
     }
 );
 
 
 /* =====================================================
-   ENTER LOGIN ADM
+   ENTER CHAVE
+===================================================== */
+
+document
+.getElementById(
+    "secretKey"
+)
+.addEventListener(
+    "keydown",
+    function(event){
+
+        if(
+            event.key === "Enter"
+        ){
+
+            validarChaveSecreta();
+
+        }
+
+    }
+);
+
+
+/* =====================================================
+   ENTER ADM
 ===================================================== */
 
 document
