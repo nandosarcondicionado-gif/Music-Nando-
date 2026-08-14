@@ -87,12 +87,11 @@
       <button class="btn-submit" onclick="validarCodigoUsuario()">Entrar no Aplicativo</button>
       <p id="authError" style="color: #ef4444; font-size: 0.8rem; margin-top: 10px; display: none;"></p>
     </div>
-      <!-- Atalho para o Admin acessar mesmo bloqueado -->
-      <div style="margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 15px;">
-    <button onclick="fecharAuthEAbrirAdmin()" style="background:none;border:none;color:#a855f7;font-size:0.8rem;cursor:pointer;text-decoration:underline;">Sou Administrador</button>
+  </div>
 
-      </div>
-
+  <!-- HEADER -->
+  <header>
+    <div class="logo"><i class="fa-solid fa-headphones"></i> Nando's Music</div>
     <button class="admin-btn" onclick="abrirAdmin()"><i class="fa-solid fa-lock"></i> Painel Admin</button>
   </header>
 
@@ -204,11 +203,7 @@
     document.getElementById('deviceIdDisplay').innerText = "ID Aparelho: " + deviceId;
 
     // Verificar se este aparelho já está autorizado
-        function verificarAutorizacaoAparelho() {
-      // 1. FORÇA O MODAL A ABRIR IMEDIATAMENTE NA TELA
-      document.getElementById('authModal').classList.add('active');
-
-      // 2. Consulta o Firebase para ver se o aparelho já é autorizado
+    function verificarAutorizacaoAparelho() {
       db.ref('dispositivos_autorizados').once('value', snapshot => {
         let autorizados = snapshot.val() || {};
         let meuCodigoAtivo = null;
@@ -220,15 +215,14 @@
           }
         }
 
-        // 3. Se já estiver autorizado, fecha o modal automaticamente
-        if (meuCodigoAtivo) {
+        if (!meuCodigoAtivo) {
+          // Aparelho não autorizado, abre modal de bloqueio
+          document.getElementById('authModal').classList.add('active');
+        } else {
           document.getElementById('authModal').classList.remove('active');
         }
-      }).catch(error => {
-        console.error("Erro de conexão com o Firebase:", error);
       });
     }
-
 
     // Validar código digitado pelo usuário
     function validarCodigoUsuario() {
@@ -424,4 +418,21 @@
         else if(playlist.length > 0) tocarMusica(0);
         playIcon.className = "fa-solid fa-circle-pause";
       } else {
-        pla
+        player.pause();
+        playIcon.className = "fa-solid fa-circle-play";
+      }
+    }
+
+    function nextSong() {
+      if (playlist.length === 0) return;
+      currentIndex = (currentIndex + 1) % playlist.length;
+      tocarMusica(currentIndex);
+    }
+
+    function prevSong() {
+      if (playlist.length === 0) return;
+      currentIndex = (currentIndex - 1 + playlist.length) % playlist.length;
+      tocarMusica(currentIndex);
+    }
+  </script>
+</bod
