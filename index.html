@@ -87,11 +87,12 @@
       <button class="btn-submit" onclick="validarCodigoUsuario()">Entrar no Aplicativo</button>
       <p id="authError" style="color: #ef4444; font-size: 0.8rem; margin-top: 10px; display: none;"></p>
     </div>
-  </div>
+      <!-- Atalho para o Admin acessar mesmo bloqueado -->
+      <div style="margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 15px;">
+    <button onclick="fecharAuthEAbrirAdmin()" style="background:none;border:none;color:#a855f7;font-size:0.8rem;cursor:pointer;text-decoration:underline;">Sou Administrador</button>
 
-  <!-- HEADER -->
-  <header>
-    <div class="logo"><i class="fa-solid fa-headphones"></i> Nando's Music</div>
+      </div>
+
     <button class="admin-btn" onclick="abrirAdmin()"><i class="fa-solid fa-lock"></i> Painel Admin</button>
   </header>
 
@@ -439,5 +440,11 @@
       currentIndex = (currentIndex - 1 + playlist.length) % playlist.length;
       tocarMusica(currentIndex);
     }
+
+    function fecharAuthEAbrirAdmin() {
+      document.getElementById('authModal').classList.remove('active');
+      abrirAdmin();
+    }
+
   </script>
-</bod
+</body>
