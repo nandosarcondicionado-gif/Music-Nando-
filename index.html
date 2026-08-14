@@ -9,134 +9,431 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   
+  <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
     body { background: #0b0f19; color: #fff; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
+    
     header { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(10px); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.05); }
     .logo { font-size: 1.3rem; font-weight: 700; background: linear-gradient(135deg, #a855f7, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: flex; align-items: center; gap: 10px; }
+    
     .admin-btn { background: rgba(168, 85, 247, 0.2); border: 1px solid #a855f7; color: #fff; padding: 6px 14px; border-radius: 8px; cursor: pointer; transition: 0.3s; font-size: 0.9rem; }
     .admin-btn:hover { background: #a855f7; }
+
     .status-bar { background: #131b2e; padding: 8px 20px; display: flex; align-items: center; justify-content: space-between; font-size: 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.05); }
     .status-indicator { display: flex; align-items: center; gap: 6px; }
     .dot { width: 8px; height: 8px; border-radius: 50%; background: #22c55e; box-shadow: 0 0 5px #22c55e; }
+
     .container { flex: 1; padding: 20px; max-width: 800px; margin: 0 auto; width: 100%; }
-    .player-card { background: #151b2c; border-radius: 16px; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 20px; }
+    
+    /* Player Card */
+    .player-card { background: #151b2c; border-radius: 16px; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); position: relative; display: flex; flex-direction: column; margin-bottom: 20px; }
     video { width: 100%; height: 220px; object-fit: cover; background: #000; }
     .music-info { padding: 15px 20px; text-align: center; }
     .music-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 4px; }
     .music-category { font-size: 0.8rem; color: #a855f7; }
+    
     .controls { display: flex; align-items: center; justify-content: center; gap: 20px; padding: 15px; background: rgba(0,0,0,0.2); }
-    .ctrl-btn { background: none; border: none; color: #fff; font-size: 1.2rem; cursor: pointer; }
+    .ctrl-btn { background: none; border: none; color: #fff; font-size: 1.2rem; cursor: pointer; transition: 0.2s; }
+    .ctrl-btn:hover { transform: scale(1.1); color: #a855f7; }
     .ctrl-btn.play { font-size: 2.2rem; color: #a855f7; }
+
+    .progress-container { width: 100%; padding: 0 20px 15px 20px; }
+    .time-info { display: flex; justify-content: space-between; font-size: 0.75rem; color: #94a3b8; margin-bottom: 5px; }
+    input[type="range"] { width: 100%; accent-color: #a855f7; cursor: pointer; }
+
+    /* Playlist */
     .playlist-title { font-size: 1rem; font-weight: 600; margin-bottom: 12px; color: #cbd5e1; }
     .playlist { display: flex; flex-direction: column; gap: 10px; }
-    .song-item { background: #151b2c; padding: 12px 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: space-between; cursor: pointer; }
-    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
+    .song-item { background: #151b2c; padding: 12px 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: 0.3s; }
+    .song-item:hover { background: rgba(168, 85, 247, 0.1); border-color: rgba(168, 85, 247, 0.3); }
+    .song-item.active { border-color: #a855f7; background: rgba(168, 85, 247, 0.15); }
+    .song-details { display: flex; align-items: center; gap: 12px; }
+    .song-icon { width: 36px; height: 36px; background: rgba(168, 85, 247, 0.2); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #a855f7; }
+
+    /* Modais (Bloqueio e Admin) */
+    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
     .modal.active { display: flex; }
-    .modal-content { background: #111827; border: 1px solid rgba(255,255,255,0.1); width: 100%; max-width: 500px; border-radius: 16px; padding: 25px; }
+    .modal-content { background: #111827; border: 1px solid rgba(255,255,255,0.1); width: 100%; max-width: 500px; border-radius: 16px; padding: 25px; max-height: 90vh; overflow-y: auto; }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .close-btn { background: none; border: none; color: #94a3b8; font-size: 1.2rem; cursor: pointer; }
+
     .form-group { margin-bottom: 15px; }
-    .form-group input { width: 100%; padding: 10px; background: #0b0f19; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; }
-    .btn-submit { width: 100%; background: linear-gradient(135deg, #a855f7, #ec4899); border: none; padding: 12px; border-radius: 8px; color: #fff; font-weight: 600; cursor: pointer; }
-    .code-row { background: #0b0f19; padding: 10px; border-radius: 8px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
-    .code-text { font-family: monospace; color: #a855f7; font-weight: bold; }
-    .del-code { background: #ef4444; border: none; color: white; padding: 4px 8px; border-radius: 4px; cursor: pointer; }
+    .form-group label { display: block; font-size: 0.85rem; color: #cbd5e1; margin-bottom: 6px; }
+    .form-group input, .form-group select { width: 100%; padding: 10px 14px; background: #0b0f19; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; font-size: 0.9rem; }
+    .btn-submit { width: 100%; background: linear-gradient(135deg, #a855f7, #ec4899); border: none; padding: 12px; border-radius: 8px; color: #fff; font-weight: 600; cursor: pointer; transition: 0.3s; margin-top: 10px; }
+    .btn-submit:hover { opacity: 0.9; }
+
+    /* Lista de Códigos no Admin */
+    .codes-list { margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px; }
+    .code-row { background: #0b0f19; padding: 10px; border-radius: 8px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; }
+    .code-text { font-family: monospace; color: #a855f7; font-weight: bold; font-size: 1rem; }
+    .del-code { background: #ef4444; border: none; color: white; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.75rem; }
   </style>
 </head>
 <body>
 
+  <!-- TELA DE BLOQUEIO / LOGIN DO USUÁRIO POR CÓDIGO -->
   <div id="authModal" class="modal">
     <div class="modal-content" style="text-align: center;">
-      <h3>Acesso Restrito</h3>
-      <p style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 20px;">Digite seu código de acesso:</p>
-      <div class="form-group"><input type="text" id="userAccessCode" style="text-align: center; text-transform: uppercase;"></div>
-      <button class="btn-submit" onclick="validarCodigoUsuario()">Entrar</button>
-      <p id="authError" style="color: #ef4444; margin-top: 10px; display: none;"></p>
+      <h2 style="margin-bottom: 10px;"><i class="fa-solid fa-lock" style="color: #a855f7;"></i> Acesso Restrito</h2>
+      <p style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 20px;">Digite o código de acesso fornecido pelo Administrador para usar este aparelho.</p>
+      <div class="form-group">
+        <input type="text" id="userAccessCode" placeholder="Ex: NANDO-7892" style="text-align: center; text-transform: uppercase; font-size: 1.2rem; letter-spacing: 2px;">
+      </div>
+      <button class="btn-submit" onclick="validarCodigoUsuario()">Entrar no Aplicativo</button>
+      <p id="authError" style="color: #ef4444; font-size: 0.8rem; margin-top: 10px; display: none;"></p>
     </div>
   </div>
 
+  <!-- HEADER -->
   <header>
-    <div class="logo">Nando's Music</div>
-    <button class="admin-btn" onclick="abrirAdmin()">Painel Admin</button>
+    <div class="logo"><i class="fa-solid fa-headphones"></i> Nando's Music</div>
+    <button class="admin-btn" onclick="abrirAdmin()"><i class="fa-solid fa-lock"></i> Painel Admin</button>
   </header>
 
+  <div class="status-bar">
+    <div class="status-indicator">
+      <div class="dot"></div>
+      <span>Sincronização em Nuvem</span>
+    </div>
+    <span id="deviceIdDisplay" style="color: #64748b; font-size: 0.7rem;">ID Aparelho: Carregando...</span>
+  </div>
+
+  <!-- CONTEÚDO PRINCIPAL -->
   <div class="container">
     <div class="player-card">
       <video id="audioPlayer" controls></video>
-      <div class="music-info"><div class="music-title" id="currentTitle">Selecione uma música</div></div>
+      <div class="music-info">
+        <div class="music-title" id="currentTitle">Selecione uma música</div>
+        <div class="music-category" id="currentCategory">Nando's Music Cloud</div>
+      </div>
+      <div class="progress-container">
+        <div class="time-info">
+          <span id="currentTime">00:00</span>
+          <span id="duration">00:00</span>
+        </div>
+        <input type="range" id="progressBar" value="0" max="100">
+      </div>
       <div class="controls">
         <button class="ctrl-btn" onclick="prevSong()"><i class="fa-solid fa-backward-step"></i></button>
         <button class="ctrl-btn play" onclick="togglePlay()"><i class="fa-solid fa-circle-play" id="playIcon"></i></button>
         <button class="ctrl-btn" onclick="nextSong()"><i class="fa-solid fa-forward-step"></i></button>
       </div>
     </div>
-    <div class="playlist" id="playlistContainer"></div>
+
+    <div class="playlist-title">Sua Playlist Sincronizada</div>
+    <div class="playlist" id="playlistContainer">
+      <div style="text-align: center; color: #64748b; padding: 20px;">Carregando músicas da nuvem...</div>
+    </div>
   </div>
 
+  <!-- MODAL PAINEL ADMINISTRADOR -->
   <div id="adminModal" class="modal">
     <div class="modal-content">
-      <h3>Admin</h3>
-      <div id="adminLoginBox"><input type="password" id="adminPasswordInput" placeholder="Senha ADM"><button class="btn-submit" onclick="logarAdmin()">Entrar</button></div>
+      <div class="modal-header">
+        <h3>Painel Administrativo</h3>
+        <button class="close-btn" onclick="fecharAdmin()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      
+      <!-- Login Admin -->
+      <div id="adminLoginBox">
+        <div class="form-group">
+          <label>Senha de Administrador</label>
+          <input type="password" id="adminPasswordInput" placeholder="Digite sua senha">
+        </div>
+        <button class="btn-submit" onclick="logarAdmin()">Entrar como ADM</button>
+      </div>
+
+      <!-- Conteúdo Admin (Gerenciador e Códigos) -->
       <div id="adminDashboardBox" style="display: none;">
-        <button class="btn-submit" onclick="gerarNovoCodigo()">Gerar Novo Código</button>
-        <div id="codesListContainer" style="margin-top:20px;"></div>
+        
+        <!-- Abas do Admin -->
+        <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+          <button class="admin-btn" style="flex: 1;" onclick="mudarAbaAdmin('musicas')">Músicas</button>
+          <button class="admin-btn" style="flex: 1;" onclick="mudarAbaAdmin('codigos')">Códigos de Acesso</button>
+        </div>
+
+        <!-- Seção Músicas -->
+        <div id="secMusicas">
+          <h4 style="margin-bottom: 15px; font-size: 0.95rem; color: #a855f7;">Cadastrar Nova Música</h4>
+          <div class="form-group">
+            <label>Título da Música</label>
+            <input type="text" id="songTitle" placeholder="Ex: Nome da Música">
+          </div>
+          <div class="form-group">
+            <label>Link do Vídeo/Áudio (Direto do Firebase Storage ou MP4)</label>
+            <input type="text" id="songUrl" placeholder="https://...">
+          </div>
+          <button class="btn-submit" onclick="adicionarMusica()">Salvar na Nuvem</button>
+        </div>
+
+        <!-- Seção Códigos de Acesso -->
+        <div id="secCodigos" style="display: none;">
+          <h4 style="margin-bottom: 10px; font-size: 0.95rem; color: #a855f7;">Gerenciar Códigos de Aparelho</h4>
+          <p style="font-size: 0.8rem; color: #94a3b8; margin-bottom: 15px;">Gere um código aleatório exclusivo. Ao ser usado no celular/carro do usuário, ele ficará amarrado àquele aparelho.</p>
+          <button class="btn-submit" onclick="gerarNovoCodigo()"><i class="fa-solid fa-key"></i> Gerar Novo Código de Acesso</button>
+          
+          <div class="codes-list" id="codesListContainer">
+            <p style="font-size: 0.8rem; color: #64748b;">Nenhum código gerado ainda.</p>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
 
   <script>
-    const firebaseConfig = { databaseURL: "https://music-nando-default-rtdb.firebaseio.com/" };
+    // Configuração Firebase (Insira seus dados reais aqui se necessário)
+    const firebaseConfig = {
+      databaseURL: "https://music-nando-default-rtdb.firebaseio.com/"
+    };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
-    let deviceId = localStorage.getItem('nando_device_id') || ('DEV-' + Math.random().toString(36).substring(2, 9).toUpperCase());
-    localStorage.setItem('nando_device_id', deviceId);
 
-    function validarCodigoUsuario() {
-      let code = document.getElementById('userAccessCode').value.trim().toUpperCase();
-      db.ref('codigos_gerados/' + code).once('value', s => {
-        if (!s.exists()) { document.getElementById('authError').style.display = 'block'; return; }
-        let d = s.val();
-        if (d.usado && d.deviceId !== deviceId) { alert("Código já usado em outro aparelho!"); return; }
-        db.ref('codigos_gerados/' + code).update({ usado: true, deviceId: deviceId });
-        location.reload();
+    // Identificador único do Aparelho Atual
+    let deviceId = localStorage.getItem('nando_device_id');
+    if (!deviceId) {
+      deviceId = 'DEV-' + Math.random().toString(36).substring(2, 9).toUpperCase();
+      localStorage.setItem('nando_device_id', deviceId);
+    }
+    document.getElementById('deviceIdDisplay').innerText = "ID Aparelho: " + deviceId;
+
+    // Verificar se este aparelho já está autorizado
+    function verificarAutorizacaoAparelho() {
+      db.ref('dispositivos_autorizados').once('value', snapshot => {
+        let autorizados = snapshot.val() || {};
+        let meuCodigoAtivo = null;
+
+        for (let codigo in autorizados) {
+          if (autorizados[codigo].deviceId === deviceId) {
+            meuCodigoAtivo = codigo;
+            break;
+          }
+        }
+
+        if (!meuCodigoAtivo) {
+          // Aparelho não autorizado, abre modal de bloqueio
+          document.getElementById('authModal').classList.add('active');
+        } else {
+          document.getElementById('authModal').classList.remove('active');
+        }
       });
     }
 
+    // Validar código digitado pelo usuário
+    function validarCodigoUsuario() {
+      let codigoDigitado = document.getElementById('userAccessCode').value.trim().toUpperCase();
+      let errorEl = document.getElementById('authError');
+
+      if (!codigoDigitado) {
+        errorEl.innerText = "Digite um código válido!";
+        errorEl.style.display = 'block';
+        return;
+      }
+
+      db.ref('codigos_gerados/' + codigoDigitado).once('value', snapshot => {
+        let dadosCodigo = snapshot.val();
+
+        if (!dadosCodigo) {
+          errorEl.innerText = "Código inválido ou inexistente.";
+          errorEl.style.display = 'block';
+          return;
+        }
+
+        if (dadosCodigo.usado && dadosCodigo.deviceId !== deviceId) {
+          errorEl.innerText = "Este código já foi usado em outro aparelho!";
+          errorEl.style.display = 'block';
+          return;
+        }
+
+        // Vincular código a este aparelho no Firebase
+        db.ref('codigos_gerados/' + codigoDigitado).update({ usado: true, deviceId: deviceId });
+        db.ref('dispositivos_autorizados/' + codigoDigitado).set({ deviceId: deviceId, dataRegistro: new Date().toLocaleString() });
+
+        document.getElementById('authModal').classList.remove('active');
+        alert("Aparelho autorizado com sucesso!");
+      });
+    }
+
+    window.onload = () => {
+      verificarAutorizacaoAparelho();
+      carregarMusicas();
+    };
+
+    // Funções do Painel Admin
+    function abrirAdmin() { document.getElementById('adminModal').classList.add('active'); }
+    function fecharAdmin() { document.getElementById('adminModal').classList.remove('active'); }
+
     function logarAdmin() {
-      if (document.getElementById('adminPasswordInput').value === "1234") {
+      let senha = document.getElementById('adminPasswordInput').value;
+      if (senha === "1234") { // Altere sua senha de ADM aqui se quiser
         document.getElementById('adminLoginBox').style.display = 'none';
         document.getElementById('adminDashboardBox').style.display = 'block';
         carregarListaCodigosAdmin();
+      } else {
+        alert("Senha incorreta!");
       }
     }
 
-    function gerarNovoCodigo() {
-      let cod = 'ND-' + Math.random().toString(36).substring(2, 6).toUpperCase();
-      db.ref('codigos_gerados/' + cod).set({ usado: false });
+    function mudarAbaAdmin(aba) {
+      if (aba === 'musicas') {
+        document.getElementById('secMusicas').style.display = 'block';
+        document.getElementById('secCodigos').style.display = 'none';
+      } else {
+        document.getElementById('secMusicas').style.display = 'none';
+        document.getElementById('secCodigos').style.display = 'block';
+      }
     }
 
-    function carregarListaCodigosAdmin() {
-      db.ref('codigos_gerados').on('value', s => {
-        let list = document.getElementById('codesListContainer');
-        list.innerHTML = '';
-        s.forEach(c => {
-          list.innerHTML += `<div class="code-row"><span class="code-text">${c.key}</span> <div><button class="admin-btn" onclick="copiar('${c.key}')">Copiar</button> <button class="del-code" onclick="remover('${c.key}')">X</button></div></div>`;
-        });
+    // Gerar código aleatório para aparelho
+    function gerarNovoCodigo() {
+      let chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+      let novoCod = 'ND-';
+      for (let i = 0; i < 4; i++) {
+        novoCod += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+
+      db.ref('codigos_gerados/' + novoCod).set({
+        codigo: novoCod,
+        usado: false,
+        deviceId: null,
+        criadoEm: new Date().toLocaleString()
+      }).then(() => {
+        alert("Código gerado com sucesso: " + novoCod);
+        carregarListaCodigosAdmin();
       });
     }
 
-    function copiar(t) { navigator.clipboard.writeText(t); alert("Copiado!"); }
-    function remover(k) { db.ref('codigos_gerados/' + k).remove(); }
-    function abrirAdmin() { document.getElementById('adminModal').classList.add('active'); }
-    
-    // Check auth
-    db.ref('dispositivos_autorizados').once('value', s => {
-      let ok = false;
-      s.forEach(child => { if (child.val().deviceId === deviceId) ok = true; });
-      if (!ok) document.getElementById('authModal').classList.add('active');
-    });
+    // Carregar lista de códigos no painel do ADM para controle/remoção
+    function carregarListaCodigosAdmin() {
+      db.ref('codigos_gerados').on('value', snapshot => {
+        let listaContainer = document.getElementById('codesListContainer');
+        let dados = snapshot.val();
+        listaContainer.innerHTML = '';
+
+        if (!dados) {
+          listaContainer.innerHTML = '<p style="font-size: 0.8rem; color: #64748b;">Nenhum código gerado ainda.</p>';
+          return;
+        }
+
+        for (let cod in dados) {
+          let info = dados[cod];
+          let statusCor = info.usado ? '#22c55e' : '#eab308';
+          let statusTexto = info.usado ? 'Usado (' + info.deviceId + ')' : 'Disponível';
+
+          listaContainer.innerHTML += `
+            <div class="code-row">
+              <div>
+                <span class="code-text">${cod}</span><br>
+                <span style="font-size: 0.7rem; color: ${statusCor};">${statusTexto}</span>
+              </div>
+              <button class="del-code" onclick="removerCodigo('${cod}', '${info.deviceId || ''}')">Excluir</button>
+            </div>
+          `;
+        }
+      });
+    }
+
+    // Remover ou revogar acesso do aparelho
+    function removerCodigo(codigo, devId) {
+      if (confirm("Tem certeza que deseja excluir o código " + codigo + "? O aparelho vinculado perderá o acesso imediatamente.")) {
+        db.ref('codigos_gerados/' + codigo).remove();
+        if (devId) {
+          db.ref('dispositivos_autorizados/' + codigo).remove();
+        }
+        alert("Código removido e acesso revogado!");
+        location.reload(); // Recarrega para bloquear caso seja o próprio ADM testando
+      }
+    }
+
+    // Funções de Música e Player
+    const player = document.getElementById('audioPlayer');
+    const playIcon = document.getElementById('playIcon');
+    let playlist = [];
+    let currentIndex = 0;
+
+    function adicionarMusica() {
+      let title = document.getElementById('songTitle').value;
+      let url = document.getElementById('songUrl').value;
+      if (!title || !url) { alert("Preencha todos os campos!"); return; }
+
+      db.ref('musicas').push({ title, url }).then(() => {
+        alert("Música adicionada!");
+        document.getElementById('songTitle').value = '';
+        document.getElementById('songUrl').value = '';
+      });
+    }
+
+    function carregarMusicas() {
+      db.ref('musicas').on('value', snapshot => {
+        const container = document.getElementById('playlistContainer');
+        container.innerHTML = '';
+        playlist = [];
+        let data = snapshot.val();
+
+        if (!data) {
+          container.innerHTML = '<div style="text-align: center; color: #64748b; padding: 20px;">Nenhuma música cadastrada ainda. Use o Painel Admin para adicionar!</div>';
+          return;
+        }
+
+        let index = 0;
+        for (let id in data) {
+          let song = data[id];
+          playlist.push(song);
+          let currentIdx = index;
+          container.innerHTML += `
+            <div class="song-item" onclick="tocarMusica(${currentIdx})">
+              <div class="song-details">
+                <div class="song-icon"><i class="fa-solid fa-music"></i></div>
+                <div>
+                  <div style="font-size: 0.9rem; font-weight: 600;">${song.title}</div>
+                  <div style="font-size: 0.75rem; color: #94a3b8;">Nando Cloud</div>
+                </div>
+              </div>
+              <i class="fa-solid fa-play" style="color: #a855f7;"></i>
+            </div>
+          `;
+          index++;
+        }
+      });
+    }
+
+    function tocarMusica(index) {
+      if (playlist.length === 0) return;
+      currentIndex = index;
+      let song = playlist[currentIndex];
+      player.src = song.url;
+      player.play();
+      document.getElementById('currentTitle').innerText = song.title;
+      playIcon.className = "fa-solid fa-circle-pause";
+    }
+
+    function togglePlay() {
+      if (player.paused) {
+        if(player.src) player.play();
+        else if(playlist.length > 0) tocarMusica(0);
+        playIcon.className = "fa-solid fa-circle-pause";
+      } else {
+        player.pause();
+        playIcon.className = "fa-solid fa-circle-play";
+      }
+    }
+
+    function nextSong() {
+      if (playlist.length === 0) return;
+      currentIndex = (currentIndex + 1) % playlist.length;
+      tocarMusica(currentIndex);
+    }
+
+    function prevSong() {
+      if (playlist.length === 0) return;
+      currentIndex = (currentIndex - 1 + playlist.length) % playlist.length;
+      tocarMusica(currentIndex);
+    }
   </script>
 </body>
 </html>
