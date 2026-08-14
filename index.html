@@ -1,17 +1,12 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
-
 <meta charset="UTF-8">
-
-<meta name="viewport"
-content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Nando's Music</title>
 
 <link rel="manifest" href="manifest.json">
-
 <meta name="theme-color" content="#a855f7">
 
 <link rel="stylesheet"
@@ -21,13 +16,10 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
 rel="stylesheet">
 
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <style>
-
 :root{
     --primary:#a855f7;
     --secondary:#ec4899;
@@ -49,8 +41,61 @@ rel="stylesheet">
 
 body{
     background:var(--bg);
-    color:white;
+    color:#fff;
     min-height:100vh;
+}
+
+/* BLOQUEIO INICIAL */
+#app{
+    display:none;
+}
+
+#checkingScreen{
+    position:fixed;
+    inset:0;
+    z-index:99999;
+    background:#080b14;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:20px;
+}
+
+.checking-box{
+    width:100%;
+    max-width:360px;
+}
+
+.checking-icon{
+    font-size:50px;
+    color:#a855f7;
+    margin-bottom:20px;
+}
+
+.checking-title{
+    font-size:20px;
+    font-weight:600;
+}
+
+.checking-text{
+    color:#94a3b8;
+    font-size:13px;
+    margin-top:8px;
+}
+
+.spinner{
+    width:38px;
+    height:38px;
+    border:4px solid rgba(255,255,255,.12);
+    border-top-color:#a855f7;
+    border-radius:50%;
+    animation:girar .8s linear infinite;
+    margin:20px auto 0;
+}
+
+@keyframes girar{
+    to{transform:rotate(360deg);}
 }
 
 header{
@@ -164,8 +209,8 @@ header{
 .modal{
     position:fixed;
     inset:0;
-    background:rgba(0,0,0,.90);
-    backdrop-filter:blur(6px);
+    background:rgba(0,0,0,.94);
+    backdrop-filter:blur(8px);
     display:none;
     align-items:center;
     justify-content:center;
@@ -178,11 +223,11 @@ header{
 }
 
 #authModal{
-    z-index:1000;
+    z-index:10000;
 }
 
 #adminModal{
-    z-index:2000;
+    z-index:20000;
 }
 
 .modal-content{
@@ -356,10 +401,6 @@ select:focus{
     color:#94a3b8;
 }
 
-/* =====================================================
-   CHAVE SECRETA ADM
-===================================================== */
-
 .secret-title{
     color:#fff;
     font-size:1.05rem;
@@ -379,12 +420,32 @@ select:focus{
     letter-spacing:3px;
     font-weight:600;
 }
-
 </style>
-
 </head>
 
 <body>
+
+<!-- TELA DE VERIFICAÇÃO -->
+<div id="checkingScreen">
+    <div class="checking-box">
+        <div class="checking-icon">
+            <i class="fa-solid fa-shield-halved"></i>
+        </div>
+
+        <div class="checking-title">
+            Verificando acesso...
+        </div>
+
+        <div class="checking-text">
+            Aguarde enquanto verificamos este aparelho.
+        </div>
+
+        <div class="spinner"></div>
+    </div>
+</div>
+
+<!-- APLICATIVO -->
+<div id="app">
 
 <header>
 
@@ -393,10 +454,13 @@ select:focus{
 Nando's Music
 </div>
 
+<!-- ADM SÓ APARECE DEPOIS QUE O APP FOR LIBERADO -->
 <button
+id="adminButton"
 class="admin-btn"
 type="button"
-onclick="abrirAdmin()">
+onclick="abrirAdmin()"
+style="display:none">
 
 <i class="fa-solid fa-gear"></i>
 ADM
@@ -415,69 +479,28 @@ Conectando ao servidor...
 
 <div class="filter-bar">
 
-<button class="filter-btn active"
-onclick="filtrar('Todas',this)">
-Todas
-</button>
-
-<button class="filter-btn"
-onclick="filtrar('Sertanejo',this)">
-Sertanejo
-</button>
-
-<button class="filter-btn"
-onclick="filtrar('Funk',this)">
-Funk
-</button>
-
-<button class="filter-btn"
-onclick="filtrar('Forró',this)">
-Forró
-</button>
-
-<button class="filter-btn"
-onclick="filtrar('Pagode',this)">
-Pagode
-</button>
-
-<button class="filter-btn"
-onclick="filtrar('Eletrônica',this)">
-Eletrônica
-</button>
-
-<button class="filter-btn"
-onclick="filtrar('Trap',this)">
-Trap
-</button>
-
-<button class="filter-btn"
-onclick="filtrar('Pop',this)">
-Pop
-</button>
-
-<button class="filter-btn"
-onclick="filtrar('Rock',this)">
-Rock
-</button>
-
-<button class="filter-btn"
-onclick="filtrar('Engraçado',this)">
-Engraçados
-</button>
+<button class="filter-btn active" onclick="filtrar('Todas',this)">Todas</button>
+<button class="filter-btn" onclick="filtrar('Sertanejo',this)">Sertanejo</button>
+<button class="filter-btn" onclick="filtrar('Funk',this)">Funk</button>
+<button class="filter-btn" onclick="filtrar('Forró',this)">Forró</button>
+<button class="filter-btn" onclick="filtrar('Pagode',this)">Pagode</button>
+<button class="filter-btn" onclick="filtrar('Eletrônica',this)">Eletrônica</button>
+<button class="filter-btn" onclick="filtrar('Trap',this)">Trap</button>
+<button class="filter-btn" onclick="filtrar('Pop',this)">Pop</button>
+<button class="filter-btn" onclick="filtrar('Rock',this)">Rock</button>
+<button class="filter-btn" onclick="filtrar('Engraçado',this)">Engraçados</button>
 
 </div>
 
 <section class="player-section">
 
-<div
-style="
+<div style="
 position:relative;
 width:100%;
 height:300px;
 background:#000;
 border-radius:14px;
-overflow:hidden;
-">
+overflow:hidden;">
 
 <video
 id="backgroundPlayer"
@@ -489,22 +512,16 @@ style="
 width:100%;
 height:100%;
 object-fit:cover;
-display:block;
-">
+display:block;">
 </video>
 
-<div
-style="
+<div style="
 position:absolute;
 left:0;
 right:0;
 bottom:0;
-background:linear-gradient(
-transparent,
-rgba(0,0,0,.85)
-);
-padding:35px 15px 12px;
-">
+background:linear-gradient(transparent,rgba(0,0,0,.85));
+padding:35px 15px 12px;">
 
 <div
 id="nowPlaying"
@@ -513,27 +530,19 @@ text-align:center;
 color:white;
 font-size:.9rem;
 font-weight:600;
-margin-bottom:8px;
-">
-
+margin-bottom:8px;">
 Nenhuma música reproduzindo
-
 </div>
 
 <audio
 id="musicPlayer"
 controls
 preload="metadata"
-style="
-width:100%;
-height:42px;
-">
+style="width:100%;height:42px;">
 </audio>
 
 </div>
-
 </div>
-
 </section>
 
 <div
@@ -546,13 +555,13 @@ Carregando músicas...
 
 </div>
 
+</div>
 
-<!-- =====================================================
-     LOGIN CLIENTE
-===================================================== -->
+
+<!-- LOGIN CLIENTE -->
 
 <div
-class="modal active"
+class="modal"
 id="authModal">
 
 <div
@@ -560,14 +569,8 @@ class="modal-content"
 style="text-align:center">
 
 <h2>
-
-<i
-class="fa-solid fa-lock"
-style="color:#a855f7">
-</i>
-
+<i class="fa-solid fa-lock" style="color:#a855f7"></i>
 Acesso
-
 </h2>
 
 <p
@@ -587,8 +590,7 @@ style="
 text-align:center;
 text-transform:uppercase;
 font-size:1.3rem;
-letter-spacing:2px;
-">
+letter-spacing:2px;">
 
 <button
 class="btn"
@@ -599,43 +601,34 @@ Entrar
 
 </button>
 
-<div
-id="authMessage"
-class="message">
-</div>
+<div id="authMessage" class="message"></div>
 
 <hr
 style="
 border-color:rgba(255,255,255,.05);
-margin:20px 0;
-">
+margin:20px 0;">
 
 <button
 class="btn btn-secondary"
 type="button"
-onclick="fecharClienteAbrirAdmin()">
+onclick="abrirAdminDireto()">
 
 <i class="fa-solid fa-user-shield"></i>
-
 Sou Administrador
 
 </button>
 
 </div>
-
 </div>
 
 
-<!-- =====================================================
-     ADMIN
-===================================================== -->
+<!-- ADMIN -->
 
 <div
 class="modal"
 id="adminModal">
 
-<div
-class="modal-content">
+<div class="modal-content">
 
 <div
 style="
@@ -644,36 +637,28 @@ justify-content:space-between;
 align-items:center">
 
 <h2>
-
 <i class="fa-solid fa-user-shield"></i>
-
 Painel ADM
-
 </h2>
 
 <button
 class="close"
 type="button"
 onclick="fecharAdmin()">
-
 ×
-
 </button>
 
 </div>
 
 
-<!-- =====================================================
-     CHAVE SECRETA
-===================================================== -->
+<!-- CHAVE -->
 
 <div id="adminSecretLogin">
 
 <div
 style="
 text-align:center;
-margin:18px 0 10px;
-">
+margin:18px 0 10px;">
 
 <div class="secret-icon">
 <i class="fa-solid fa-key"></i>
@@ -703,33 +688,21 @@ type="button"
 onclick="validarChaveSecreta()">
 
 <i class="fa-solid fa-arrow-right"></i>
-
 Continuar
 
 </button>
 
-<div
-id="adminSecretMessage"
-class="message">
-</div>
+<div id="adminSecretMessage" class="message"></div>
 
 </div>
 
 
-<!-- =====================================================
-     LOGIN FIREBASE
-===================================================== -->
+<!-- LOGIN FIREBASE -->
 
-<div
-id="adminLogin"
-style="display:none">
+<div id="adminLogin" style="display:none">
 
-<p
-class="small"
-style="margin:12px 0">
-
+<p class="small" style="margin:12px 0">
 Login do administrador
-
 </p>
 
 <input
@@ -751,67 +724,31 @@ type="button"
 onclick="entrarAdmin()">
 
 <i class="fa-solid fa-right-to-bracket"></i>
-
 Entrar no painel
 
 </button>
 
-<div
-id="adminLoginMessage"
-class="message">
-</div>
+<div id="adminLoginMessage" class="message"></div>
 
 </div>
 
 
-<!-- =====================================================
-     PAINEL ADM
-===================================================== -->
+<!-- PAINEL -->
 
-<div
-id="adminPanel"
-style="display:none">
+<div id="adminPanel" style="display:none">
 
 <div class="admin-tabs">
 
-<button
-class="filter-btn active"
-onclick="abaAdmin('player',this)">
-Player
-</button>
-
-<button
-class="filter-btn"
-onclick="abaAdmin('musicas',this)">
-Músicas
-</button>
-
-<button
-class="filter-btn"
-onclick="abaAdmin('fundos',this)">
-Fundos
-</button>
-
-<button
-class="filter-btn"
-onclick="abaAdmin('codigos',this)">
-Códigos
-</button>
-
-<button
-class="filter-btn"
-onclick="abaAdmin('config',this)">
-Config
-</button>
+<button class="filter-btn active" onclick="abaAdmin('player',this)">Player</button>
+<button class="filter-btn" onclick="abaAdmin('musicas',this)">Músicas</button>
+<button class="filter-btn" onclick="abaAdmin('fundos',this)">Fundos</button>
+<button class="filter-btn" onclick="abaAdmin('codigos',this)">Códigos</button>
+<button class="filter-btn" onclick="abaAdmin('config',this)">Config</button>
 
 </div>
 
 
-<!-- PLAYER -->
-
-<div
-class="admin-section active"
-id="aba-player">
+<div class="admin-section active" id="aba-player">
 
 <h3>Player</h3>
 
@@ -823,41 +760,24 @@ O administrador também pode ouvir normalmente.
 class="btn btn-secondary"
 type="button"
 onclick="pararPlayer()">
-
 <i class="fa-solid fa-stop"></i>
-
 Parar
-
 </button>
 
-<div
-id="adminPlayerList"
-style="margin-top:10px">
-</div>
+<div id="adminPlayerList" style="margin-top:10px"></div>
 
 </div>
 
 
-<!-- MUSICAS -->
+<div class="admin-section" id="aba-musicas">
 
-<div
-class="admin-section"
-id="aba-musicas">
+<h3>Adicionar música</h3>
 
-<h3>
-Adicionar música
-</h3>
+<input id="songTitle" placeholder="Título">
 
-<input
-id="songTitle"
-placeholder="Título">
-
-<input
-id="songUrl"
-placeholder="Link direto do vídeo .mp4">
+<input id="songUrl" placeholder="Link direto do vídeo .mp4">
 
 <select id="songCategory">
-
 <option>Sertanejo</option>
 <option>Funk</option>
 <option>Forró</option>
@@ -867,79 +787,43 @@ placeholder="Link direto do vídeo .mp4">
 <option>Pop</option>
 <option>Rock</option>
 <option>Engraçado</option>
-
 </select>
 
-<button
-class="btn"
-type="button"
-onclick="salvarMusica()">
-
+<button class="btn" type="button" onclick="salvarMusica()">
 Salvar música
-
 </button>
 
-<div
-id="musicAdminList"
-style="margin-top:15px">
-</div>
+<div id="musicAdminList" style="margin-top:15px"></div>
 
 </div>
 
 
-<!-- FUNDOS -->
+<div class="admin-section" id="aba-fundos">
 
-<div
-class="admin-section"
-id="aba-fundos">
-
-<h3>
-Vídeos de fundo
-</h3>
+<h3>Vídeos de fundo</h3>
 
 <p class="small">
-
-Quando um vídeo terminar,
-outro vídeo cadastrado será escolhido aleatoriamente.
-
+Quando um vídeo terminar, outro vídeo cadastrado será escolhido aleatoriamente.
 </p>
 
-<input
-id="backgroundUrl"
-placeholder="Link direto .mp4">
+<input id="backgroundUrl" placeholder="Link direto .mp4">
 
-<button
-class="btn"
-type="button"
-onclick="salvarFundo()">
-
+<button class="btn" type="button" onclick="salvarFundo()">
 Adicionar vídeo de fundo
-
 </button>
 
-<div
-id="backgroundAdminList"
-style="margin-top:15px">
-</div>
+<div id="backgroundAdminList" style="margin-top:15px"></div>
 
 </div>
 
 
-<!-- CODIGOS -->
+<div class="admin-section" id="aba-codigos">
 
-<div
-class="admin-section"
-id="aba-codigos">
-
-<h3>
-Códigos para clientes
-</h3>
+<h3>Códigos para clientes</h3>
 
 <p class="small">
-
 Gere um código e envie para o cliente.
 Cada código pode ser vinculado a um aparelho.
-
 </p>
 
 <button
@@ -948,7 +832,6 @@ type="button"
 onclick="gerarCodigoCliente()">
 
 <i class="fa-solid fa-key"></i>
-
 Gerar código para cliente
 
 </button>
@@ -958,9 +841,7 @@ id="generatedCodeBox"
 class="code-box"
 style="display:none">
 
-<div class="small">
-NOVO CÓDIGO
-</div>
+<div class="small">NOVO CÓDIGO</div>
 
 <div
 id="generatedCode"
@@ -973,7 +854,6 @@ type="button"
 onclick="copiarCodigo()">
 
 <i class="fa-solid fa-copy"></i>
-
 Copiar código
 
 </button>
@@ -1006,15 +886,9 @@ Carregando...
 </div>
 
 
-<!-- CONFIG -->
+<div class="admin-section" id="aba-config">
 
-<div
-class="admin-section"
-id="aba-config">
-
-<h3>
-Configurações
-</h3>
+<h3>Configurações</h3>
 
 <p class="small">
 A conta de administrador é protegida pelo Firebase Authentication.
@@ -1023,8 +897,7 @@ A conta de administrador é protegida pelo Firebase Authentication.
 <hr
 style="
 border-color:rgba(255,255,255,.06);
-margin:20px 0;
-">
+margin:20px 0;">
 
 <button
 class="btn btn-danger"
@@ -1032,7 +905,6 @@ type="button"
 onclick="sairAdmin()">
 
 <i class="fa-solid fa-right-from-bracket"></i>
-
 Sair do ADM
 
 </button>
@@ -1042,7 +914,6 @@ Sair do ADM
 </div>
 
 </div>
-
 </div>
 
 
@@ -1077,57 +948,29 @@ const firebaseConfig = {
 
     measurementId:
     "G-K6WVWHTVP7"
-
 };
 
+firebase.initializeApp(firebaseConfig);
 
-try{
-
-    firebase.initializeApp(firebaseConfig);
-
-}catch(error){
-
-    console.error(
-        "Firebase já inicializado:",
-        error
-    );
-
-}
-
-
-const auth =
-firebase.auth();
-
-const db =
-firebase.database();
+const auth = firebase.auth();
+const db = firebase.database();
 
 
 /* =====================================================
-   CONFIGURAÇÃO ADM
+   CHAVE ADM
 ===================================================== */
 
-/*
-   CHAVE SECRETA DO ADM
-
-   Esta é a palavra que você definiu.
-*/
-
-const CHAVE_SECRETA_ADM =
-"NANDOADM";
-
+const CHAVE_SECRETA_ADM = "NANDOADM";
 
 let adminLogado = false;
 
 
 /* =====================================================
-   ID DO APARELHO
+   DEVICE ID
 ===================================================== */
 
 let deviceId =
-localStorage.getItem(
-    "nando_device_id"
-);
-
+localStorage.getItem("nando_device_id");
 
 if(!deviceId){
 
@@ -1142,12 +985,10 @@ if(!deviceId){
         "nando_device_id",
         deviceId
     );
-
 }
 
 
 let allSongs = [];
-
 let bgVideos = [];
 
 
@@ -1155,343 +996,74 @@ let bgVideos = [];
    ELEMENTOS
 ===================================================== */
 
+const app =
+document.getElementById("app");
+
+const checkingScreen =
+document.getElementById("checkingScreen");
+
+const authModal =
+document.getElementById("authModal");
+
+const adminButton =
+document.getElementById("adminButton");
+
 const backgroundPlayer =
-document.getElementById(
-    "backgroundPlayer"
-);
+document.getElementById("backgroundPlayer");
 
 const musicPlayer =
-document.getElementById(
-    "musicPlayer"
-);
+document.getElementById("musicPlayer");
 
 const nowPlaying =
-document.getElementById(
-    "nowPlaying"
-);
+document.getElementById("nowPlaying");
 
 
 /* =====================================================
-   MENSAGEM
+   CONTROLE DE ACESSO
 ===================================================== */
 
-function mostrarMensagem(
-    id,
-    text,
-    tipo
-){
+function mostrarAplicativo(){
 
-    const el =
-    document.getElementById(id);
+    checkingScreen.style.display = "none";
 
-    if(!el)return;
+    app.style.display = "block";
 
-    el.innerText = text;
+    adminButton.style.display = "block";
 
-    el.className =
-    "message " + tipo;
+    carregarDados();
 
 }
 
 
-/* =====================================================
-   STATUS FIREBASE
-===================================================== */
+function mostrarTelaLogin(){
 
-db.ref(".info/connected")
-.on("value",snapshot=>{
+    checkingScreen.style.display = "none";
 
-    const conectado =
-    snapshot.val() === true;
+    app.style.display = "none";
 
-    const status =
-    document.getElementById(
-        "connectionStatus"
-    );
+    adminButton.style.display = "none";
 
-    if(conectado){
+    authModal.classList.add("active");
 
-        status.innerText =
-        "● Conectado";
-
-        status.style.color =
-        "#4ade80";
-
-    }else{
-
-        status.innerText =
-        "● Sem conexão com o servidor";
-
-        status.style.color =
-        "#f87171";
-
-    }
-
-});
-
-
-/* =====================================================
-   ABRIR ADM
-===================================================== */
-
-function abrirAdmin(){
-
-    const authModal =
-    document.getElementById(
-        "authModal"
-    );
-
-    const adminModal =
-    document.getElementById(
-        "adminModal"
-    );
-
-    if(authModal){
-
-        authModal.classList.remove(
-            "active"
-        );
-
-        authModal.style.display =
-        "none";
-
-    }
-
-    if(adminModal){
-
-        adminModal.classList.add(
-            "active"
-        );
-
-        adminModal.style.display =
-        "flex";
-
-    }
-
-
-    /*
-       Se já estiver logado,
-       mostra o painel.
-    */
-
-    if(adminLogado){
-
-        mostrarPainelAdmin();
-
-        return;
-
-    }
-
-
-    /*
-       Primeiro mostra somente
-       a chave secreta.
-    */
-
-    document.getElementById(
-        "adminSecretLogin"
-    ).style.display =
-    "block";
-
-    document.getElementById(
-        "adminLogin"
-    ).style.display =
-    "none";
-
-    document.getElementById(
-        "adminPanel"
-    ).style.display =
-    "none";
-
-    document.getElementById(
-        "adminSecretKey"
-    ).value = "";
-
-    document.getElementById(
-        "adminSecretMessage"
-    ).className =
-    "message";
-
-
-    setTimeout(()=>{
-
-        document.getElementById(
-            "adminSecretKey"
-        ).focus();
-
-    },100);
+    authModal.style.display = "flex";
 
 }
 
-
-/* =====================================================
-   VALIDAR CHAVE SECRETA
-===================================================== */
-
-function validarChaveSecreta(){
-
-    const campo =
-    document.getElementById(
-        "adminSecretKey"
-    );
-
-    const chave =
-    campo.value
-    .trim()
-    .toUpperCase();
-
-
-    if(!chave){
-
-        mostrarMensagem(
-            "adminSecretMessage",
-            "Digite a chave secreta.",
-            "error"
-        );
-
-        campo.focus();
-
-        return;
-
-    }
-
-
-    if(chave !== CHAVE_SECRETA_ADM){
-
-        mostrarMensagem(
-            "adminSecretMessage",
-            "Chave secreta incorreta.",
-            "error"
-        );
-
-        campo.select();
-
-        return;
-
-    }
-
-
-    /*
-       Chave correta.
-       Agora libera o login Firebase.
-    */
-
-    mostrarMensagem(
-        "adminSecretMessage",
-        "Chave correta. Digite o login do administrador.",
-        "success"
-    );
-
-
-    setTimeout(()=>{
-
-        document.getElementById(
-            "adminSecretLogin"
-        ).style.display =
-        "none";
-
-        document.getElementById(
-            "adminLogin"
-        ).style.display =
-        "block";
-
-        document.getElementById(
-            "adminEmail"
-        ).focus();
-
-    },500);
-
-}
-
-
-/* =====================================================
-   FECHAR ADM
-===================================================== */
-
-function fecharAdmin(){
-
-    const admin =
-    document.getElementById(
-        "adminModal"
-    );
-
-    if(admin){
-
-        admin.classList.remove(
-            "active"
-        );
-
-        admin.style.display =
-        "none";
-
-    }
-
-}
-
-
-/* =====================================================
-   CLIENTE -> ADM
-===================================================== */
-
-function fecharClienteAbrirAdmin(){
-
-    const auth =
-    document.getElementById(
-        "authModal"
-    );
-
-    if(auth){
-
-        auth.classList.remove(
-            "active"
-        );
-
-        auth.style.display =
-        "none";
-
-    }
-
-    abrirAdmin();
-
-}
-
-
-/* =====================================================
-   VOLTAR PARA CLIENTE
-===================================================== */
-
-function abrirCliente(){
-
-    fecharAdmin();
-
-    const auth =
-    document.getElementById(
-        "authModal"
-    );
-
-    if(auth){
-
-        auth.classList.add(
-            "active"
-        );
-
-        auth.style.display =
-        "flex";
-
-    }
-
-}
-
-
-/* =====================================================
-   VERIFICAR AUTORIZAÇÃO
-===================================================== */
 
 function verificarAutorizacao(){
 
-    db.ref(
-        "dispositivos_autorizados"
-    )
+    checkingScreen.style.display = "flex";
+
+    app.style.display = "none";
+
+    adminButton.style.display = "none";
+
+    authModal.classList.remove("active");
+
+    authModal.style.display = "none";
+
+
+    db.ref("dispositivos_autorizados")
     .once("value")
 
     .then(snapshot=>{
@@ -1500,6 +1072,7 @@ function verificarAutorizacao(){
         snapshot.val() || {};
 
         let autorizado = false;
+
 
         Object.keys(dados)
         .forEach(codigo=>{
@@ -1521,31 +1094,11 @@ function verificarAutorizacao(){
 
         if(autorizado){
 
-            const auth =
-            document.getElementById(
-                "authModal"
-            );
-
-            auth.classList.remove(
-                "active"
-            );
-
-            auth.style.display =
-            "none";
+            mostrarAplicativo();
 
         }else{
 
-            const auth =
-            document.getElementById(
-                "authModal"
-            );
-
-            auth.classList.add(
-                "active"
-            );
-
-            auth.style.display =
-            "flex";
+            mostrarTelaLogin();
 
         }
 
@@ -1554,17 +1107,187 @@ function verificarAutorizacao(){
     .catch(error=>{
 
         console.error(
-            "Erro autorização:",
+            "Erro ao verificar acesso:",
             error
         );
 
+        checkingScreen.style.display = "none";
+
+        app.style.display = "none";
+
+        adminButton.style.display = "none";
+
+        authModal.classList.add("active");
+
+        authModal.style.display = "flex";
+
         mostrarMensagem(
             "authMessage",
-            "Não foi possível verificar o acesso. Verifique sua conexão com a internet.",
+            "Não foi possível verificar o acesso. Verifique sua internet e tente novamente.",
             "error"
         );
 
     });
+
+}
+
+
+/* =====================================================
+   ABRIR ADM
+===================================================== */
+
+function abrirAdminDireto(){
+
+    authModal.classList.remove("active");
+    authModal.style.display = "none";
+
+    abrirAdmin();
+
+}
+
+
+function abrirAdmin(){
+
+    adminButton.style.display = "none";
+
+    document.getElementById("adminModal")
+    .classList.add("active");
+
+    document.getElementById("adminModal")
+    .style.display = "flex";
+
+
+    if(adminLogado){
+
+        mostrarPainelAdmin();
+
+        return;
+
+    }
+
+
+    document.getElementById(
+        "adminSecretLogin"
+    ).style.display = "block";
+
+    document.getElementById(
+        "adminLogin"
+    ).style.display = "none";
+
+    document.getElementById(
+        "adminPanel"
+    ).style.display = "none";
+
+    document.getElementById(
+        "adminSecretKey"
+    ).value = "";
+
+}
+
+
+/* =====================================================
+   CHAVE ADM
+===================================================== */
+
+function validarChaveSecreta(){
+
+    const campo =
+    document.getElementById(
+        "adminSecretKey"
+    );
+
+    const chave =
+    campo.value.trim().toUpperCase();
+
+
+    if(chave !== CHAVE_SECRETA_ADM){
+
+        mostrarMensagem(
+            "adminSecretMessage",
+            "Chave secreta incorreta.",
+            "error"
+        );
+
+        campo.select();
+
+        return;
+
+    }
+
+
+    mostrarMensagem(
+        "adminSecretMessage",
+        "Chave correta.",
+        "success"
+    );
+
+
+    setTimeout(()=>{
+
+        document.getElementById(
+            "adminSecretLogin"
+        ).style.display = "none";
+
+        document.getElementById(
+            "adminLogin"
+        ).style.display = "block";
+
+        document.getElementById(
+            "adminEmail"
+        ).focus();
+
+    },300);
+
+}
+
+
+/* =====================================================
+   FECHAR ADM
+===================================================== */
+
+function fecharAdmin(){
+
+    document.getElementById(
+        "adminModal"
+    ).classList.remove("active");
+
+    document.getElementById(
+        "adminModal"
+    ).style.display = "none";
+
+
+    if(adminLogado){
+
+        adminButton.style.display = "block";
+
+    }else{
+
+        verificarAutorizacao();
+
+    }
+
+}
+
+
+/* =====================================================
+   MENSAGENS
+===================================================== */
+
+function mostrarMensagem(
+    id,
+    texto,
+    tipo
+){
+
+    const el =
+    document.getElementById(id);
+
+    if(!el)return;
+
+    el.innerText = texto;
+
+    el.className =
+    "message " + tipo;
 
 }
 
@@ -1581,16 +1304,14 @@ function validarCodigoUsuario(){
     );
 
     const codigo =
-    input.value
-    .trim()
-    .toUpperCase();
+    input.value.trim().toUpperCase();
 
 
     if(!codigo){
 
         mostrarMensagem(
             "authMessage",
-            "Digite o código recebido do administrador.",
+            "Digite o código recebido.",
             "error"
         );
 
@@ -1659,12 +1380,8 @@ function validarCodigoUsuario(){
             .update({
 
                 usado:true,
-
-                deviceId:
-                deviceId,
-
-                ultimoAcesso:
-                Date.now()
+                deviceId:deviceId,
+                ultimoAcesso:Date.now()
 
             }),
 
@@ -1673,47 +1390,24 @@ function validarCodigoUsuario(){
             )
             .set({
 
-                deviceId:
-                deviceId,
-
-                codigo:
-                codigo,
-
-                data:
-                Date.now()
+                deviceId:deviceId,
+                codigo:codigo,
+                data:Date.now()
 
             })
 
-        ]);
+        ];
 
     })
 
     .then(()=>{
 
-        document
-        .getElementById(
-            "authModal"
-        )
-        .classList
-        .remove("active");
-
-
-        document
-        .getElementById(
-            "authModal"
-        )
-        .style.display =
-        "none";
-
+        authModal.classList.remove("active");
+        authModal.style.display = "none";
 
         input.value = "";
 
-
-        document.getElementById(
-            "authMessage"
-        ).className =
-        "message";
-
+        mostrarAplicativo();
 
         alert(
             "Aparelho autorizado com sucesso!"
@@ -1723,10 +1417,7 @@ function validarCodigoUsuario(){
 
     .catch(error=>{
 
-        console.error(
-            "Erro ao validar:",
-            error
-        );
+        console.error(error);
 
         mostrarMensagem(
             "authMessage",
@@ -1741,45 +1432,27 @@ function validarCodigoUsuario(){
 
 
 /* =====================================================
-   LOGIN ADM FIREBASE
+   LOGIN FIREBASE
 ===================================================== */
 
 function entrarAdmin(){
 
     const email =
-    document
-    .getElementById(
+    document.getElementById(
         "adminEmail"
-    )
-    .value
-    .trim();
+    ).value.trim();
 
     const senha =
-    document
-    .getElementById(
+    document.getElementById(
         "adminPassword"
-    )
-    .value;
+    ).value;
 
 
-    if(!email){
-
-        mostrarMensagem(
-            "adminLoginMessage",
-            "Digite o e-mail do administrador.",
-            "error"
-        );
-
-        return;
-
-    }
-
-
-    if(!senha){
+    if(!email || !senha){
 
         mostrarMensagem(
             "adminLoginMessage",
-            "Digite a senha do administrador.",
+            "Preencha e-mail e senha.",
             "error"
         );
 
@@ -1795,8 +1468,7 @@ function entrarAdmin(){
     );
 
 
-    auth
-    .signInWithEmailAndPassword(
+    auth.signInWithEmailAndPassword(
         email,
         senha
     )
@@ -1805,74 +1477,17 @@ function entrarAdmin(){
 
         adminLogado = true;
 
-        mostrarMensagem(
-            "adminLoginMessage",
-            "Login realizado com sucesso!",
-            "success"
-        );
-
-
-        setTimeout(()=>{
-
-            mostrarPainelAdmin();
-
-        },400);
+        mostrarPainelAdmin();
 
     })
 
     .catch(error=>{
 
-        console.error(
-            "Erro login Firebase:",
-            error
-        );
-
-
         let mensagem =
-        "Não foi possível entrar.";
+        "E-mail ou senha incorretos.";
 
 
         if(
-            error.code ===
-            "auth/invalid-email"
-        ){
-
-            mensagem =
-            "E-mail inválido.";
-
-        }
-
-        else if(
-            error.code ===
-            "auth/user-not-found"
-        ){
-
-            mensagem =
-            "Usuário não encontrado.";
-
-        }
-
-        else if(
-            error.code ===
-            "auth/wrong-password"
-        ){
-
-            mensagem =
-            "Senha incorreta.";
-
-        }
-
-        else if(
-            error.code ===
-            "auth/invalid-credential"
-        ){
-
-            mensagem =
-            "E-mail ou senha incorretos.";
-
-        }
-
-        else if(
             error.code ===
             "auth/too-many-requests"
         ){
@@ -1895,30 +1510,25 @@ function entrarAdmin(){
 
 
 /* =====================================================
-   MOSTRAR PAINEL ADM
+   PAINEL ADM
 ===================================================== */
 
 function mostrarPainelAdmin(){
 
     document.getElementById(
         "adminSecretLogin"
-    ).style.display =
-    "none";
+    ).style.display = "none";
 
     document.getElementById(
         "adminLogin"
-    ).style.display =
-    "none";
+    ).style.display = "none";
 
     document.getElementById(
         "adminPanel"
-    ).style.display =
-    "block";
-
-
-    carregarListaAdmin();
+    ).style.display = "block";
 
     carregarCodigosAdmin();
+    carregarListaAdmin();
 
 }
 
@@ -1934,53 +1544,23 @@ function sairAdmin(){
 
         adminLogado = false;
 
-
         document.getElementById(
             "adminPanel"
-        ).style.display =
-        "none";
-
+        ).style.display = "none";
 
         document.getElementById(
             "adminLogin"
-        ).style.display =
-        "none";
-
+        ).style.display = "none";
 
         document.getElementById(
             "adminSecretLogin"
-        ).style.display =
-        "block";
-
-
-        document.getElementById(
-            "adminSecretKey"
-        ).value = "";
-
-
-        document.getElementById(
-            "adminEmail"
-        ).value =
-        "nandosarcondicionado@gmail.com";
-
+        ).style.display = "block";
 
         document.getElementById(
             "adminPassword"
         ).value = "";
 
-
         fecharAdmin();
-
-        verificarAutorizacao();
-
-    })
-
-    .catch(error=>{
-
-        console.error(
-            "Erro ao sair:",
-            error
-        );
 
     });
 
@@ -1988,24 +1568,15 @@ function sairAdmin(){
 
 
 /* =====================================================
-   ABAS ADM
+   ABAS
 ===================================================== */
 
-function abaAdmin(
-    nome,
-    btn
-){
+function abaAdmin(nome,btn){
 
     document
-    .querySelectorAll(
-        ".admin-section"
-    )
+    .querySelectorAll(".admin-section")
     .forEach(el=>{
-
-        el.classList.remove(
-            "active"
-        );
-
+        el.classList.remove("active");
     });
 
 
@@ -2014,13 +1585,8 @@ function abaAdmin(
         "aba-" + nome
     );
 
-
     if(aba){
-
-        aba.classList.add(
-            "active"
-        );
-
+        aba.classList.add("active");
     }
 
 
@@ -2029,27 +1595,17 @@ function abaAdmin(
         ".admin-tabs .filter-btn"
     )
     .forEach(el=>{
-
-        el.classList.remove(
-            "active"
-        );
-
+        el.classList.remove("active");
     });
 
 
     if(btn){
-
-        btn.classList.add(
-            "active"
-        );
-
+        btn.classList.add("active");
     }
 
 
     if(nome === "codigos"){
-
         carregarCodigosAdmin();
-
     }
 
 }
@@ -2061,55 +1617,37 @@ function abaAdmin(
 
 function gerarCodigoCliente(){
 
+    if(!adminLogado){
+        alert("Faça login como administrador.");
+        return;
+    }
+
+
     const chars =
     "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 
     let codigo = "ND-";
 
 
-    for(
-        let i = 0;
-        i < 6;
-        i++
-    ){
+    for(let i=0;i<6;i++){
 
         codigo +=
         chars.charAt(
             Math.floor(
-                Math.random() *
-                chars.length
+                Math.random()*chars.length
             )
         );
 
     }
 
 
-    const codeBox =
-    document.getElementById(
-        "generatedCodeBox"
-    );
-
-    const generatedCode =
     document.getElementById(
         "generatedCode"
-    );
+    ).innerText = codigo;
 
-    const copyMessage =
     document.getElementById(
-        "copyMessage"
-    );
-
-
-    generatedCode.innerText =
-    codigo;
-
-
-    codeBox.style.display =
-    "block";
-
-
-    copyMessage.innerText =
-    "Salvando código no servidor...";
+        "generatedCodeBox"
+    ).style.display = "block";
 
 
     db.ref(
@@ -2118,17 +1656,16 @@ function gerarCodigoCliente(){
     .set({
 
         usado:false,
-
         deviceId:null,
-
-        criadoEm:
-        Date.now()
+        criadoEm:Date.now()
 
     })
 
     .then(()=>{
 
-        copyMessage.innerText =
+        document.getElementById(
+            "copyMessage"
+        ).innerText =
         "✓ Código salvo com sucesso!";
 
         carregarCodigosAdmin();
@@ -2137,11 +1674,10 @@ function gerarCodigoCliente(){
 
     .catch(error=>{
 
-        console.error(error);
-
-        copyMessage.innerText =
-        "Erro: " +
-        error.message;
+        document.getElementById(
+            "copyMessage"
+        ).innerText =
+        "Erro: " + error.message;
 
     });
 
@@ -2149,123 +1685,61 @@ function gerarCodigoCliente(){
 
 
 /* =====================================================
-   COPIAR CÓDIGO
+   COPIAR
 ===================================================== */
 
 function copiarCodigo(){
 
     const codigo =
-    document
-    .getElementById(
+    document.getElementById(
         "generatedCode"
-    )
-    .innerText;
-
+    ).innerText;
 
     if(!codigo)return;
 
 
-    if(
-        navigator.clipboard &&
-        window.isSecureContext
-    ){
+    navigator.clipboard
+    .writeText(codigo)
 
-        navigator.clipboard
-        .writeText(codigo)
+    .then(()=>{
 
-        .then(()=>{
-
-            document
-            .getElementById(
-                "copyMessage"
-            )
-            .innerText =
-            "✓ Código copiado!";
-
-        })
-
-        .catch(()=>{
-
-            copiarFallback(codigo);
-
-        });
-
-    }else{
-
-        copiarFallback(codigo);
-
-    }
-
-}
-
-
-function copiarFallback(codigo){
-
-    const textarea =
-    document.createElement(
-        "textarea"
-    );
-
-
-    textarea.value =
-    codigo;
-
-
-    document.body.appendChild(
-        textarea
-    );
-
-
-    textarea.select();
-
-
-    try{
-
-        document.execCommand(
-            "copy"
-        );
-
-
-        document
-        .getElementById(
+        document.getElementById(
             "copyMessage"
-        )
-        .innerText =
+        ).innerText =
         "✓ Código copiado!";
 
-    }catch(error){
+    })
+
+    .catch(()=>{
 
         prompt(
             "Copie o código:",
             codigo
         );
 
-    }
-
-
-    textarea.remove();
+    });
 
 }
 
 
 /* =====================================================
-   LISTAR CÓDIGOS
+   LISTA CÓDIGOS
 ===================================================== */
 
 function carregarCodigosAdmin(){
+
+    if(!adminLogado)return;
+
 
     const container =
     document.getElementById(
         "codesAdminList"
     );
 
-
     if(!container)return;
 
 
-    db.ref(
-        "codigos_gerados"
-    )
+    db.ref("codigos_gerados")
     .once("value")
 
     .then(snapshot=>{
@@ -2273,13 +1747,11 @@ function carregarCodigosAdmin(){
         const dados =
         snapshot.val() || {};
 
-
         const ids =
-        Object.keys(dados)
-        .reverse();
+        Object.keys(dados).reverse();
 
 
-        if(ids.length === 0){
+        if(!ids.length){
 
             container.innerHTML =
             '<div class="empty">Nenhum código criado.</div>';
@@ -2297,20 +1769,16 @@ function carregarCodigosAdmin(){
             const item =
             dados[id] || {};
 
-
             const usado =
             item.usado === true;
 
 
             html += `
-
             <div class="admin-row">
 
                 <div>
 
-                    <strong>
-                        ${escapar(id)}
-                    </strong>
+                    <strong>${escapar(id)}</strong>
 
                     <br>
 
@@ -2320,69 +1788,43 @@ function carregarCodigosAdmin(){
                         : "available"
                     }">
 
-                        ${
-                            usado
-                            ? "USADO"
-                            : "DISPONÍVEL"
-                        }
+                    ${
+                        usado
+                        ? "USADO"
+                        : "DISPONÍVEL"
+                    }
 
                     </span>
 
-                    ${
-                        usado &&
-                        item.deviceId
-                        ?
-                        `<div class="small">
-                            Aparelho:
-                            ${escapar(item.deviceId)}
-                        </div>`
-                        :
-                        ""
-                    }
-
                 </div>
 
-                <div
-                style="
-                display:flex;
-                gap:5px">
+                <div>
 
                     <button
                     style="background:#334155"
-                    onclick="copiarCodigoDireto('${id}')">
+                    onclick="copiarCodigoDireto('${escapar(id)}')">
 
-                        <i class="fa-solid fa-copy"></i>
+                    <i class="fa-solid fa-copy"></i>
 
                     </button>
 
                     <button
                     style="background:#ef4444"
-                    onclick="excluirCodigo('${id}')">
+                    onclick="excluirCodigo('${escapar(id)}')">
 
-                        <i class="fa-solid fa-trash"></i>
+                    <i class="fa-solid fa-trash"></i>
 
                     </button>
 
                 </div>
 
             </div>
-
             `;
 
         });
 
 
-        container.innerHTML =
-        html;
-
-    })
-
-    .catch(error=>{
-
-        container.innerHTML =
-        '<div class="empty">Erro ao carregar códigos.</div>';
-
-        console.error(error);
+        container.innerHTML = html;
 
     });
 
@@ -2390,40 +1832,32 @@ function carregarCodigosAdmin(){
 
 
 /* =====================================================
-   COPIAR DA LISTA
+   COPIAR CÓDIGO LISTA
 ===================================================== */
 
 function copiarCodigoDireto(codigo){
 
-    if(
-        navigator.clipboard &&
-        window.isSecureContext
-    ){
+    navigator.clipboard
+    .writeText(codigo)
 
-        navigator.clipboard
-        .writeText(codigo)
+    .then(()=>{
 
-        .then(()=>{
+        alert(
+            "Código " +
+            codigo +
+            " copiado!"
+        );
 
-            alert(
-                "Código " +
-                codigo +
-                " copiado!"
-            );
+    })
 
-        })
+    .catch(()=>{
 
-        .catch(()=>{
+        prompt(
+            "Copie o código:",
+            codigo
+        );
 
-            copiarFallback(codigo);
-
-        });
-
-    }else{
-
-        copiarFallback(codigo);
-
-    }
+    });
 
 }
 
@@ -2435,59 +1869,33 @@ function copiarCodigoDireto(codigo){
 function excluirCodigo(codigo){
 
     if(!adminLogado){
-
-        alert(
-            "Você precisa estar logado como administrador."
-        );
-
+        alert("Faça login como administrador.");
         return;
-
     }
 
 
-    const confirmar =
-    confirm(
-        "Tem certeza que deseja excluir o código " +
-        codigo +
-        "?"
-    );
-
-
-    if(!confirmar)return;
+    if(
+        !confirm(
+            "Excluir o código " + codigo + "?"
+        )
+    )return;
 
 
     Promise.all([
 
         db.ref(
-            "codigos_gerados/" +
-            codigo
-        )
-        .remove(),
+            "codigos_gerados/" + codigo
+        ).remove(),
 
         db.ref(
-            "dispositivos_autorizados/" +
-            codigo
-        )
-        .remove()
+            "dispositivos_autorizados/" + codigo
+        ).remove()
 
     ])
 
     .then(()=>{
 
-        alert(
-            "Código excluído com sucesso."
-        );
-
         carregarCodigosAdmin();
-
-    })
-
-    .catch(error=>{
-
-        alert(
-            "Erro ao excluir:\n" +
-            error.message
-        );
 
     });
 
@@ -2495,46 +1903,31 @@ function excluirCodigo(codigo){
 
 
 /* =====================================================
-   MUSICAS
+   MÚSICAS
 ===================================================== */
 
 function salvarMusica(){
 
     if(!adminLogado){
-
-        alert(
-            "Faça login como administrador."
-        );
-
+        alert("Faça login como administrador.");
         return;
-
     }
 
 
     const title =
-    document
-    .getElementById(
+    document.getElementById(
         "songTitle"
-    )
-    .value
-    .trim();
-
+    ).value.trim();
 
     const url =
-    document
-    .getElementById(
+    document.getElementById(
         "songUrl"
-    )
-    .value
-    .trim();
-
+    ).value.trim();
 
     const category =
-    document
-    .getElementById(
+    document.getElementById(
         "songCategory"
-    )
-    .value;
+    ).value;
 
 
     if(!title || !url){
@@ -2548,37 +1941,25 @@ function salvarMusica(){
     }
 
 
-    db.ref(
-        "musicas"
-    )
+    db.ref("musicas")
     .push({
 
-        title:title,
-
-        url:url,
-
-        category:category,
-
-        criadoEm:
-        Date.now()
+        title,
+        url,
+        category,
+        criadoEm:Date.now()
 
     })
 
     .then(()=>{
 
-        document
-        .getElementById(
+        document.getElementById(
             "songTitle"
-        )
-        .value = "";
+        ).value = "";
 
-
-        document
-        .getElementById(
+        document.getElementById(
             "songUrl"
-        )
-        .value = "";
-
+        ).value = "";
 
         alert(
             "Música adicionada com sucesso!"
@@ -2599,29 +1980,54 @@ function salvarMusica(){
 
 
 /* =====================================================
+   EXCLUIR MÚSICA
+===================================================== */
+
+function excluirMusica(id){
+
+    if(!adminLogado){
+        alert("Faça login como administrador.");
+        return;
+    }
+
+
+    if(!confirm("Excluir esta música?")){
+        return;
+    }
+
+
+    db.ref(
+        "musicas/" + id
+    )
+    .remove()
+
+    .then(()=>{
+
+        alert(
+            "Música excluída."
+        );
+
+    });
+
+}
+
+
+/* =====================================================
    FUNDOS
 ===================================================== */
 
 function salvarFundo(){
 
     if(!adminLogado){
-
-        alert(
-            "Faça login como administrador."
-        );
-
+        alert("Faça login como administrador.");
         return;
-
     }
 
 
     const url =
-    document
-    .getElementById(
+    document.getElementById(
         "backgroundUrl"
-    )
-    .value
-    .trim();
+    ).value.trim();
 
 
     if(!url){
@@ -2640,36 +2046,47 @@ function salvarFundo(){
     )
     .push({
 
-        url:url,
-
-        criadoEm:
-        Date.now()
+        url,
+        criadoEm:Date.now()
 
     })
 
     .then(()=>{
 
-        document
-        .getElementById(
+        document.getElementById(
             "backgroundUrl"
-        )
-        .value = "";
-
+        ).value = "";
 
         alert(
             "Vídeo de fundo adicionado!"
         );
 
-    })
-
-    .catch(error=>{
-
-        alert(
-            "Erro ao salvar vídeo:\n" +
-            error.message
-        );
-
     });
+
+}
+
+
+/* =====================================================
+   EXCLUIR FUNDO
+===================================================== */
+
+function excluirFundo(id){
+
+    if(!adminLogado){
+        alert("Faça login como administrador.");
+        return;
+    }
+
+
+    if(!confirm("Excluir este vídeo de fundo?")){
+        return;
+    }
+
+
+    db.ref(
+        "background_videos/" + id
+    )
+    .remove();
 
 }
 
@@ -2682,25 +2099,13 @@ function tocar(url,title){
 
     if(!url)return;
 
+    musicPlayer.src = url;
 
-    musicPlayer.src =
-    url;
-
-
-    nowPlaying.innerText =
-    title;
-
+    nowPlaying.innerText = title;
 
     musicPlayer
     .play()
-    .catch(error=>{
-
-        console.warn(
-            "Autoplay bloqueado:",
-            error
-        );
-
-    });
+    .catch(()=>{});
 
 }
 
@@ -2709,12 +2114,9 @@ function pararPlayer(){
 
     musicPlayer.pause();
 
-    musicPlayer.removeAttribute(
-        "src"
-    );
+    musicPlayer.removeAttribute("src");
 
     musicPlayer.load();
-
 
     nowPlaying.innerText =
     "Nenhuma música reproduzindo";
@@ -2728,23 +2130,13 @@ function pararPlayer(){
 
 function tocarFundoAleatorio(){
 
-    if(!bgVideos.length){
-
-        backgroundPlayer
-        .removeAttribute(
-            "src"
-        );
-
-        return;
-
-    }
+    if(!bgVideos.length)return;
 
 
     const escolhido =
     bgVideos[
         Math.floor(
-            Math.random() *
-            bgVideos.length
+            Math.random()*bgVideos.length
         )
     ];
 
@@ -2752,25 +2144,12 @@ function tocarFundoAleatorio(){
     backgroundPlayer.src =
     escolhido.url;
 
+    backgroundPlayer.muted = true;
 
-    backgroundPlayer.muted =
-    true;
+    backgroundPlayer.loop = false;
 
-
-    backgroundPlayer.loop =
-    false;
-
-
-    backgroundPlayer
-    .play()
-    .catch(error=>{
-
-        console.warn(
-            "Autoplay vídeo:",
-            error
-        );
-
-    });
+    backgroundPlayer.play()
+    .catch(()=>{});
 
 }
 
@@ -2782,18 +2161,15 @@ backgroundPlayer.addEventListener(
 
 
 /* =====================================================
-   MUSICAS FIREBASE
+   CARREGAR MÚSICAS
 ===================================================== */
 
-db.ref(
-    "musicas"
-)
-.on(
-    "value",
-    snapshot=>{
+function carregarMusicas(){
+
+    db.ref("musicas")
+    .on("value",snapshot=>{
 
         allSongs = [];
-
 
         const dados =
         snapshot.val() || {};
@@ -2804,8 +2180,7 @@ db.ref(
 
             allSongs.push({
 
-                id:id,
-
+                id,
                 ...dados[id]
 
             });
@@ -2813,21 +2188,19 @@ db.ref(
         });
 
 
-        renderizarMusicas(
-            allSongs
-        );
-
+        renderizarMusicas(allSongs);
 
         renderizarAdminPlayer();
 
         carregarListaAdmin();
 
-    }
-);
+    });
+
+}
 
 
 /* =====================================================
-   RENDER MUSICAS
+   RENDER MÚSICAS
 ===================================================== */
 
 function renderizarMusicas(lista){
@@ -2896,7 +2269,6 @@ function renderizarMusicas(lista){
                 <i
                 class="fa-solid fa-play icon"
                 onclick="tocar('${url}','${title}')">
-
                 </i>
 
             </div>
@@ -2908,8 +2280,7 @@ function renderizarMusicas(lista){
     });
 
 
-    container.innerHTML =
-    html;
+    container.innerHTML = html;
 
 }
 
@@ -2924,7 +2295,6 @@ function renderizarAdminPlayer(){
     document.getElementById(
         "adminPlayerList"
     );
-
 
     if(!container)return;
 
@@ -2946,7 +2316,7 @@ function renderizarAdminPlayer(){
             style="background:#a855f7"
             onclick="tocar('${escapar(song.url)}','${escapar(song.title)}')">
 
-                <i class="fa-solid fa-play"></i>
+            <i class="fa-solid fa-play"></i>
 
             </button>
 
@@ -2965,16 +2335,18 @@ function renderizarAdminPlayer(){
 
 
 /* =====================================================
-   LISTA ADMIN
+   LISTA ADMIN MÚSICAS
 ===================================================== */
 
 function carregarListaAdmin(){
+
+    if(!adminLogado)return;
+
 
     const container =
     document.getElementById(
         "musicAdminList"
     );
-
 
     if(!container)return;
 
@@ -2996,7 +2368,7 @@ function carregarListaAdmin(){
             style="background:#ef4444"
             onclick="excluirMusica('${escapar(song.id)}')">
 
-                Excluir
+            Excluir
 
             </button>
 
@@ -3015,71 +2387,17 @@ function carregarListaAdmin(){
 
 
 /* =====================================================
-   EXCLUIR MUSICA
+   FUNDOS FIREBASE
 ===================================================== */
 
-function excluirMusica(id){
-
-    if(!adminLogado){
-
-        alert(
-            "Faça login como administrador."
-        );
-
-        return;
-
-    }
-
-
-    if(
-        !confirm(
-            "Excluir esta música?"
-        )
-    ){
-
-        return;
-
-    }
-
+function carregarFundos(){
 
     db.ref(
-        "musicas/" + id
+        "background_videos"
     )
-    .remove()
-
-    .then(()=>{
-
-        alert(
-            "Música excluída."
-        );
-
-    })
-
-    .catch(error=>{
-
-        alert(
-            "Erro: " +
-            error.message
-        );
-
-    });
-
-}
-
-
-/* =====================================================
-   BACKGROUNDS FIREBASE
-===================================================== */
-
-db.ref(
-    "background_videos"
-)
-.on(
-    "value",
-    snapshot=>{
+    .on("value",snapshot=>{
 
         bgVideos = [];
-
 
         const dados =
         snapshot.val() || {};
@@ -3090,8 +2408,7 @@ db.ref(
 
             bgVideos.push({
 
-                id:id,
-
+                id,
                 url:dados[id].url
 
             });
@@ -3105,7 +2422,7 @@ db.ref(
         );
 
 
-        if(container){
+        if(container && adminLogado){
 
             let html = "";
 
@@ -3117,7 +2434,8 @@ db.ref(
                 <div class="admin-row">
 
                     <span>
-                        Vídeo ${escapar(
+                        Vídeo
+                        ${escapar(
                             video.id.substring(0,6)
                         )}
                     </span>
@@ -3126,7 +2444,7 @@ db.ref(
                     style="background:#ef4444"
                     onclick="excluirFundo('${escapar(video.id)}')">
 
-                        Excluir
+                    Excluir
 
                     </button>
 
@@ -3145,7 +2463,6 @@ db.ref(
 
 
         if(
-            backgroundPlayer.paused &&
             !backgroundPlayer.currentSrc &&
             bgVideos.length
         ){
@@ -3153,58 +2470,6 @@ db.ref(
             tocarFundoAleatorio();
 
         }
-
-    }
-);
-
-
-/* =====================================================
-   EXCLUIR FUNDO
-===================================================== */
-
-function excluirFundo(id){
-
-    if(!adminLogado){
-
-        alert(
-            "Faça login como administrador."
-        );
-
-        return;
-
-    }
-
-
-    if(
-        !confirm(
-            "Excluir este vídeo de fundo?"
-        )
-    ){
-
-        return;
-
-    }
-
-
-    db.ref(
-        "background_videos/" + id
-    )
-    .remove()
-
-    .then(()=>{
-
-        alert(
-            "Vídeo de fundo excluído."
-        );
-
-    })
-
-    .catch(error=>{
-
-        alert(
-            "Erro ao excluir:\n" +
-            error.message
-        );
 
     });
 
@@ -3215,34 +2480,23 @@ function excluirFundo(id){
    FILTRO
 ===================================================== */
 
-function filtrar(
-    cat,
-    btn
-){
+function filtrar(cat,btn){
 
     document
     .querySelectorAll(
         ".filter-bar .filter-btn"
     )
     .forEach(el=>{
-
-        el.classList.remove(
-            "active"
-        );
-
+        el.classList.remove("active");
     });
 
 
-    btn.classList.add(
-        "active"
-    );
+    btn.classList.add("active");
 
 
     if(cat === "Todas"){
 
-        renderizarMusicas(
-            allSongs
-        );
+        renderizarMusicas(allSongs);
 
         return;
 
@@ -3271,108 +2525,110 @@ function escapar(texto){
         texto === undefined ||
         texto === null
     ){
-
         return "";
-
     }
 
 
     return String(texto)
 
-    .replace(
-        /&/g,
-        "&amp;"
-    )
-
-    .replace(
-        /</g,
-        "&lt;"
-    )
-
-    .replace(
-        />/g,
-        "&gt;"
-    )
-
-    .replace(
-        /"/g,
-        "&quot;"
-    )
-
-    .replace(
-        /'/g,
-        "&#039;"
-    );
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
 
 }
 
 
 /* =====================================================
-   ENTER LOGIN CLIENTE
+   STATUS FIREBASE
+===================================================== */
+
+db.ref(".info/connected")
+.on("value",snapshot=>{
+
+    const status =
+    document.getElementById(
+        "connectionStatus"
+    );
+
+    if(!status)return;
+
+
+    if(snapshot.val() === true){
+
+        status.innerText =
+        "● Conectado";
+
+        status.style.color =
+        "#4ade80";
+
+    }else{
+
+        status.innerText =
+        "● Sem conexão com o servidor";
+
+        status.style.color =
+        "#f87171";
+
+    }
+
+});
+
+
+/* =====================================================
+   CARREGAR DADOS
+===================================================== */
+
+function carregarDados(){
+
+    carregarMusicas();
+
+    carregarFundos();
+
+}
+
+
+/* =====================================================
+   TECLAS ENTER
 ===================================================== */
 
 document
-.getElementById(
-    "userAccessCode"
-)
+.getElementById("userAccessCode")
 .addEventListener(
     "keydown",
-    function(event){
+    event=>{
 
-        if(
-            event.key === "Enter"
-        ){
-
+        if(event.key === "Enter"){
             validarCodigoUsuario();
-
         }
 
     }
 );
 
 
-/* =====================================================
-   ENTER CHAVE ADM
-===================================================== */
-
 document
-.getElementById(
-    "adminSecretKey"
-)
+.getElementById("adminSecretKey")
 .addEventListener(
     "keydown",
-    function(event){
+    event=>{
 
-        if(
-            event.key === "Enter"
-        ){
-
+        if(event.key === "Enter"){
             validarChaveSecreta();
-
         }
 
     }
 );
 
 
-/* =====================================================
-   ENTER LOGIN ADM
-===================================================== */
-
 document
-.getElementById(
-    "adminPassword"
-)
+.getElementById("adminPassword")
 .addEventListener(
     "keydown",
-    function(event){
+    event=>{
 
-        if(
-            event.key === "Enter"
-        ){
-
+        if(event.key === "Enter"){
             entrarAdmin();
-
         }
 
     }
@@ -3385,45 +2641,39 @@ document
 
 window.addEventListener(
     "load",
-    function(){
+    ()=>{
 
         verificarAutorizacao();
-
-        carregarCodigosAdmin();
 
     }
 );
 
 
 /* =====================================================
-   SERVICE WORKER / PWA
+   PWA
 ===================================================== */
 
-if(
-    "serviceWorker" in navigator
-){
+if("serviceWorker" in navigator){
 
     window.addEventListener(
         "load",
-        function(){
+        ()=>{
 
             navigator
             .serviceWorker
             .register("service-worker.js")
-            .then(
-                registration=>{
+            .then(registration=>{
 
-                    console.log(
-                        "PWA Service Worker ativo:",
-                        registration.scope
-                    );
+                console.log(
+                    "PWA ativo:",
+                    registration.scope
+                );
 
-                }
-            )
+            })
             .catch(error=>{
 
                 console.warn(
-                    "Service Worker ainda não configurado:",
+                    "Service Worker:",
                     error
                 );
 
