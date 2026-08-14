@@ -86,6 +86,11 @@
       </div>
       <button class="btn-submit" onclick="validarCodigoUsuario()">Entrar no Aplicativo</button>
       <p id="authError" style="color: #ef4444; font-size: 0.8rem; margin-top: 10px; display: none;"></p>
+      
+      <!-- Botão para acessar o Admin direto da tela bloqueada -->
+      <div style="margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 15px;">
+        <button onclick="fecharAuthEAbrirAdmin()" style="background: none; border: none; color: #a855f7; font-size: 0.8rem; cursor: pointer; text-decoration: underline;">Sou Administrador</button>
+      </div>
     </div>
   </div>
 
@@ -187,7 +192,7 @@
   </div>
 
   <script>
-    // Configuração Firebase (Insira seus dados reais aqui se necessário)
+    // Configuração Firebase
     const firebaseConfig = {
       databaseURL: "https://music-nando-default-rtdb.firebaseio.com/"
     };
@@ -203,11 +208,9 @@
     document.getElementById('deviceIdDisplay').innerText = "ID Aparelho: " + deviceId;
 
     // Verificar se este aparelho já está autorizado
-        function verificarAutorizacaoAparelho() {
-      // 1. FORÇA O MODAL A ABRIR IMEDIATAMENTE NA TELA
+    function verificarAutorizacaoAparelho() {
       document.getElementById('authModal').classList.add('active');
 
-      // 2. Consulta o Firebase para ver se o aparelho já é autorizado
       db.ref('dispositivos_autorizados').once('value', snapshot => {
         let autorizados = snapshot.val() || {};
         let meuCodigoAtivo = null;
@@ -219,7 +222,6 @@
           }
         }
 
-        // 3. Se já estiver autorizado, fecha o modal automaticamente
         if (meuCodigoAtivo) {
           document.getElementById('authModal').classList.remove('active');
         }
@@ -228,6 +230,11 @@
       });
     }
 
+    // Fechar tela de bloqueio e abrir o painel ADM direto
+    function fecharAuthEAbrirAdmin() {
+      document.getElementById('authModal').classList.remove('active');
+      abrirAdmin();
+    }
 
     // Validar código digitado pelo usuário
     function validarCodigoUsuario() {
@@ -255,7 +262,6 @@
           return;
         }
 
-        // Vincular código a este aparelho no Firebase
         db.ref('codigos_gerados/' + codigoDigitado).update({ usado: true, deviceId: deviceId });
         db.ref('dispositivos_autorizados/' + codigoDigitado).set({ deviceId: deviceId, dataRegistro: new Date().toLocaleString() });
 
@@ -275,7 +281,7 @@
 
     function logarAdmin() {
       let senha = document.getElementById('adminPasswordInput').value;
-      if (senha === "1234") { // Altere sua senha de ADM aqui se quiser
+      if (senha === "1234") { 
         document.getElementById('adminLoginBox').style.display = 'none';
         document.getElementById('adminDashboardBox').style.display = 'block';
         carregarListaCodigosAdmin();
@@ -294,7 +300,6 @@
       }
     }
 
-    // Gerar código aleatório para aparelho
     function gerarNovoCodigo() {
       let chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
       let novoCod = 'ND-';
@@ -313,7 +318,6 @@
       });
     }
 
-    // Carregar lista de códigos no painel do ADM para controle/remoção
     function carregarListaCodigosAdmin() {
       db.ref('codigos_gerados').on('value', snapshot => {
         let listaContainer = document.getElementById('codesListContainer');
@@ -343,7 +347,6 @@
       });
     }
 
-    // Remover ou revogar acesso do aparelho
     function removerCodigo(codigo, devId) {
       if (confirm("Tem certeza que deseja excluir o código " + codigo + "? O aparelho vinculado perderá o acesso imediatamente.")) {
         db.ref('codigos_gerados/' + codigo).remove();
@@ -351,11 +354,10 @@
           db.ref('dispositivos_autorizados/' + codigo).remove();
         }
         alert("Código removido e acesso revogado!");
-        location.reload(); // Recarrega para bloquear caso seja o próprio ADM testando
+        location.reload();
       }
     }
 
-    // Funções de Música e Player
     const player = document.getElementById('audioPlayer');
     const playIcon = document.getElementById('playIcon');
     let playlist = [];
@@ -436,8 +438,9 @@
 
     function prevSong() {
       if (playlist.length === 0) return;
-      currentIndex = (currentIndex - 1 + playlist.length) % playlist.length;
+      currentIndex = (currentIndex ( - 1 + playlist.length)) % playlist.length;
       tocarMusica(currentIndex);
     }
   </script>
-</bod
+</body>
+</html>
