@@ -1,235 +1,3 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <title>Nando's Music - Ar & Som</title>
-
-    <!-- SDK do Firebase Incluso -->
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-    <style>
-        *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;-webkit-tap-highlight-color:transparent}
-        :root{--escuro:#0b0f19;--medio:#151b2c;--claro:#1e293b;--destaque:#a855f7;--destaque-hover:#9333ea;--texto:#ffffff;--cinza:#94a3b8;--erro:#ef4444;--sucesso:#22c55e}
-        body{background:var(--escuro);color:var(--texto);min-height:100vh;overflow-x:hidden;user-select:none}
-
-        /* VÍDEO DE FUNDO DINÂMICO */
-        #vid-fundo{
-            position:fixed;top:0;left:0;
-            width:100vw;height:100vh;
-            object-fit:cover;
-            opacity:0.18;
-            z-index:1;
-            background:#0b0f19;
-            pointer-events:none;
-        }
-
-        /* ÁUDIO OCULTO */
-        #reprodutor-audio{display:none}
-
-        /* TELAS DE LOGIN COM A FOTO DA FACHADA */
-        .tela-login{
-            position:fixed;top:0;left:0;
-            width:100vw;height:100vh;
-            background: url('https://i.ibb.co/37jJ59f/Nandos-Fachada.jpg') no-repeat center center;
-            background-size: cover;
-            background-attachment: fixed;
-            z-index:99999;
-            display:flex;align-items:center;justify-content:center;
-            padding:20px;
-        }
-        .tela-login::before {
-            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(11, 15, 25, 0.90); backdrop-filter: blur(8px);
-            z-index: 1;
-        }
-        .caixa-login{
-            position: relative; z-index: 2;
-            background: rgba(21, 27, 44, 0.95); padding: 35px 28px;
-            border-radius: 20px; width: 100%; max-width: 400px;
-            text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.6);
-            border: 1px solid rgba(168, 85, 247, 0.3);
-        }
-        .caixa-login h2{
-            color: var(--destaque); margin-bottom: 24px; font-size: 24px; font-weight: 700;
-            background: linear-gradient(135deg, #a855f7, #ec4899);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        }
-        .campo-entrada{
-            width:100%;padding:14px 16px;
-            background:var(--escuro);border:1px solid rgba(255,255,255,0.15);
-            border-radius:10px;color:var(--texto);
-            font-size:15px;margin-bottom:16px;
-            outline:none;text-align:center;transition:0.3s;
-        }
-        .campo-entrada:focus{border-color:var(--destaque);box-shadow:0 0 10px rgba(168,85,247,0.3)}
-        .botao{
-            width:100%;padding:14px;background:linear-gradient(135deg, #a855f7, #9333ea);
-            border:none;border-radius:10px;color:white;
-            font-weight:600;font-size:15px;cursor:pointer;
-            margin-bottom:12px;transition:0.3s;box-shadow:0 4px 12px rgba(168,85,247,0.3);
-        }
-        .botao:hover{transform: translateY(-1px);opacity: 0.9}
-        .botao-voltar{background:transparent;color:var(--destaque);border:1px solid var(--destaque);margin-top:6px;box-shadow:none}
-        .botao-voltar:hover{background:rgba(168,85,247,0.1)}
-        .botao-perigo{background:var(--erro);box-shadow:0 4px 12px rgba(239,68,68,0.3)}
-        .botao-sucesso{background:var(--sucesso);color:#000;box-shadow:0 4px 12px rgba(34,197,94,0.3)}
-        .botao-copiar{background:#3b82f6;color:#fff;width:auto;padding:6px 12px;margin:0;font-size:13px;box-shadow:none}
-        .botao-baixar{background:#10b981;color:#fff;padding:8px 14px;border-radius:8px;border:none;cursor:pointer;font-size:12px;font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:6px;margin-top:10px;transition:0.2s}
-        .botao-baixar:hover{opacity: 0.85}
-
-        /* ÁREA DO APP */
-        #app{display:none;flex-direction:column;min-height:100vh;position:relative;z-index:10}
-
-        /* MENU LATERAL */
-        .menu{width:280px;background:var(--medio);padding:25px 18px;overflow-y:auto;position:fixed;left:-290px;top:0;height:100vh;transition:left 0.3s ease;z-index:998;border-right:1px solid rgba(255,255,255,0.05);box-shadow:5px 0 25px rgba(0,0,0,0.5)}
-        .menu.aberto{left:0}
-        .logo{font-size:20px;font-weight:700;color:var(--destaque);margin-bottom:25px;text-align:center;background:linear-gradient(135deg, #a855f7, #ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-        .item-menu{display:block;padding:12px 16px;color:var(--cinza);margin:6px 0;border-radius:10px;cursor:pointer;text-align:left;font-size:15px;transition:0.2s}
-        .item-menu:hover,.item-menu.ativo{background:var(--claro);color:var(--texto)}
-        .btn-menu{position:fixed;top:15px;left:15px;background:rgba(21, 27, 44, 0.85);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.1);color:white;width:45px;height:45px;border-radius:12px;cursor:pointer;z-index:997;font-size:20px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,0.3)}
-
-        /* CONTEÚDO */
-        .conteudo{flex:1;padding:90px 20px 140px 20px;background:linear-gradient(180deg,rgba(11,15,25,0.85),rgba(11,15,25,0.95));min-height:100vh}
-        .btn-voltar-pag{background:var(--medio);border:1px solid rgba(255,255,255,0.1);color:var(--texto);padding:10px 18px;border-radius:10px;margin-bottom:20px;cursor:pointer;font-size:14px;font-weight:600;transition:0.2s}
-        .btn-voltar-pag:hover{background:var(--claro)}
-        .grade{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:16px}
-        .cartao{background:var(--medio);border-radius:14px;padding:20px 15px;text-align:center;cursor:pointer;transition:0.3s;display:flex;flex-direction:column;align-items:center;justify-content:space-between;border:1px solid rgba(255,255,255,0.04);box-shadow:0 4px 15px rgba(0,0,0,0.2)}
-        .cartao:hover{background:var(--claro);transform:translateY(-3px);border-color:rgba(168,85,247,0.3)}
-        .icone-cat{font-size:38px;margin-bottom:12px}
-        .nome-cat{font-size:15px;font-weight:600}
-
-        /* PAINEL ADMIN */
-        .secao-admin{background:var(--medio);padding:22px;border-radius:14px;margin-bottom:25px;border:1px solid rgba(255,255,255,0.05)}
-        .secao-admin h3{color:var(--destaque);margin-bottom:15px;font-size:18px}
-        .form-admin{display:flex;flex-direction:column;gap:12px;max-width:500px}
-        .item-lista-admin{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:var(--claro);border-radius:10px;margin-bottom:8px;gap:8px;border:1px solid rgba(255,255,255,0.03)}
-        .senha-destaque{font-family:monospace;font-size:16px;letter-spacing:1px;color:var(--destaque);background:#0b0f19;padding:6px 12px;border-radius:8px;border:1px solid rgba(168,85,247,0.2)}
-        .status-nuvem{font-size:12px;padding:6px 14px;border-radius:8px;font-weight:600;display:inline-block;margin-bottom:18px}
-
-        /* PLAYER */
-        .player{
-            position:fixed;bottom:0;left:0;right:0;
-            background:rgba(21, 27, 44, 0.95);backdrop-filter:blur(12px);
-            border-top:1px solid rgba(255,255,255,0.08);
-            padding:15px 20px;min-height:100px;
-            display:flex;align-items:center;gap:15px;
-            transition:transform 0.3s ease;transform:translateY(0);
-            z-index:999;box-shadow:0 -5px 25px rgba(0,0,0,0.5);
-        }
-        .player.escondido{transform:translateY(100%)}
-        .info-musica{display:flex;align-items:center;gap:14px;flex:1}
-        .capa-player{width:52px;height:52px;background:linear-gradient(135deg, #a855f7, #9333ea);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:24px;box-shadow:0 4px 10px rgba(168,85,247,0.3)}
-        .nome-atual{font-weight:600;font-size:14px;margin-bottom:2px}
-        .cat-atual{font-size:11px;color:var(--cinza)}
-        .controles-player{display:flex;flex-direction:column;align-items:center;gap:8px;flex:1.5}
-        .grupo-botoes{display:flex;gap:20px;align-items:center}
-        .btn-controle{background:transparent;border:none;color:var(--cinza);font-size:20px;cursor:pointer;padding:6px;transition:0.2s}
-        .btn-controle:hover{color:var(--texto)}
-        .btn-play-principal{background:var(--texto);color:var(--escuro);width:42px;height:42px;border-radius:50%;font-size:16px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(255,255,255,0.2);transition:0.2s}
-        .btn-play-principal:hover{transform:scale(1.05)}
-        .barra-progresso{width:100%;max-width:450px;height:6px;background:var(--claro);border-radius:3px;overflow:hidden;cursor:pointer}
-        .preenchimento-prog{height:100%;background:var(--destaque);width:0%;border-radius:3px}
-        .area-volume{display:flex;align-items:center;gap:10px;flex:1;justify-content:flex-end}
-        .barra-volume{width:80px;height:6px;background:var(--claro);border-radius:3px;overflow:hidden;cursor:pointer}
-        .preenchimento-vol{height:100%;background:var(--texto);width:70%;border-radius:3px}
-        .btn-toggle-player{background:transparent;border:none;color:var(--cinza);font-size:18px;cursor:pointer;margin-left:8px;padding:6px}
-
-        @media(max-width: 768px) {
-            .player { flex-direction: column; gap: 10px; padding: 12px 15px; }
-            .info-musica { width: 100%; justify-content: flex-start; }
-            .controles-player { width: 100%; }
-            .area-volume { display: none; }
-            .conteudo { padding-bottom: 160px; }
-        }
-    </style>
-</head>
-<body>
-
-<video id="vid-fundo" autoplay loop muted playsinline preload="auto">
-    <source id="source-vid-fundo" src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
-</video>
-
-<audio id="reprodutor-audio" preload="metadata"></audio>
-
-<!-- TELAS DE LOGIN -->
-<div id="tela-inicial" class="tela-login">
-    <div class="caixa-login">
-        <h2>🎧 Nando's Music</h2>
-        <button class="botao" onclick="mostrarTelaAdm()">🔐 Acessar como Administrador</button>
-        <button class="botao botao-voltar" onclick="mostrarTelaUsuario()">👤 Acessar como Usuário</button>
-    </div>
-</div>
-
-<div id="tela-adm" class="tela-login" style="display:none">
-    <div class="caixa-login">
-        <h2>Acesso do Administrador</h2>
-        <input type="password" id="campo-senha-adm" class="campo-entrada" placeholder="Digite a senha de admin">
-        <button class="botao" onclick="verificarAdm()">Entrar no Sistema</button>
-        <button class="botao botao-voltar" onclick="voltarParaInicial()">⬅ Voltar</button>
-    </div>
-</div>
-
-<div id="tela-usuario" class="tela-login" style="display:none">
-    <div class="caixa-login">
-        <h2>Acesso de Usuário</h2>
-        <input type="text" id="campo-senha-usuario" class="campo-entrada" placeholder="Digite sua senha de acesso">
-        <button class="botao" onclick="verificarUsuario()">Entrar no Sistema</button>
-        <button class="botao botao-voltar" onclick="voltarParaInicial()">⬅ Voltar</button>
-    </div>
-</div>
-
-<!-- ÁREA DO APP -->
-<div id="app">
-    <button class="btn-menu" id="botao-menu-lateral" onclick="abrirFecharMenu()"><i class="fa-solid fa-bars"></i></button>
-    
-    <aside class="menu" id="menu-lateral">
-        <div class="logo">🎧 Nando's Music</div>
-        <div class="item-menu ativo" onclick="irParaInicio(); fecharMenu()"><i class="fa-solid fa-house" style="margin-right:10px"></i> Página Inicial</div>
-        <div class="item-menu" id="item-painel-admin" style="display:none" onclick="abrirPainelAdmin(); fecharMenu()"><i class="fa-solid fa-gear" style="margin-right:10px"></i> Painel Admin</div>
-        <div class="item-menu" onclick="sairDoSistema()"><i class="fa-solid fa-right-from-bracket" style="margin-right:10px"></i> Sair da Conta</div>
-        <div style="margin-top:25px;font-size:12px;color:var(--cinza);padding:0 12px;text-transform:uppercase;letter-spacing:1px">Categorias</div>
-        <div id="lista-categorias"></div>
-    </aside>
-
-    <main class="conteudo">
-        <div id="area-conteudo"></div>
-    </main>
-
-    <footer class="player" id="barra-player">
-        <div class="info-musica">
-            <div class="capa-player" id="capa-musica-atual">🎵</div>
-            <div style="overflow:hidden">
-                <div class="nome-atual" id="nome-musica-atual">Nenhuma música selecionada</div>
-                <div class="cat-atual" id="categoria-musica-atual">Escolha uma categoria</div>
-                <a id="btn-download-player" href="#" target="_blank" download class="botao-baixar" style="display:none"><i class="fa-solid fa-download"></i> Baixar MP3</a>
-            </div>
-        </div>
-        <div class="controles-player">
-            <div class="grupo-botoes">
-                <button class="btn-controle" onclick="musicaAnterior()"><i class="fa-solid fa-backward-step"></i></button>
-                <button class="btn-controle btn-play-principal" id="botao-play-principal" onclick="alternarPlayPause()"><i class="fa-solid fa-play"></i></button>
-                <button class="btn-controle" onclick="proximaMusica()"><i class="fa-solid fa-forward-step"></i></button>
-            </div>
-            <div class="barra-progresso" id="barra-progresso" onclick="irParaTempoEspecifico(event)">
-                <div class="preenchimento-prog" id="preenchimento-progresso"></div>
-            </div>
-        </div>
-        <div class="area-volume">
-            <i class="fa-solid fa-volume-high" style="color:var(--cinza)"></i>
-            <div class="barra-volume" id="barra-volume" onclick="ajustarVolume(event)">
-                <div class="preenchimento-vol" id="preenchimento-volume"></div>
-            </div>
-            <button class="btn-toggle-player" onclick="alternarVisibilidadePlayer()"><i class="fa-solid fa-chevron-down"></i></button>
-        </div>
-    </footer>
-</div>
-
 <script>
 let usarNouvem = false;
 let db = null;
@@ -280,7 +48,7 @@ let bancoVideos = JSON.parse(localStorage.getItem('nando_videos')) || VIDEOS_PAD
 let firebaseConfigSalvo = JSON.parse(localStorage.getItem('nando_firebase_config'));
 
 function conectarFirebase(cfg){
-    if(!cfg || !cfg.apiKey || !cfg.databaseURL) return false;
+    if(!cfg || !cfg.apiKey || !cfg.databaseURL || typeof firebase === 'undefined') return false;
     try {
         if (!firebase.apps.length) {
             firebase.initializeApp(cfg);
@@ -311,8 +79,11 @@ function conectarFirebase(cfg){
     }
 }
 
+// Inicialização segura para dispositivos móveis
 if(firebaseConfigSalvo){
-    conectarFirebase(firebaseConfigSalvo);
+    window.addEventListener('load', () => {
+        conectarFirebase(firebaseConfigSalvo);
+    });
 }
 
 function salvarDadosGerais(){
@@ -372,4 +143,401 @@ function copiarSenha(senhaText) {
     }
 }
 
-function mostrarTelaAdm(){document.getElementById('tela-inicial').sty
+function mostrarTelaAdm(){document.getElementById('tela-inicial').style.display='none';document.getElementById('tela-adm').style.display='flex'}
+function mostrarTelaUsuario(){document.getElementById('tela-inicial').style.display='none';document.getElementById('tela-usuario').style.display='flex'}
+function voltarParaInicial(){
+    document.getElementById('tela-adm').style.display='none';
+    document.getElementById('tela-usuario').style.display='none';
+    document.getElementById('tela-inicial').style.display='flex';
+}
+
+function verificarAdm(){
+    const senha = document.getElementById('campo-senha-adm').value.trim();
+    if(senha === senhaAdmAtual){
+        tipoUsuarioLogado = 'administrador';
+        iniciarSistema();
+        document.getElementById('item-painel-admin').style.display = 'block';
+    }else{
+        alert('Senha de administrador incorreta!');
+    }
+}
+
+function verificarUsuario(){
+    const senha = document.getElementById('campo-senha-usuario').value.trim();
+    if(bancoSenhasUsuarios.includes(senha)){
+        tipoUsuarioLogado = 'usuario';
+        iniciarSistema();
+    }else{
+        alert('Senha de acesso inválida!');
+    }
+}
+
+function iniciarSistema(){
+    document.querySelectorAll('.tela-login').forEach(t => t.style.display = 'none');
+    document.getElementById('app').style.display = 'flex';
+    carregarCategoriasNoMenu();
+    mostrarPaginaInicial();
+    trocarVideoFundoAleatorio();
+    reprodutorAudio.volume = 0.7;
+    configurarControlesDoCarro();
+}
+
+function carregarCategoriasNoMenu(){
+    document.getElementById('lista-categorias').innerHTML = bancoCategorias.map(cat => 
+        `<div class="item-menu" onclick="abrirCategoria('${cat.nome}')">${cat.icone} ${cat.nome}</div>`
+    ).join('');
+}
+
+function abrirFecharMenu(){document.getElementById('menu-lateral').classList.toggle('aberto')}
+function fecharMenu(){document.getElementById('menu-lateral').classList.remove('aberto')}
+function alternarVisibilidadePlayer(){
+    playerVisivel = !playerVisivel;
+    document.getElementById('barra-player').classList.toggle('escondido', !playerVisivel);
+}
+
+function mostrarPaginaInicial(){
+    categoriaAberta = null;
+    document.getElementById('area-conteudo').innerHTML = `
+        <h2 style="margin-bottom:20px; font-size: 22px; font-weight:700;">Escolha uma Categoria</h2>
+        <div class="grade">
+            ${bancoCategorias.map(cat => `
+                <div class="cartao" onclick="abrirCategoria('${cat.nome}')">
+                    <div class="icone-cat">${cat.icone}</div>
+                    <div class="nome-cat">${cat.nome}</div>
+                </div>
+            `).join('')}
+        </div>
+    `;
+}
+
+function irParaInicio(){mostrarPaginaInicial(); fecharMenu()}
+
+function abrirCategoria(nomeCategoria){
+    categoriaAberta = nomeCategoria;
+    listaArquivosAtuais = bancoArquivos[nomeCategoria] || [];
+    
+    let htmlConteudo = `<button class="btn-voltar-pag" onclick="mostrarPaginaInicial()"><i class="fa-solid fa-arrow-left"></i> Voltar para Categorias</button>`;
+    htmlConteudo += `<h2 style="margin-bottom:20px; font-size:22px; font-weight:700;">${nomeCategoria}</h2>`;
+
+    if(listaArquivosAtuais.length === 0){
+        htmlConteudo += `<p style="color:var(--cinza)">Nenhuma música cadastrada nesta categoria ainda.</p>`;
+    }else{
+        htmlConteudo += `<div class="grade">
+            ${listaArquivosAtuais.map((arq, indice) => `
+                <div class="cartao">
+                    <div onclick="reproduzirArquivo(${indice})" style="width:100%">
+                        <div class="icone-cat">🎵</div>
+                        <div class="nome-cat">${arq.nome}</div>
+                    </div>
+                    <a href="${arq.url}" target="_blank" download class="botao-baixar" onclick="event.stopPropagation()"><i class="fa-solid fa-download"></i> Baixar MP3</a>
+                </div>
+            `).join('')}
+        </div>`;
+    }
+
+    document.getElementById('area-conteudo').innerHTML = htmlConteudo;
+    fecharMenu();
+}
+
+function abrirPainelAdmin(){
+    if(tipoUsuarioLogado !== 'administrador') return;
+    
+    let htmlAdmin = `<h2 style="margin-bottom:12px; font-size:22px; font-weight:700;">⚙️ Painel do Administrador</h2>`;
+    htmlAdmin += usarNouvem ? `<span class="status-nuvem" style="background:var(--sucesso);color:#000">🟢 Nuvem Firebase Ativa e Sincronizada</span>` : `<span class="status-nuvem" style="background:#f59e0b;color:#000">🟠 Modo Local</span>`;
+
+    const cfgAtual = firebaseConfigSalvo || {};
+    htmlAdmin += `
+    <div class="secao-admin">
+        <h3>🔥 Configurar Nuvem Firebase (Zero Código)</h3>
+        <p style="color:var(--cinza);margin-bottom:12px;font-size:13px">Cole os dados do seu projeto do Firebase para sincronizar tudo automaticamente:</p>
+        <div class="form-admin">
+            <input type="text" id="fb-apikey" class="campo-entrada" placeholder="API Key" value="${cfgAtual.apiKey || ''}">
+            <input type="text" id="fb-dburl" class="campo-entrada" placeholder="Database URL (ex: https://...firebaseio.com)" value="${cfgAtual.databaseURL || ''}">
+            <input type="text" id="fb-projectid" class="campo-entrada" placeholder="Project ID" value="${cfgAtual.projectId || ''}">
+            <button class="botao botao-sucesso" onclick="salvarConfigFirebaseADM()">💾 Salvar e Conectar Nuvem</button>
+        </div>
+    </div>`;
+
+    htmlAdmin += `
+    <div class="secao-admin">
+        <h3>🎬 Gerenciar Vídeos de Fundo (Aleatórios)</h3>
+        <div class="form-admin">
+            <input type="text" id="adm-nome-video" class="campo-entrada" placeholder="Nome do Vídeo">
+            <input type="url" id="adm-url-video" class="campo-entrada" placeholder="URL do Vídeo MP4 (http://...)">
+            <button class="botao" onclick="cadastrarVideoADM()">➕ Adicionar Vídeo</button>
+        </div>
+        <div style="margin-top:15px">
+            <strong style="font-size:14px;color:var(--cinza)">Vídeos Cadastrados (${bancoVideos.length}):</strong>
+            ${bancoVideos.map((vid, idx) => `
+                <div class="item-lista-admin" style="margin-top:8px">
+                    <span>🎬 ${vid.nome}</span>
+                    <button class="botao botao-perigo" style="width:auto;padding:4px 10px;margin:0;font-size:12px" onclick="excluirVideoADM(${idx})">Remover</button>
+                </div>
+            `).join('')}
+        </div>
+    </div>`;
+
+    htmlAdmin += `
+    <div class="secao-admin">
+        <h3>🔐 Alterar Senha do Administrador</h3>
+        <div class="form-admin">
+            <input type="password" id="adm-nova-senha" class="campo-entrada" placeholder="Nova senha de ADM">
+            <button class="botao" onclick="alterarSenhaAdm()">Salvar Nova Senha</button>
+        </div>
+    </div>`;
+
+    htmlAdmin += `
+    <div class="secao-admin">
+        <h3>🔑 Gerenciar Senhas de Usuários</h3>
+        <button class="botao botao-sucesso" style="max-width:280px;margin-bottom:15px" onclick="gerarNovaSenhaADM()">🎲 Gerar Nova Senha Aleatória</button>
+        <div>
+            ${bancoSenhasUsuarios.map((senha, idx) => `
+                <div class="item-lista-admin">
+                    <span class="senha-destaque">${senha}</span>
+                    <div style="display:flex;gap:6px">
+                        <button class="botao botao-copiar" onclick="copiarSenha('${senha}')"><i class="fa-solid fa-copy"></i> Copiar</button>
+                        <button class="botao botao-perigo" style="width:auto;padding:6px 12px;margin:0;font-size:12px" onclick="revogarSenhaADM(${idx})">Revogar</button>
+                    </div>
+                </div>
+            `).join('')}
+        </div>
+    </div>`;
+
+    htmlAdmin += `
+    <div class="secao-admin">
+        <h3>➕ Cadastrar Categoria</h3>
+        <div class="form-admin">
+            <input type="text" id="adm-nome-cat" class="campo-entrada" placeholder="Nome da Categoria">
+            <input type="text" id="adm-icone-cat" class="campo-entrada" placeholder="Emoji (Ex: 🪕)">
+            <button class="botao" onclick="cadastrarCategoriaADM()">Cadastrar Categoria</button>
+        </div>
+    </div>
+
+    <div class="secao-admin">
+        <h3>🎵 Cadastrar Música (MP3)</h3>
+        <div class="form-admin">
+            <select id="adm-cat-select" class="campo-entrada">
+                ${bancoCategorias.map(c => `<option value="${c.nome}">${c.nome}</option>`).join('')}
+            </select>
+            <input type="text" id="adm-nome-midia" class="campo-entrada" placeholder="Nome da Música">
+            <input type="url" id="adm-url-midia" class="campo-entrada" placeholder="Link/URL do MP3">
+            <button class="botao" onclick="cadastrarMidiaADM()">Cadastrar Música</button>
+        </div>
+    </div>
+
+    <div class="secao-admin">
+        <h3>🗑️ Excluir Conteúdos</h3>
+        ${bancoCategorias.map(cat => `
+            <div style="margin-bottom:15px;background:var(--escuro);padding:14px;border-radius:10px;border:1px solid rgba(255,255,255,0.03)">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+                    <strong>${cat.icone} ${cat.nome}</strong>
+                    <button class="botao botao-perigo" style="width:auto;padding:6px 12px;margin:0;font-size:12px" onclick="excluirCategoriaADM('${cat.nome}')">Excluir Categoria</button>
+                </div>
+                ${(bancoArquivos[cat.nome] || []).map((m, idx) => `
+                    <div class="item-lista-admin">
+                        <span>🎵 ${m.nome}</span>
+                        <button class="botao botao-perigo" style="width:auto;padding:4px 10px;margin:0;font-size:12px" onclick="excluirMidiaADM('${cat.nome}', ${idx})">Remover</button>
+                    </div>
+                `).join('')}
+            </div>
+        `).join('')}
+    </div>`;
+
+    document.getElementById('area-conteudo').innerHTML = htmlAdmin;
+}
+
+function salvarConfigFirebaseADM(){
+    const apiKey = document.getElementById('fb-apikey').value.trim();
+    const databaseURL = document.getElementById('fb-dburl').value.trim();
+    const projectId = document.getElementById('fb-projectid').value.trim();
+
+    if(!apiKey || !databaseURL){
+        alert('Preencha ao menos a API Key e a Database URL!');
+        return;
+    }
+
+    const novaCfg = { apiKey, databaseURL, projectId };
+    localStorage.setItem('nando_firebase_config', JSON.stringify(novaCfg));
+    firebaseConfigSalvo = novaCfg;
+
+    if(conectarFirebase(novaCfg)){
+        salvarDadosGerais();
+        alert('🟢 Conectado ao Firebase com sucesso! Dados sincronizados.');
+        abrirPainelAdmin();
+    }else{
+        alert('❌ Erro ao conectar ao Firebase. Verifique as chaves digitadas.');
+    }
+}
+
+function cadastrarVideoADM(){
+    const nome = document.getElementById('adm-nome-video').value.trim();
+    const url = document.getElementById('adm-url-video').value.trim();
+    if(!nome || !url){ alert('Preencha nome e URL!'); return; }
+    
+    bancoVideos.push({nome, url});
+    salvarDadosGerais();
+    abrirPainelAdmin();
+    alert('Vídeo adicionado!');
+}
+
+function excluirVideoADM(idx){
+    if(confirm('Remover vídeo de fundo?')){
+        bancoVideos.splice(idx, 1);
+        salvarDadosGerais();
+        abrirPainelAdmin();
+    }
+}
+
+function alterarSenhaAdm(){
+    const novaSenha = document.getElementById('adm-nova-senha').value.trim();
+    if(!novaSenha){ alert('Digite a nova senha!'); return; }
+    senhaAdmAtual = novaSenha;
+    salvarDadosGerais();
+    alert('Senha alterada!');
+}
+
+function gerarNovaSenhaADM(){
+    const novaSenha = gerarSenhaAleatoria(8);
+    bancoSenhasUsuarios.push(novaSenha);
+    salvarDadosGerais();
+    abrirPainelAdmin();
+    copiarSenha(novaSenha);
+}
+
+function revogarSenhaADM(indice){
+    if(confirm('Revogar esta senha de acesso?')){
+        bancoSenhasUsuarios.splice(indice, 1);
+        salvarDadosGerais();
+        abrirPainelAdmin();
+    }
+}
+
+function cadastrarCategoriaADM(){
+    const nome = document.getElementById('adm-nome-cat').value.trim();
+    const icone = document.getElementById('adm-icone-cat').value.trim() || '🎵';
+    if(!nome){ alert('Digite o nome da categoria!'); return; }
+    
+    bancoCategorias.push({nome, icone});
+    if(!bancoArquivos[nome]) bancoArquivos[nome] = [];
+    salvarDadosGerais();
+    carregarCategoriasNoMenu();
+    abrirPainelAdmin();
+}
+
+function cadastrarMidiaADM(){
+    const cat = document.getElementById('adm-cat-select').value;
+    const nome = document.getElementById('adm-nome-midia').value.trim();
+    const url = document.getElementById('adm-url-midia').value.trim();
+    if(!nome || !url){ alert('Preencha todos os campos!'); return; }
+
+    if(!bancoArquivos[cat]) bancoArquivos[cat] = [];
+    bancoArquivos[cat].push({nome, url});
+
+    salvarDadosGerais();
+    abrirPainelAdmin();
+    alert('Música cadastrada!');
+}
+
+function excluirCategoriaADM(nomeCat){
+    if(confirm(`Deseja excluir a categoria "${nomeCat}"?`)){
+        bancoCategorias = bancoCategorias.filter(c => c.nome !== nomeCat);
+        delete bancoArquivos[nomeCat];
+        salvarDadosGerais();
+        carregarCategoriasNoMenu();
+        abrirPainelAdmin();
+    }
+}
+
+function excluirMidiaADM(nomeCat, indice){
+    if(confirm('Deseja remover esta música?')){
+        bancoArquivos[nomeCat].splice(indice, 1);
+        salvarDadosGerais();
+        abrirPainelAdmin();
+    }
+}
+
+function reproduzirArquivo(indice){
+    indiceArquivoAtual = indice;
+    const arquivo = listaArquivosAtuais[indice];
+    
+    document.getElementById('nome-musica-atual').textContent = arquivo.nome;
+    document.getElementById('categoria-musica-atual').textContent = categoriaAberta;
+    
+    const btnDownPlayer = document.getElementById('btn-download-player');
+    btnDownPlayer.href = arquivo.url;
+    btnDownPlayer.style.display = 'inline-flex';
+    
+    playerVisivel = true;
+    document.getElementById('barra-player').classList.remove('escondido');
+    
+    trocarVideoFundoAleatorio();
+
+    reprodutorAudio.pause();
+    reprodutorAudio.src = arquivo.url;
+    reprodutorAudio.play().catch(()=>{});
+    
+    document.getElementById('botao-play-principal').innerHTML = '<i class="fa-solid fa-pause"></i>';
+    configurarAtualizacaoProgresso();
+    atualizarMediaSession(arquivo);
+}
+
+function alternarPlayPause(){
+    if(indiceArquivoAtual === -1) return;
+    if(!reprodutorAudio.paused){
+        reprodutorAudio.pause();
+        document.getElementById('botao-play-principal').innerHTML = '<i class="fa-solid fa-play"></i>';
+    }else{
+        reprodutorAudio.play().catch(()=>{});
+        document.getElementById('botao-play-principal').innerHTML = '<i class="fa-solid fa-pause"></i>';
+    }
+}
+
+function musicaAnterior(){if(indiceArquivoAtual > 0) reproduzirArquivo(indiceArquivoAtual - 1)}
+function proximaMusica(){if(indiceArquivoAtual < listaArquivosAtuais.length - 1) reproduzirArquivo(indiceArquivoAtual + 1)}
+
+function configurarAtualizacaoProgresso(){
+    reprodutorAudio.ontimeupdate = () => {
+        if(reprodutorAudio.duration){
+            const porcentagem = (reprodutorAudio.currentTime / reprodutorAudio.duration) * 100;
+            document.getElementById('preenchimento-progresso').style.width = porcentagem + '%';
+        }
+    };
+    reprodutorAudio.onended = proximaMusica;
+}
+
+function irParaTempoEspecifico(evento){
+    if(indiceArquivoAtual === -1) return;
+    const barra = document.getElementById('barra-progresso');
+    if(reprodutorAudio.duration){
+        reprodutorAudio.currentTime = (evento.offsetX / barra.clientWidth) * reprodutorAudio.duration;
+    }
+}
+
+function ajustarVolume(evento){
+    const barra = document.getElementById('barra-volume');
+    const volume = evento.offsetX / barra.clientWidth;
+    reprodutorAudio.volume = volume;
+    document.getElementById('preenchimento-volume').style.width = (volume * 100) + '%';
+}
+
+function sairDoSistema(){ if(confirm('Deseja sair do sistema?')) location.reload(); }
+
+function configurarControlesDoCarro(){
+    if('mediaSession' in navigator){
+        navigator.mediaSession.setActionHandler('play', () => alternarPlayPause());
+        navigator.mediaSession.setActionHandler('pause', () => alternarPlayPause());
+        navigator.mediaSession.setActionHandler('previoustrack', () => musicaAnterior());
+        navigator.mediaSession.setActionHandler('nexttrack', () => proximaMusica());
+    }
+}
+
+function atualizarMediaSession(arquivo){
+    if('mediaSession' in navigator){
+        navigator.mediaSession.metadata = new MediaMetadata({
+            title: arquivo.nome,
+            artist: categoriaAberta,
+            album: "Nando's Music"
+        });
+    }
+}
+</script>
