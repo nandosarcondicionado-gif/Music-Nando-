@@ -1742,154 +1742,113 @@ mostrarMensagem(
    GERAR CÓDIGO
 ===================================================== */
 
-async function gerarCodigoCliente(){
+function gerarCodigoCliente(){
 
-const chars =
-"ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+    const chars =
+    "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 
+    let codigo = "ND-";
 
-let codigo;
+    for(let i = 0; i < 6; i++){
 
+        codigo += chars.charAt(
+            Math.floor(
+                Math.random() * chars.length
+            )
+        );
 
-let tentativas = 0;
+    }
 
+    console.log("Código gerado:", codigo);
 
-do{
+    const codeBox =
+    document.getElementById("generatedCodeBox");
 
-codigo =
-"ND-";
+    const generatedCode =
+    document.getElementById("generatedCode");
 
+    const copyMessage =
+    document.getElementById("copyMessage");
 
-for(
-let i=0;
-i<6;
-i++
-){
+    if(!codeBox || !generatedCode){
 
-codigo +=
-chars.charAt(
-Math.floor(
-Math.random() *
-chars.length
-)
-);
+        alert(
+            "Erro: elementos do código não foram encontrados na página."
+        );
 
-}
+        return;
+    }
 
+    /*
+       Mostra o código na tela
+    */
 
-const existente =
-await db.ref(
-"codigos_gerados/" + codigo
-)
-.once("value");
+    generatedCode.innerText = codigo;
 
+    codeBox.style.display = "block";
 
-if(
-!existente.exists()
-){
+    if(copyMessage){
 
-break;
+        copyMessage.innerText =
+        "Salvando código no servidor...";
 
-}
+    }
 
+    /*
+       Salva diretamente no Firebase
+    */
 
-tentativas++;
+    db.ref(
+        "codigos_gerados/" + codigo
+    )
+    .set({
 
-}
-while(tentativas < 10);
+        usado: false,
 
+        deviceId: null,
 
-if(tentativas >= 10){
+        criadoEm: Date.now()
 
-alert(
-"Não foi possível gerar um código novo. Tente novamente."
-);
+    })
 
-return;
+    .then(function(){
 
-}
+        console.log(
+            "Código salvo com sucesso:",
+            codigo
+        );
 
+        if(copyMessage){
 
-/*
-   Mostra imediatamente
-*/
+            copyMessage.innerText =
+            "✓ Código salvo com sucesso! Agora você pode copiar e enviar ao cliente.";
 
-document
-.getElementById(
-"generatedCode"
-)
-.innerText =
-codigo;
+        }
 
+        carregarCodigosAdmin();
 
-document
-.getElementById(
-"generatedCodeBox"
-)
-.style.display =
-"block";
+    })
 
+    .catch(function(error){
 
-document
-.getElementById(
-"copyMessage"
-)
-.innerText =
-"Salvando código...";
+        console.error(
+            "ERRO AO SALVAR CÓDIGO:",
+            error
+        );
 
+        if(copyMessage){
 
-/*
-   Salva no Firebase
-*/
+            copyMessage.innerText =
+            "ERRO: " + error.message;
 
-db.ref(
-"codigos_gerados/" + codigo
-)
-.set({
+        }
 
-usado:false,
+        alert(
+            "Não foi possível salvar o código.\n\n" +
+            error.message
+        );
 
-deviceId:null,
-
-criadoEm:
-Date.now()
-
-})
-
-.then(()=>{
-
-document
-.getElementById(
-"copyMessage"
-)
-.innerText =
-"✓ Código salvo. Agora você pode copiar e enviar ao cliente.";
-
-
-carregarCodigosAdmin();
-
-})
-
-.catch(error=>{
-
-console.error(error);
-
-
-document
-.getElementById(
-"copyMessage"
-)
-.innerText =
-"Erro ao salvar: " +
-error.message;
-
-
-alert(
-"Não foi possível salvar o código.\n\n" +
-error.message
-);
-
-});
+    });
 
 }
 
