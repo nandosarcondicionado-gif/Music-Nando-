@@ -499,19 +499,71 @@ Engraçados
 
 <section class="player-section">
 
+<div
+style="
+position:relative;
+width:100%;
+height:300px;
+background:#000;
+border-radius:14px;
+overflow:hidden;
+">
+
 <video
-id="mainPlayer"
-controls
+id="backgroundPlayer"
 playsinline
-preload="metadata">
+muted
+autoplay
+loop
+preload="auto"
+style="
+width:100%;
+height:100%;
+object-fit:cover;
+display:block;
+">
 
 </video>
 
 <div
-class="now-playing"
-id="nowPlaying">
+style="
+position:absolute;
+left:0;
+right:0;
+bottom:0;
+background:linear-gradient(
+transparent,
+rgba(0,0,0,.85)
+);
+padding:35px 15px 12px;
+">
 
-Nenhum vídeo reproduzindo
+<div
+id="nowPlaying"
+style="
+text-align:center;
+color:white;
+font-size:.9rem;
+font-weight:600;
+margin-bottom:8px;
+">
+
+Nenhuma música reproduzindo
+
+</div>
+
+<audio
+id="musicPlayer"
+controls
+preload="metadata"
+style="
+width:100%;
+height:42px;
+">
+
+</audio>
+
+</div>
 
 </div>
 
@@ -1130,10 +1182,18 @@ let bgVideos = [];
    ELEMENTOS
 ===================================================== */
 
-const player =
+const backgroundPlayer =
 document.getElementById(
-"mainPlayer"
+"backgroundPlayer"
 );
+
+const musicPlayer =
+document.getElementById(
+"musicPlayer"
+);
+
+const player =
+backgroundPlayer;
 
 
 const nowPlaying =
@@ -2411,24 +2471,20 @@ title
 
 if(!url)return;
 
-
-player.src =
+musicPlayer.src =
 url;
 
-
-player.dataset.music =
+musicPlayer.dataset.music =
 "true";
-
 
 nowPlaying.innerText =
 title;
 
-
-player.play()
+musicPlayer.play()
 .catch(error=>{
 
 console.warn(
-"Autoplay bloqueado:",
+"Autoplay da música bloqueado:",
 error
 );
 
@@ -2439,23 +2495,19 @@ error
 
 function pararPlayer(){
 
-player.pause();
+musicPlayer.pause();
 
-
-player.removeAttribute(
+musicPlayer.removeAttribute(
 "src"
 );
 
+musicPlayer.load();
 
-player.load();
-
-
-player.dataset.music =
+musicPlayer.dataset.music =
 "false";
 
-
 nowPlaying.innerText =
-"Nenhum vídeo reproduzindo";
+"Nenhuma música reproduzindo";
 
 }
 
@@ -2466,17 +2518,13 @@ nowPlaying.innerText =
 
 function tocarFundoAleatorio(){
 
-if(
-!bgVideos.length
-){
+if(!bgVideos.length){
 
-nowPlaying.innerText =
-"Nenhum vídeo de fundo cadastrado";
+backgroundPlayer.removeAttribute("src");
 
 return;
 
 }
-
 
 const escolhido =
 bgVideos[
@@ -2486,39 +2534,26 @@ bgVideos.length
 )
 ];
 
-
-player.src =
+backgroundPlayer.src =
 escolhido.url;
 
+backgroundPlayer.muted =
+true;
 
-player.dataset.music =
-"false";
+backgroundPlayer.loop =
+false;
 
+backgroundPlayer.play()
+.catch(error=>{
 
-nowPlaying.innerText =
-"Vídeo de fundo";
-
-
-player.play()
-.catch(()=>{});
-
-}
-
-
-player.addEventListener(
-"ended",
-function(){
-
-if(
-player.dataset.music !== "true"
-){
-
-tocarFundoAleatorio();
-
-}
+console.warn(
+"Autoplay do vídeo bloqueado:",
+error
+);
 
 });
 
+}
 
 /* =====================================================
    LISTA DE MUSICAS
