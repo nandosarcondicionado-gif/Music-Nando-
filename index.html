@@ -74,7 +74,7 @@
     <button class="admin-btn" onclick="abrirAdmin()"><i class="fa-solid fa-gear"></i> Painel Admin</button>
   </header>
 
-  <!-- FILTROS DE CATEGORIA (NO TOPO) -->
+  <!-- FILTROS DE CATEGORIA -->
   <div class="filter-bar">
     <button class="filter-btn active" onclick="filtrar('Todas', this)">Todas</button>
     <button class="filter-btn" onclick="filtrar('Sertanejo', this)">Sertanejo</button>
@@ -88,7 +88,7 @@
     <button class="filter-btn" onclick="filtrar('Engraçado', this)">Engraçados</button>
   </div>
 
-  <!-- PLAYER PRINCIPAL (LIVRE E VISÍVEL) -->
+  <!-- PLAYER PRINCIPAL -->
   <div class="player-section">
     <video id="mainPlayer" controls autoplay></video>
     <div class="now-playing" id="nowPlaying">Carregando player...</div>
@@ -141,10 +141,10 @@
           <div id="adminMusicList" style="margin-top:15px; max-height: 150px; overflow-y:auto;"></div>
         </div>
 
-        <!-- Gerenciar Vídeos de Fundo Aleatórios -->
+        <!-- Gerenciar Vídeos de Fundo -->
         <div id="secFundos" style="display:none;">
           <h4 style="color:var(--primary); font-size:0.95rem; margin-bottom:8px;">Vídeos de Fundo (Modo Ocioso)</h4>
-          <p style="font-size:0.75rem; color:#94a3b8; margin-bottom:8px;">Estes vídeos vão rodar aleatoriamente quando nenhuma música estiver tocando ou quando o player acabar.</p>
+          <p style="font-size:0.75rem; color:#94a3b8; margin-bottom:8px;">Estes vídeos vão rodar aleatoriamente quando nenhuma música estiver tocando.</p>
           <input type="text" id="bgUrl" placeholder="Link Direto do Vídeo de Fundo (.mp4)">
           <button class="btn-submit" onclick="salvarFundo()">Adicionar Vídeo de Fundo</button>
           <div id="adminBgList" style="margin-top:15px; max-height: 150px; overflow-y:auto;"></div>
@@ -216,6 +216,11 @@
     function abrirAdmin() { document.getElementById('adminModal').classList.add('active'); }
     function fecharAdmin() { document.getElementById('adminModal').classList.remove('active'); }
 
+    // Correção: Definida a função para evitar crash no carregamento do painel
+    function carregarDadosAdmin() {
+      // Os dados já são carregados automaticamente via listeners do Firebase em tempo real.
+    }
+
     document.getElementById('admPass').oninput = (e) => {
       if (e.target.value === "1234") {
         document.getElementById('adminLoginBox').style.display = 'none';
@@ -241,7 +246,7 @@
         alert("Música salva!");
         document.getElementById('sTitle').value = '';
         document.getElementById('sUrl').value = '';
-      });
+      }).catch(err => alert("Erro ao salvar (verifique as Regras do Firebase): " + err.message));
     }
 
     function salvarFundo() {
@@ -250,14 +255,16 @@
       db.ref('background_videos').push({ url }).then(() => {
         alert("Vídeo de fundo adicionado!");
         document.getElementById('bgUrl').value = '';
-      });
+      }).catch(err => alert("Erro ao salvar: " + err.message));
     }
 
     function gerarNovoCodigo() {
       let chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
       let novo = 'ND-';
       for(let i=0; i<4; i++) novo += chars.charAt(Math.floor(Math.random() * chars.length));
-      db.ref('codigos_gerados/' + novo).set({ usado: false, deviceId: null }).then(() => alert("Gerado: " + novo));
+      db.ref('codigos_gerados/' + novo).set({ usado: false, deviceId: null })
+        .then(() => alert("Código gerado com sucesso: " + novo))
+        .catch(err => alert("Erro ao gerar código. Verifique se o banco permite gravação: " + err.message));
     }
 
     function deletar(caminho, id) {
