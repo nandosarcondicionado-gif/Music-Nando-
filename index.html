@@ -31,8 +31,13 @@
     .now-playing { margin-top: 10px; font-size: 1.1rem; font-weight: 600; text-align: center; color: #cbd5e1; }
 
     .playlist-container { padding: 0 20px 20px 20px; max-width: 800px; margin: 0 auto; width: 100%; flex: 1; }
-    .song-item { background: #151b2c; padding: 12px 15px; margin-bottom: 10px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.2s; }
+    .song-item { background: #151b2c; padding: 12px 15px; margin-bottom: 10px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; transition: 0.2s; }
     .song-item:hover { background: rgba(168, 85, 247, 0.1); border-color: rgba(168, 85, 247, 0.3); }
+    
+    .song-info { flex: 1; cursor: pointer; }
+    .song-actions { display: flex; gap: 12px; align-items: center; }
+    .action-icon { cursor: pointer; font-size: 1rem; color: #94a3b8; transition: 0.2s; }
+    .action-icon:hover { color: var(--primary); }
 
     /* Modais */
     .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
@@ -69,9 +74,15 @@
     <button class="admin-btn" onclick="abrirAdmin()"><i class="fa-solid fa-gear"></i> Painel Admin</button>
   </header>
 
-  <!-- FILTROS DE CATEGORIA -->
+  <!-- FILTROS DE CATEGORIA (NO TOPO) -->
   <div class="filter-bar">
     <button class="filter-btn active" onclick="filtrar('Todas', this)">Todas</button>
+    <button class="filter-btn" onclick="filtrar('Sertanejo', this)">Sertanejo</button>
+    <button class="filter-btn" onclick="filtrar('Funk', this)">Funk</button>
+    <button class="filter-btn" onclick="filtrar('Forró', this)">Forró</button>
+    <button class="filter-btn" onclick="filtrar('Pagode', this)">Pagode</button>
+    <button class="filter-btn" onclick="filtrar('Eletrônica', this)">Eletrônica</button>
+    <button class="filter-btn" onclick="filtrar('Trap', this)">Trap</button>
     <button class="filter-btn" onclick="filtrar('Pop', this)">Pop</button>
     <button class="filter-btn" onclick="filtrar('Rock', this)">Rock</button>
     <button class="filter-btn" onclick="filtrar('Engraçado', this)">Engraçados</button>
@@ -104,7 +115,7 @@
       <div id="adminDashboard" style="display:none;">
         
         <!-- Abas de navegação do admin -->
-        <div style="display:flex; gap:5px; margin-bottom:15px;">
+        <div style="display:flex; gap:5px; margin-bottom:15px; overflow-x:auto;">
           <button class="filter-btn active" onclick="mudarAbaAdmin('musicas', this)">Músicas</button>
           <button class="filter-btn" onclick="mudarAbaAdmin('fundos', this)">Vídeos de Fundo</button>
           <button class="filter-btn" onclick="mudarAbaAdmin('codigos', this)">Códigos</button>
@@ -116,6 +127,12 @@
           <input type="text" id="sTitle" placeholder="Título da Música">
           <input type="text" id="sUrl" placeholder="Link Direto do Vídeo (.mp4)">
           <select id="sCat">
+            <option value="Sertanejo">Sertanejo</option>
+            <option value="Funk">Funk</option>
+            <option value="Forró">Forró</option>
+            <option value="Pagode">Pagode</option>
+            <option value="Eletrônica">Eletrônica</option>
+            <option value="Trap">Trap</option>
             <option value="Pop">Pop</option>
             <option value="Rock">Rock</option>
             <option value="Engraçado">Engraçado</option>
@@ -158,7 +175,6 @@
     let allSongs = [];
     let bgVideos = [];
 
-    // Verificação inicial de bloqueio do aparelho
     function verificarAutorizacaoAparelho() {
       db.ref('dispositivos_autorizados').once('value', snapshot => {
         let autorizados = snapshot.val() || {};
@@ -197,7 +213,6 @@
       });
     }
 
-    // Painel Admin Controle
     function abrirAdmin() { document.getElementById('adminModal').classList.add('active'); }
     function fecharAdmin() { document.getElementById('adminModal').classList.remove('active'); }
 
@@ -217,7 +232,6 @@
       document.getElementById('secCodigos').style.display = aba === 'codigos' ? 'block' : 'none';
     }
 
-    // Funções de Cadastro e Exclusão Admin
     function salvarMusica() {
       const title = document.getElementById('sTitle').value;
       const url = document.getElementById('sUrl').value;
@@ -252,16 +266,20 @@
       }
     }
 
-    // Carregamento de Dados em Tempo Real
     db.ref('musicas').on('value', snap => {
       allSongs = [];
       const data = snap.val();
       let html = '', adminHtml = '';
       for(let id in data) {
         allSongs.push({ id, ...data[id] });
-        html += `<div class="song-item" onclick="tocar('${data[id].url}', '${data[id].title}')">
-                    <div><strong>${data[id].title}</strong> <span style="font-size:0.75rem; color:var(--primary);">(${data[id].category})</span></div>
-                    <i class="fa-solid fa-play" style="color:var(--primary);"></i>
+        html += `<div class="song-item">
+                    <div class="song-info" onclick="tocar('${data[id].url}', '${data[id].title}')">
+                      <strong>${data[id].title}</strong> <span style="font-size:0.75rem; color:var(--primary);">(${data[id].category})</span>
+                    </div>
+                    <div class="song-actions">
+                      <a href="${data[id].url}" download target="_blank" class="action-icon" title="Baixar Offline"><i class="fa-solid fa-download"></i></a>
+                      <i class="fa-solid fa-play action-icon" onclick="tocar('${data[id].url}', '${data[id].title}')"></i>
+                    </div>
                  </div>`;
         adminHtml += `<div class="admin-list-row"><span>${data[id].title}</span> <button class="btn-danger" onclick="deletar('musicas', '${id}')">Excluir</button></div>`;
       }
@@ -279,7 +297,6 @@
       }
       if(document.getElementById('adminBgList')) document.getElementById('adminBgList').innerHTML = adminHtml;
       
-      // Se player estiver parado, toca um fundo aleatório
       const player = document.getElementById('mainPlayer');
       if (player.paused && !player.src) {
         tocarFundoAleatorio();
@@ -296,7 +313,6 @@
       if(document.getElementById('adminCodesList')) document.getElementById('adminCodesList').innerHTML = html;
     });
 
-    // Controle do Player
     function tocar(url, title) {
       const player = document.getElementById('mainPlayer');
       player.src = url;
@@ -313,23 +329,26 @@
       }
     }
 
-    // Quando o vídeo da música acaba, volta para o fundo aleatório
     document.getElementById('mainPlayer').onended = () => {
       tocarFundoAleatorio();
     };
 
-    // Filtro por Categoria
     function filtrar(cat, btn) {
-      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.filter-bar .filter-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       
       const container = document.getElementById('playlistContainer');
       container.innerHTML = '';
       allSongs.forEach(s => {
         if(cat === 'Todas' || s.category === cat) {
-          container.innerHTML += `<div class="song-item" onclick="tocar('${s.url}', '${s.title}')">
-                                      <div><strong>${s.title}</strong> <span style="font-size:0.75rem; color:var(--primary);">(${s.category})</span></div>
-                                      <i class="fa-solid fa-play" style="color:var(--primary);"></i>
+          container.innerHTML += `<div class="song-item">
+                                      <div class="song-info" onclick="tocar('${s.url}', '${s.title}')">
+                                        <strong>${s.title}</strong> <span style="font-size:0.75rem; color:var(--primary);">(${s.category})</span>
+                                      </div>
+                                      <div class="song-actions">
+                                        <a href="${s.url}" download target="_blank" class="action-icon" title="Baixar Offline"><i class="fa-solid fa-download"></i></a>
+                                        <i class="fa-solid fa-play action-icon" onclick="tocar('${s.url}', '${s.title}')"></i>
+                                      </div>
                                    </div>`;
         }
       });
