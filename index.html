@@ -3,62 +3,151 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nando's Music</title>
+  <title>Nando's Music - Ar & Som</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#a855f7">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
   <style>
-    body { margin: 0; background: #0b0f19; color: #fff; font-family: sans-serif; }
-    /* Tela de Login com a sua foto */
-    #authModal { 
-      display: flex; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9999;
-      background: #0b0f19 url('https://i.ibb.co/37jJ59f/Nandos-Fachada.jpg') no-repeat center center;
-      background-size: cover; align-items: center; justify-content: center;
-    }
-    #authModal::before { content: ''; position: absolute; width: 100%; height: 100%; background: rgba(0,0,0,0.85); }
-    .box { position: relative; z-index: 1; background: rgba(0,0,0,0.8); padding: 30px; border-radius: 20px; text-align: center; border: 1px solid #a855f7; width: 80%; }
-    input { width: 100%; padding: 10px; margin: 10px 0; border-radius: 5px; border: none; text-align: center; }
-    button { width: 100%; padding: 10px; background: #a855f7; color: white; border: none; border-radius: 5px; cursor: pointer; }
-    /* Layout do Player */
-    .app-content { padding: 20px; }
-    video { width: 100%; height: 200px; background: #222; border-radius: 10px; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+    body { background: #0b0f19; color: #fff; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
+    header { background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(10px); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .logo { font-size: 1.3rem; font-weight: 700; background: linear-gradient(135deg, #a855f7, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: flex; align-items: center; gap: 10px; }
+    .admin-btn { background: rgba(168, 85, 247, 0.2); border: 1px solid #a855f7; color: #fff; padding: 6px 14px; border-radius: 8px; cursor: pointer; transition: 0.3s; font-size: 0.9rem; }
+    .admin-btn:hover { background: #a855f7; }
+    .status-bar { background: #131b2e; padding: 8px 20px; display: flex; align-items: center; justify-content: space-between; font-size: 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .status-indicator { display: flex; align-items: center; gap: 6px; }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: #22c55e; box-shadow: 0 0 5px #22c55e; }
+    .container { flex: 1; padding: 20px; max-width: 800px; margin: 0 auto; width: 100%; }
+    .player-card { background: #151b2c; border-radius: 16px; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 20px; }
+    video { width: 100%; height: 220px; object-fit: cover; background: #000; }
+    .music-info { padding: 15px 20px; text-align: center; }
+    .music-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 4px; }
+    .controls { display: flex; align-items: center; justify-content: center; gap: 20px; padding: 15px; background: rgba(0,0,0,0.2); }
+    .ctrl-btn { background: none; border: none; color: #fff; font-size: 1.2rem; cursor: pointer; }
+    .ctrl-btn.play { font-size: 2.2rem; color: #a855f7; }
+    .playlist { display: flex; flex-direction: column; gap: 10px; }
+    .song-item { background: #151b2c; padding: 12px 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: space-between; cursor: pointer; }
+    
+    /* TELA DE BLOQUEIO COM A FOTO DA EMPRESA E EFEITO */
+    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1000; align-items: center; justify-content: center; padding: 20px; background: url('fundo.jpg') no-repeat center center; background-size: cover; }
+    .modal::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(11, 15, 25, 0.88); backdrop-filter: blur(8px); z-index: 1; }
+    .modal.active { display: flex; }
+    .modal-content { position: relative; z-index: 2; background: rgba(17, 24, 39, 0.9); border: 1px solid rgba(168, 85, 247, 0.3); width: 100%; max-width: 450px; border-radius: 20px; padding: 30px; box-shadow: 0 15px 35px rgba(0,0,0,0.5); text-align: center; }
+    
+    .form-group { margin-bottom: 15px; }
+    .form-group input { width: 100%; padding: 12px; background: #0b0f19; border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; color: #fff; font-size: 1.1rem; text-align: center; letter-spacing: 2px; }
+    .btn-submit { width: 100%; background: linear-gradient(135deg, #a855f7, #ec4899); border: none; padding: 12px; border-radius: 8px; color: #fff; font-weight: 600; cursor: pointer; }
+    .code-row { background: #0b0f19; padding: 10px; border-radius: 8px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+    .code-text { font-family: monospace; color: #a855f7; font-weight: bold; }
+    .del-code { background: #ef4444; border: none; color: white; padding: 4px 8px; border-radius: 4px; cursor: pointer; }
   </style>
 </head>
 <body>
 
-  <div id="authModal">
-    <div class="box">
-      <h2>Nando's Ar-Condicionado</h2>
-      <input type="text" id="cod" placeholder="DIGITE O CÓDIGO">
-      <button onclick="entrar()">ENTRAR</button>
+  <!-- TELA DE BLOQUEIO PERSONALIZADA COM A EMPRESA -->
+  <div id="authModal" class="modal">
+    <div class="modal-content">
+      <div style="margin-bottom: 15px;">
+        <i class="fa-solid fa-snowflake" style="font-size: 2.5rem; color: #a855f7; margin-bottom: 8px;"></i>
+        <h2 style="font-size: 1.4rem; background: linear-gradient(135deg, #a855f7, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Nando's Ar-Condicionado</h2>
+        <p style="color: #94a3b8; font-size: 0.85rem; margin-top: 5px;">Qualidade e confiança em todos os detalhes!</p>
+      </div>
+      <p style="color: #cbd5e1; font-size: 0.9rem; margin-bottom: 15px;">Digite o seu código de acesso exclusivo:</p>
+      <div class="form-group"><input type="text" id="userAccessCode" placeholder="EX: ND-XXXX" style="text-transform: uppercase;"></div>
+      <button class="btn-submit" onclick="validarCodigoUsuario()">Entrar no Aplicativo</button>
+      <p id="authError" style="color: #ef4444; font-size: 0.85rem; margin-top: 10px; display: none;">Código inválido ou já utilizado em outro aparelho.</p>
     </div>
   </div>
 
-  <div class="app-content">
-    <h3>Nando's Music</h3>
-    <video id="player" controls></video>
-    <p>Selecione uma música no Painel Admin</p>
+  <header>
+    <div class="logo"><i class="fa-solid fa-headphones"></i> Nando's Music</div>
+    <button class="admin-btn" onclick="abrirAdmin()">Painel Admin</button>
+  </header>
+
+  <div class="container">
+    <div class="player-card">
+      <video id="audioPlayer" controls></video>
+      <div class="music-info"><div class="music-title" id="currentTitle">Selecione uma música</div></div>
+      <div class="controls">
+        <button class="ctrl-btn" onclick="prevSong()"><i class="fa-solid fa-backward-step"></i></button>
+        <button class="ctrl-btn play" onclick="togglePlay()"><i class="fa-solid fa-circle-play" id="playIcon"></i></button>
+        <button class="ctrl-btn" onclick="nextSong()"><i class="fa-solid fa-forward-step"></i></button>
+      </div>
+    </div>
+    <div class="playlist" id="playlistContainer"></div>
+  </div>
+
+  <div id="adminModal" class="modal" style="background: rgba(0,0,0,0.85); backdrop-filter: blur(5px);">
+    <div class="modal-content" style="text-align: left;">
+      <h3 style="margin-bottom: 15px;">Painel Admin</h3>
+      <div id="adminLoginBox">
+        <div class="form-group"><input type="password" id="adminPasswordInput" placeholder="Senha ADM"></div>
+        <button class="btn-submit" onclick="logarAdmin()">Entrar</button>
+      </div>
+      <div id="adminDashboardBox" style="display: none;">
+        <button class="btn-submit" onclick="gerarNovoCodigo()">Gerar Novo Código</button>
+        <div id="codesListContainer" style="margin-top:20px; max-height: 250px; overflow-y: auto;"></div>
+      </div>
+    </div>
   </div>
 
   <script>
-    const db = firebase.initializeApp({databaseURL: "https://music-nando-default-rtdb.firebaseio.com/"}).database();
-    let devId = localStorage.getItem('id') || Math.random().toString(36).substr(2, 9);
-    localStorage.setItem('id', devId);
+    const firebaseConfig = { databaseURL: "https://music-nando-default-rtdb.firebaseio.com/" };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    let deviceId = localStorage.getItem('nando_device_id') || ('DEV-' + Math.random().toString(36).substring(2, 9).toUpperCase());
+    localStorage.setItem('nando_device_id', deviceId);
 
-    // Verifica se já está logado
-    db.ref('dispositivos').once('value', s => {
-      s.forEach(c => { if(c.val() === devId) document.getElementById('authModal').style.display = 'none'; });
-    });
-
-    function entrar() {
-      let c = document.getElementById('cod').value.trim().toUpperCase();
-      db.ref('codigos_gerados/' + c).once('value', s => {
-        if(s.exists() && !s.val().usado) {
-          db.ref('dispositivos/' + c).set(devId);
-          db.ref('codigos_gerados/' + c).update({usado: true});
-          location.reload();
-        } else { alert("Código inválido ou já usado!"); }
+    function validarCodigoUsuario() {
+      let code = document.getElementById('userAccessCode').value.trim().toUpperCase();
+      db.ref('codigos_gerados/' + code).once('value', s => {
+        if (!s.exists()) { document.getElementById('authError').style.display = 'block'; return; }
+        let d = s.val();
+        if (d.usado && d.deviceId !== deviceId) { alert("Código já usado em outro aparelho!"); return; }
+        db.ref('codigos_gerados/' + code).update({ usado: true, deviceId: deviceId });
+        db.ref('dispositivos_autorizados/' + code).set({ deviceId: deviceId });
+        location.reload();
       });
     }
+
+    function logarAdmin() {
+      if (document.getElementById('adminPasswordInput').value === "1234") {
+        document.getElementById('adminLoginBox').style.display = 'none';
+        document.getElementById('adminDashboardBox').style.display = 'block';
+        carregarListaCodigosAdmin();
+      } else { alert("Senha incorreta!"); }
+    }
+
+    function gerarNovoCodigo() {
+      let cod = 'ND-' + Math.random().toString(36).substring(2, 6).toUpperCase();
+      db.ref('codigos_gerados/' + cod).set({ usado: false });
+    }
+
+    function carregarListaCodigosAdmin() {
+      db.ref('codigos_gerados').on('value', s => {
+        let list = document.getElementById('codesListContainer');
+        list.innerHTML = '';
+        s.forEach(c => {
+          let val = c.val();
+          list.innerHTML += `<div class="code-row"><span class="code-text">${c.key}</span> <div><button class="admin-btn" style="padding: 4px 8px; font-size:0.75rem;" onclick="copiar('${c.key}')">Copiar</button> <button class="del-code" onclick="remover('${c.key}')">X</button></div></div>`;
+        });
+      });
+    }
+
+    function copiar(t) { navigator.clipboard.writeText(t); alert("Copiado: " + t); }
+    function remover(k) { db.ref('codigos_gerados/' + k).remove(); db.ref('dispositivos_autorizados/' + k).remove(); }
+    function abrirAdmin() { document.getElementById('adminModal').classList.add('active'); }
+    
+    db.ref('dispositivos_autorizados').once('value', s => {
+      let ok = false;
+      s.forEach(child => { if (child.val().deviceId === deviceId) ok = true; });
+      if (!ok) document.getElementById('authModal').classList.add('active');
+    });
   </script>
 </body>
 </html>
