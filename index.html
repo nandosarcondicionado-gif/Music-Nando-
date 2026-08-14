@@ -4,79 +4,61 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Nando's Music</title>
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#a855f7">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
-    body { background: #0b0f19; color: #fff; min-height: 100vh; display: flex; flex-direction: column; }
-    .modal { 
-      display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1000;
-      align-items: center; justify-content: center; padding: 20px;
+    body { margin: 0; background: #0b0f19; color: #fff; font-family: sans-serif; }
+    /* Tela de Login com a sua foto */
+    #authModal { 
+      display: flex; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9999;
       background: #0b0f19 url('https://i.ibb.co/37jJ59f/Nandos-Fachada.jpg') no-repeat center center;
-      background-size: cover; background-attachment: fixed;
+      background-size: cover; align-items: center; justify-content: center;
     }
-    .modal::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1; }
-    .modal.active { display: flex; }
-    .modal-content { position: relative; z-index: 2; background: rgba(17, 24, 39, 0.95); width: 100%; max-width: 400px; padding: 30px; border-radius: 20px; text-align: center; border: 1px solid #a855f7; }
-    .form-group { margin: 20px 0; }
-    .form-group input { width: 100%; padding: 12px; border-radius: 8px; border: none; text-align: center; font-size: 1.2rem; }
-    .btn-submit { width: 100%; padding: 12px; background: #a855f7; border: none; color: #fff; font-weight: bold; border-radius: 8px; cursor: pointer; }
-    header { padding: 20px; display: flex; justify-content: space-between; align-items: center; }
-    .container { padding: 20px; }
-    .player-card { background: #151b2c; padding: 20px; border-radius: 16px; }
-    video { width: 100%; height: 200px; background: #000; border-radius: 8px; }
+    #authModal::before { content: ''; position: absolute; width: 100%; height: 100%; background: rgba(0,0,0,0.85); }
+    .box { position: relative; z-index: 1; background: rgba(0,0,0,0.8); padding: 30px; border-radius: 20px; text-align: center; border: 1px solid #a855f7; width: 80%; }
+    input { width: 100%; padding: 10px; margin: 10px 0; border-radius: 5px; border: none; text-align: center; }
+    button { width: 100%; padding: 10px; background: #a855f7; color: white; border: none; border-radius: 5px; cursor: pointer; }
+    /* Layout do Player */
+    .app-content { padding: 20px; }
+    video { width: 100%; height: 200px; background: #222; border-radius: 10px; }
   </style>
 </head>
 <body>
 
-  <div id="authModal" class="modal">
-    <div class="modal-content">
-      <h2 style="color: #a855f7;">Nando's Ar-Condicionado</h2>
-      <p style="margin: 10px 0;">Digite o código de acesso:</p>
-      <div class="form-group"><input type="text" id="userAccessCode" placeholder="CÓDIGO"></div>
-      <button class="btn-submit" onclick="validar()">Entrar</button>
+  <div id="authModal">
+    <div class="box">
+      <h2>Nando's Ar-Condicionado</h2>
+      <input type="text" id="cod" placeholder="DIGITE O CÓDIGO">
+      <button onclick="entrar()">ENTRAR</button>
     </div>
   </div>
 
-  <header>
+  <div class="app-content">
     <h3>Nando's Music</h3>
-    <button onclick="abrirAdmin()">Admin</button>
-  </header>
-
-  <div class="container">
-    <div class="player-card">
-      <video id="audioPlayer" controls></video>
-      <p id="currentTitle" style="margin-top: 10px;">Selecione uma música</p>
-    </div>
+    <video id="player" controls></video>
+    <p>Selecione uma música no Painel Admin</p>
   </div>
 
   <script>
-    const db = firebase.database();
-    let deviceId = localStorage.getItem('did') || ('D-' + Math.random().toString(36).substr(2, 9));
-    localStorage.setItem('did', deviceId);
+    const db = firebase.initializeApp({databaseURL: "https://music-nando-default-rtdb.firebaseio.com/"}).database();
+    let devId = localStorage.getItem('id') || Math.random().toString(36).substr(2, 9);
+    localStorage.setItem('id', devId);
 
-    function validar() {
-      let code = document.getElementById('userAccessCode').value.trim().toUpperCase();
-      db.ref('codigos_gerados/' + code).once('value', s => {
-        if(s.exists()) {
-          db.ref('codigos_gerados/' + code).update({usado: true, deviceId: deviceId});
-          db.ref('dispositivos/' + code).set({deviceId: deviceId});
-          location.reload();
-        } else { alert("Código inválido!"); }
-      });
-    }
-
-    // Checagem de entrada
+    // Verifica se já está logado
     db.ref('dispositivos').once('value', s => {
-      let ok = false;
-      s.forEach(c => { if(c.val().deviceId === deviceId) ok = true; });
-      if(!ok) document.getElementById('authModal').classList.add('active');
+      s.forEach(c => { if(c.val() === devId) document.getElementById('authModal').style.display = 'none'; });
     });
 
-    function abrirAdmin() { let p = prompt("Senha:"); if(p==="1234") { let c = prompt("Novo Código:"); db.ref('codigos_gerados/'+c).set({usado:false}); } }
+    function entrar() {
+      let c = document.getElementById('cod').value.trim().toUpperCase();
+      db.ref('codigos_gerados/' + c).once('value', s => {
+        if(s.exists() && !s.val().usado) {
+          db.ref('dispositivos/' + c).set(devId);
+          db.ref('codigos_gerados/' + c).update({usado: true});
+          location.reload();
+        } else { alert("Código inválido ou já usado!"); }
+      });
+    }
   </script>
 </body>
 </html>
