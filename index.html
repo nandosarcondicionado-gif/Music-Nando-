@@ -1,369 +1,56 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nando's Music Pro</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-  
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-
-  <style>
-    :root { --primary: #a855f7; --bg: #0b0f19; }
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
-    body { background: var(--bg); color: #fff; min-height: 100vh; display: flex; flex-direction: column; }
-    
-    header { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(10px); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.05); }
-    .logo { font-size: 1.2rem; font-weight: 700; background: linear-gradient(135deg, #a855f7, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    
-    .admin-btn { background: rgba(168, 85, 247, 0.2); border: 1px solid #a855f7; color: #fff; padding: 6px 14px; border-radius: 8px; cursor: pointer; font-size: 0.9rem; }
-    .admin-btn:hover { background: #a855f7; }
-
-    .filter-bar { display: flex; gap: 10px; padding: 15px 20px; overflow-x: auto; background: #131b2e; border-bottom: 1px solid rgba(255,255,255,0.05); }
-    .filter-btn { background: #1e293b; border: none; color: #fff; padding: 8px 16px; border-radius: 20px; cursor: pointer; font-size: 0.85rem; white-space: nowrap; }
-    .filter-btn.active { background: var(--primary); }
-
-    .player-section { padding: 20px; max-width: 800px; margin: 0 auto; width: 100%; }
-    video { width: 100%; height: 260px; border-radius: 12px; background: #000; object-fit: cover; }
-    .now-playing { margin-top: 10px; font-size: 1.1rem; font-weight: 600; text-align: center; color: #cbd5e1; }
-
-    .playlist-container { padding: 0 20px 20px 20px; max-width: 800px; margin: 0 auto; width: 100%; flex: 1; }
-    .song-item { background: #151b2c; padding: 12px 15px; margin-bottom: 10px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; transition: 0.2s; }
-    .song-item:hover { background: rgba(168, 85, 247, 0.1); border-color: rgba(168, 85, 247, 0.3); }
-    
-    .song-info { flex: 1; cursor: pointer; }
-    .song-actions { display: flex; gap: 12px; align-items: center; }
-    .action-icon { cursor: pointer; font-size: 1rem; color: #94a3b8; transition: 0.2s; }
-    .action-icon:hover { color: var(--primary); }
-
-    /* Modais */
-    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
-    .modal.active { display: flex; }
-    .modal-content { background: #111827; border: 1px solid rgba(255,255,255,0.1); width: 100%; max-width: 500px; border-radius: 16px; padding: 25px; max-height: 90vh; overflow-y: auto; }
-    
-    input, select { width: 100%; padding: 10px 14px; margin: 8px 0; background: #0b0f19; border: 1px solid rgba(255,255,255,0.1); color: #fff; border-radius: 8px; font-size: 0.9rem; }
-    .btn-submit { width: 100%; background: linear-gradient(135deg, #a855f7, #ec4899); border: none; padding: 12px; border-radius: 8px; color: #fff; font-weight: bold; cursor: pointer; margin-top: 10px; }
-    .btn-danger { background: #ef4444; border: none; padding: 6px 10px; border-radius: 6px; color: #fff; cursor: pointer; font-size: 0.75rem; }
-    
-    .admin-list-row { display: flex; justify-content: space-between; align-items: center; background: #0b0f19; padding: 10px; border-radius: 8px; margin-bottom: 6px; font-size: 0.85rem; }
-  </style>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b0f19"><meta name="description" content="Nando's Music Pro">
+<link rel="manifest" href="manifest.json"><title>Nando's Music Pro</title>
+<style>
+:root{--p:#a855f7;--p2:#ec4899;--bg:#080b13;--panel:#121827;--muted:#94a3b8}*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}body{background:var(--bg);color:#fff;min-height:100vh}button,input,select{font:inherit}button{cursor:pointer}header{position:sticky;top:0;z-index:20;background:#0f172add;backdrop-filter:blur(12px);padding:14px 16px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #fff1}.logo{font-weight:800;background:linear-gradient(135deg,var(--p),var(--p2));background-clip:text;-webkit-background-clip:text;color:transparent}.btn,.chip{border:1px solid #fff2;background:#ffffff0d;color:#fff;border-radius:9px;padding:8px 12px}.filters{display:flex;gap:8px;overflow:auto;padding:11px 14px;background:#0e1524}.chip{border:0;border-radius:20px;white-space:nowrap}.chip.active{background:var(--p)}.hero{max-width:900px;margin:auto;padding:14px;position:relative}.bg{width:100%;height:280px;object-fit:cover;border-radius:16px;background:#000}.shade{position:absolute;left:14px;right:14px;top:14px;height:280px;border-radius:16px;background:linear-gradient(#0001,#000b);pointer-events:none}.player{position:relative;margin-top:-210px;margin-bottom:145px;text-align:center;padding:0 24px;z-index:2}.cover{width:100px;height:100px;margin:auto;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,var(--p),var(--p2));font-size:42px;border:4px solid #fff4;box-shadow:0 10px 35px #0009}.title{font-weight:800;margin-top:10px;text-shadow:0 2px 8px #000}.sub{color:#ddd;font-size:.8rem;margin-top:4px}.controls{display:flex;justify-content:center;gap:8px;margin-top:10px}.circle{border:0;border-radius:50%;width:43px;height:43px;background:#ffffff1a;color:#fff}.main{width:52px;height:52px;background:linear-gradient(135deg,var(--p),var(--p2))}.actions{display:flex;justify-content:center;gap:7px;flex-wrap:wrap;margin-top:9px}.content{max-width:900px;margin:auto;padding:0 14px 30px}.search,.field{width:100%;padding:11px 12px;background:#080b13;border:1px solid #fff2;color:#fff;border-radius:9px;margin:6px 0 10px}.song{display:flex;gap:8px;align-items:center;background:#151b2c;border:1px solid #fff1;border-radius:11px;padding:10px;margin-bottom:8px}.info{flex:1;min-width:0}.songtitle{font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.meta{font-size:.72rem;color:var(--muted);margin-top:3px}.song button{border:0;background:#fff1;color:#fff;border-radius:8px;padding:8px}.modal{display:none;position:fixed;inset:0;background:#000c;backdrop-filter:blur(6px);z-index:100;align-items:center;justify-content:center;padding:15px}.modal.open{display:flex}.box{width:100%;max-width:560px;max-height:92vh;overflow:auto;background:#111827;border:1px solid #fff2;border-radius:16px;padding:18px}.primary{width:100%;border:0;border-radius:9px;padding:11px;color:#fff;font-weight:800;background:linear-gradient(135deg,var(--p),var(--p2));margin-top:4px}.row{display:flex;gap:8px;align-items:center}.muted{color:var(--muted);font-size:.8rem}.notice{background:#fff1;border-radius:9px;padding:10px;margin:9px 0;font-size:.78rem}.adminitem{display:flex;justify-content:space-between;gap:8px;align-items:center;background:#080b13;border-radius:8px;padding:9px;margin-top:6px;font-size:.8rem}.danger{background:#ef4444!important}.install{display:none;position:fixed;right:14px;bottom:14px;z-index:30;border:0;border-radius:25px;padding:11px 15px;background:linear-gradient(135deg,var(--p),var(--p2));color:#fff;box-shadow:0 8px 30px #0008}@media(max-width:600px){.bg,.shade{height:225px}.player{margin-top:-170px;margin-bottom:110px}}
+</style>
 </head>
 <body>
-
-  <!-- TELA DE BLOQUEIO / CÓDIGO DE ACESSO -->
-  <div id="authModal" class="modal active">
-    <div class="modal-content" style="text-align: center;">
-      <h2 style="margin-bottom: 10px;"><i class="fa-solid fa-lock" style="color: var(--primary);"></i> Acesso Restrito</h2>
-      <p style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 20px;">Digite o código de acesso fornecido pelo Administrador.</p>
-      <input type="text" id="userAccessCode" placeholder="EX: NANDO-1234" style="text-align: center; text-transform: uppercase; font-size: 1.2rem; letter-spacing: 2px;">
-      <button class="btn-submit" onclick="validarCodigoUsuario()">Entrar no Aplicativo</button>
-      <p id="authError" style="color: #ef4444; font-size: 0.8rem; margin-top: 10px; display: none;"></p>
-      
-      <div style="margin-top: 25px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 15px;">
-        <button onclick="fecharAuthEAbrirAdmin()" style="background: none; border: none; color: var(--primary); font-size: 0.85rem; cursor: pointer; text-decoration: underline;">Sou Administrador</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- HEADER -->
-  <header>
-    <div class="logo"><i class="fa-solid fa-headphones"></i> Nando's Music</div>
-    <button class="admin-btn" onclick="abrirAdmin()"><i class="fa-solid fa-gear"></i> Painel Admin</button>
-  </header>
-
-  <!-- FILTROS DE CATEGORIA -->
-  <div class="filter-bar">
-    <button class="filter-btn active" onclick="filtrar('Todas', this)">Todas</button>
-    <button class="filter-btn" onclick="filtrar('Sertanejo', this)">Sertanejo</button>
-    <button class="filter-btn" onclick="filtrar('Funk', this)">Funk</button>
-    <button class="filter-btn" onclick="filtrar('Forró', this)">Forró</button>
-    <button class="filter-btn" onclick="filtrar('Pagode', this)">Pagode</button>
-    <button class="filter-btn" onclick="filtrar('Eletrônica', this)">Eletrônica</button>
-    <button class="filter-btn" onclick="filtrar('Trap', this)">Trap</button>
-    <button class="filter-btn" onclick="filtrar('Pop', this)">Pop</button>
-    <button class="filter-btn" onclick="filtrar('Rock', this)">Rock</button>
-    <button class="filter-btn" onclick="filtrar('Engraçado', this)">Engraçados</button>
-  </div>
-
-  <!-- PLAYER PRINCIPAL -->
-  <div class="player-section">
-    <video id="mainPlayer" controls autoplay></video>
-    <div class="now-playing" id="nowPlaying">Carregando player...</div>
-  </div>
-
-  <!-- PLAYLIST -->
-  <div class="playlist-container" id="playlistContainer"></div>
-
-  <!-- MODAL ADMIN -->
-  <div id="adminModal" class="modal">
-    <div class="modal-content">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 15px;">
-        <h3>Painel Administrativo</h3>
-        <button onclick="fecharAdmin()" style="background:none; border:none; color:#fff; font-size:1.2rem; cursor:pointer;">&times;</button>
-      </div>
-      
-      <!-- Login Admin -->
-      <div id="adminLoginBox">
-        <label style="font-size: 0.85rem; color: #94a3b8;">Senha de Administrador</label>
-        <input type="password" id="admPass" placeholder="Digite a senha (1234)">
-      </div>
-
-      <!-- Conteúdo Admin -->
-      <div id="adminDashboard" style="display:none;">
-        
-        <!-- Abas de navegação do admin -->
-        <div style="display:flex; gap:5px; margin-bottom:15px; overflow-x:auto;">
-          <button class="filter-btn active" onclick="mudarAbaAdmin('musicas', this)">Músicas</button>
-          <button class="filter-btn" onclick="mudarAbaAdmin('fundos', this)">Vídeos de Fundo</button>
-          <button class="filter-btn" onclick="mudarAbaAdmin('codigos', this)">Códigos</button>
-        </div>
-
-        <!-- Gerenciar Músicas -->
-        <div id="secMusicas">
-          <h4 style="color:var(--primary); font-size:0.95rem; margin-bottom:8px;">Adicionar Música</h4>
-          <input type="text" id="sTitle" placeholder="Título da Música">
-          <input type="text" id="sUrl" placeholder="Link Direto do Vídeo (.mp4)">
-          <select id="sCat">
-            <option value="Sertanejo">Sertanejo</option>
-            <option value="Funk">Funk</option>
-            <option value="Forró">Forró</option>
-            <option value="Pagode">Pagode</option>
-            <option value="Eletrônica">Eletrônica</option>
-            <option value="Trap">Trap</option>
-            <option value="Pop">Pop</option>
-            <option value="Rock">Rock</option>
-            <option value="Engraçado">Engraçado</option>
-          </select>
-          <button class="btn-submit" onclick="salvarMusica()">Salvar Música</button>
-          <div id="adminMusicList" style="margin-top:15px; max-height: 150px; overflow-y:auto;"></div>
-        </div>
-
-        <!-- Gerenciar Vídeos de Fundo -->
-        <div id="secFundos" style="display:none;">
-          <h4 style="color:var(--primary); font-size:0.95rem; margin-bottom:8px;">Vídeos de Fundo (Modo Ocioso)</h4>
-          <p style="font-size:0.75rem; color:#94a3b8; margin-bottom:8px;">Estes vídeos vão rodar aleatoriamente quando nenhuma música estiver tocando.</p>
-          <input type="text" id="bgUrl" placeholder="Link Direto do Vídeo de Fundo (.mp4)">
-          <button class="btn-submit" onclick="salvarFundo()">Adicionar Vídeo de Fundo</button>
-          <div id="adminBgList" style="margin-top:15px; max-height: 150px; overflow-y:auto;"></div>
-        </div>
-
-        <!-- Gerenciar Códigos de Acesso -->
-        <div id="secCodigos" style="display:none;">
-          <h4 style="color:var(--primary); font-size:0.95rem; margin-bottom:8px;">Gerar Códigos de Aparelho</h4>
-          <button class="btn-submit" onclick="gerarNovoCodigo()"><i class="fa-solid fa-key"></i> Gerar Novo Código</button>
-          <div id="adminCodesList" style="margin-top:15px; max-height: 150px; overflow-y:auto;"></div>
-        </div>
-
-      </div>
-    </div>
-  </div>
-
-  <script>
-    const firebaseConfig = { databaseURL: "https://music-nando-default-rtdb.firebaseio.com/" };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
-
-    let deviceId = localStorage.getItem('nando_device_id');
-    if (!deviceId) {
-      deviceId = 'DEV-' + Math.random().toString(36).substring(2, 9).toUpperCase();
-      localStorage.setItem('nando_device_id', deviceId);
-    }
-
-    let allSongs = [];
-    let bgVideos = [];
-
-    function verificarAutorizacaoAparelho() {
-      db.ref('dispositivos_autorizados').once('value', snapshot => {
-        let autorizados = snapshot.val() || {};
-        let autorizado = false;
-        for (let codigo in autorizados) {
-          if (autorizados[codigo].deviceId === deviceId) {
-            autorizado = true;
-            break;
-          }
-        }
-        if (autorizado) {
-          document.getElementById('authModal').classList.remove('active');
-        }
-      });
-    }
-
-    function fecharAuthEAbrirAdmin() {
-      document.getElementById('authModal').classList.remove('active');
-      abrirAdmin();
-    }
-
-    function validarCodigoUsuario() {
-      let codigo = document.getElementById('userAccessCode').value.trim().toUpperCase();
-      let errorEl = document.getElementById('authError');
-      if (!codigo) { errorEl.innerText = "Digite um código!"; errorEl.style.display = 'block'; return; }
-
-      db.ref('codigos_gerados/' + codigo).once('value', snapshot => {
-        let dados = snapshot.val();
-        if (!dados) { errorEl.innerText = "Código inválido."; errorEl.style.display = 'block'; return; }
-        if (dados.usado && dados.deviceId !== deviceId) { errorEl.innerText = "Código já usado em outro aparelho."; errorEl.style.display = 'block'; return; }
-
-        db.ref('codigos_gerados/' + codigo).update({ usado: true, deviceId: deviceId });
-        db.ref('dispositivos_autorizados/' + codigo).set({ deviceId: deviceId });
-        document.getElementById('authModal').classList.remove('active');
-        alert("Aparelho autorizado!");
-      });
-    }
-
-    function abrirAdmin() { document.getElementById('adminModal').classList.add('active'); }
-    function fecharAdmin() { document.getElementById('adminModal').classList.remove('active'); }
-
-    // Correção: Definida a função para evitar crash no carregamento do painel
-    function carregarDadosAdmin() {
-      // Os dados já são carregados automaticamente via listeners do Firebase em tempo real.
-    }
-
-    document.getElementById('admPass').oninput = (e) => {
-      if (e.target.value === "1234") {
-        document.getElementById('adminLoginBox').style.display = 'none';
-        document.getElementById('adminDashboard').style.display = 'block';
-        carregarDadosAdmin();
-      }
-    };
-
-    function mudarAbaAdmin(aba, btn) {
-      document.querySelectorAll('#adminDashboard .filter-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      document.getElementById('secMusicas').style.display = aba === 'musicas' ? 'block' : 'none';
-      document.getElementById('secFundos').style.display = aba === 'fundos' ? 'block' : 'none';
-      document.getElementById('secCodigos').style.display = aba === 'codigos' ? 'block' : 'none';
-    }
-
-    function salvarMusica() {
-      const title = document.getElementById('sTitle').value;
-      const url = document.getElementById('sUrl').value;
-      const category = document.getElementById('sCat').value;
-      if (!title || !url) { alert("Preencha todos os campos!"); return; }
-      db.ref('musicas').push({ title, url, category }).then(() => {
-        alert("Música salva!");
-        document.getElementById('sTitle').value = '';
-        document.getElementById('sUrl').value = '';
-      }).catch(err => alert("Erro ao salvar (verifique as Regras do Firebase): " + err.message));
-    }
-
-    function salvarFundo() {
-      const url = document.getElementById('bgUrl').value;
-      if (!url) { alert("Coloque o link do vídeo!"); return; }
-      db.ref('background_videos').push({ url }).then(() => {
-        alert("Vídeo de fundo adicionado!");
-        document.getElementById('bgUrl').value = '';
-      }).catch(err => alert("Erro ao salvar: " + err.message));
-    }
-
-    function gerarNovoCodigo() {
-      let chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-      let novo = 'ND-';
-      for(let i=0; i<4; i++) novo += chars.charAt(Math.floor(Math.random() * chars.length));
-      db.ref('codigos_gerados/' + novo).set({ usado: false, deviceId: null })
-        .then(() => alert("Código gerado com sucesso: " + novo))
-        .catch(err => alert("Erro ao gerar código. Verifique se o banco permite gravação: " + err.message));
-    }
-
-    function deletar(caminho, id) {
-      if(confirm("Deseja realmente excluir?")) {
-        db.ref(caminho + '/' + id).remove();
-      }
-    }
-
-    db.ref('musicas').on('value', snap => {
-      allSongs = [];
-      const data = snap.val();
-      let html = '', adminHtml = '';
-      for(let id in data) {
-        allSongs.push({ id, ...data[id] });
-        html += `<div class="song-item">
-                    <div class="song-info" onclick="tocar('${data[id].url}', '${data[id].title}')">
-                      <strong>${data[id].title}</strong> <span style="font-size:0.75rem; color:var(--primary);">(${data[id].category})</span>
-                    </div>
-                    <div class="song-actions">
-                      <a href="${data[id].url}" download target="_blank" class="action-icon" title="Baixar Offline"><i class="fa-solid fa-download"></i></a>
-                      <i class="fa-solid fa-play action-icon" onclick="tocar('${data[id].url}', '${data[id].title}')"></i>
-                    </div>
-                 </div>`;
-        adminHtml += `<div class="admin-list-row"><span>${data[id].title}</span> <button class="btn-danger" onclick="deletar('musicas', '${id}')">Excluir</button></div>`;
-      }
-      document.getElementById('playlistContainer').innerHTML = html;
-      if(document.getElementById('adminMusicList')) document.getElementById('adminMusicList').innerHTML = adminHtml;
-    });
-
-    db.ref('background_videos').on('value', snap => {
-      bgVideos = [];
-      const data = snap.val();
-      let adminHtml = '';
-      for(let id in data) {
-        bgVideos.push(data[id].url);
-        adminHtml += `<div class="admin-list-row"><span>Vídeo Fundo (${id.substring(0,5)})</span> <button class="btn-danger" onclick="deletar('background_videos', '${id}')">Excluir</button></div>`;
-      }
-      if(document.getElementById('adminBgList')) document.getElementById('adminBgList').innerHTML = adminHtml;
-      
-      const player = document.getElementById('mainPlayer');
-      if (player.paused && !player.src) {
-        tocarFundoAleatorio();
-      }
-    });
-
-    db.ref('codigos_gerados').on('value', snap => {
-      const data = snap.val();
-      let html = '';
-      for(let id in data) {
-        let status = data[id].usado ? 'Usado' : 'Disponível';
-        html += `<div class="admin-list-row"><span><strong>${id}</strong> (${status})</span> <button class="btn-danger" onclick="deletar('codigos_gerados', '${id}')">Excluir</button></div>`;
-      }
-      if(document.getElementById('adminCodesList')) document.getElementById('adminCodesList').innerHTML = html;
-    });
-
-    function tocar(url, title) {
-      const player = document.getElementById('mainPlayer');
-      player.src = url;
-      player.play();
-      document.getElementById('nowPlaying').innerText = title;
-    }
-
-    function tocarFundoAleatorio() {
-      if (bgVideos.length > 0) {
-        let randomUrl = bgVideos[Math.floor(Math.random() * bgVideos.length)];
-        tocar(randomUrl, "Modo Fundo (Aleatório)");
-      } else {
-        document.getElementById('nowPlaying').innerText = "Nenhum vídeo de fundo cadastrado";
-      }
-    }
-
-    document.getElementById('mainPlayer').onended = () => {
-      tocarFundoAleatorio();
-    };
-
-    function filtrar(cat, btn) {
-      document.querySelectorAll('.filter-bar .filter-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      
-      const container = document.getElementById('playlistContainer');
-      container.innerHTML = '';
-      allSongs.forEach(s => {
-        if(cat === 'Todas' || s.category === cat) {
-          container.innerHTML += `<div class="song-item">
-                                      <div class="song-info" onclick="tocar('${s.url}', '${s.title}')">
-                                        <strong>${s.title}</strong> <span style="font-size:0.75rem; color:var(--primary);">(${s.category})</span>
-                                      </div>
-                                      <div class="song-actions">
-                                        <a href="${s.url}" download target="_blank" class="action-icon" title="Baixar Offline"><i class="fa-solid fa-download"></i></a>
-                                        <i class="fa-solid fa-play action-icon" onclick="tocar('${s.url}', '${s.title}')"></i>
-                                      </div>
-                                   </div>`;
-        }
-      });
-    }
-
-    window.onload = () => {
-      verificarAutorizacaoAparelho();
-    };
-  </script>
-</body>
-</html>
+<header><div class="logo">🎧 Nando's Music Pro</div><div class="row"><button class="btn" id="installTop">📲 Instalar</button><button class="btn" onclick="openAdmin()">⚙️ ADM</button></div></header>
+<div class="filters" id="filters"></div>
+<section class="hero"><video id="bgVideo" class="bg" autoplay muted playsinline></video><div class="shade"></div><div class="player"><div class="cover">🎵</div><div class="title" id="nowTitle">Nenhuma música</div><div class="sub" id="nowMeta">Escolha uma música</div><audio id="audio" controls style="width:100%;margin-top:10px"></audio><div class="controls"><button class="circle" onclick="previousSong()">⏮</button><button class="circle main" id="playBtn" onclick="togglePlay()">▶</button><button class="circle" onclick="nextSong()">⏭</button><button class="circle" onclick="shuffle=!shuffle">🔀</button><button class="circle" onclick="repeat=!repeat">🔁</button></div><div class="actions"><button class="btn" onclick="showDownloads()">📥 Baixadas</button><button class="btn" onclick="downloadCurrent()">⬇️ Baixar</button><button class="btn" onclick="document.documentElement.requestFullscreen?.()">⛶</button></div></div></section>
+<main class="content"><input id="search" class="search" placeholder="🔎 Procurar música" oninput="renderSongs()"><div id="playlist"></div><section id="offline" style="display:none"><h3 style="margin:15px 0 8px">📥 Minhas músicas offline</h3><div id="downloads"></div></section></main>
+<button class="install" id="installBtn">📲 Instalar Nando's Music</button>
+<div id="authModal" class="modal open"><div class="box" style="max-width:430px;text-align:center"><h2>🔐 Acesso restrito</h2><p class="muted" style="margin:10px 0 15px">Digite o código recebido do administrador.</p><input id="accessCode" class="field" style="text-align:center;text-transform:uppercase;letter-spacing:2px" placeholder="NANDO-XXXX-XXXX"><button class="primary" onclick="authorize()">Entrar</button><div id="authMsg" class="notice" style="display:none"></div><button onclick="openAdmin()" style="margin-top:12px;background:none;border:0;color:#c084fc;text-decoration:underline">Sou administrador</button></div></div>
+<div id="adminModal" class="modal"><div class="box"><div class="row"><h2 style="flex:1">⚙️ Painel ADM</h2><button class="btn" onclick="closeAdmin()">✕</button></div><div id="loginBox"><p class="muted" style="margin:10px 0">Primeiro acesso: crie uma senha com pelo menos 6 caracteres.</p><input id="admPass" class="field" type="password" placeholder="Senha ADM"><button class="primary" onclick="adminLogin()">Entrar</button><div id="adminMsg" class="notice" style="display:none"></div></div><div id="dashboard" style="display:none"><div class="filters" style="margin:12px -18px 15px"><button class="chip active" onclick="tab('songs',this)">🎵 Músicas</button><button class="chip" onclick="tab('bg',this)">🎬 Fundos</button><button class="chip" onclick="tab('codes',this)">🔑 Códigos</button><button class="chip" onclick="tab('pass',this)">🔐 Senha</button></div><section id="tabSongs"><h3>Adicionar música</h3><input id="sTitle" class="field" placeholder="Título"><input id="sUrl" class="field" placeholder="URL direta do arquivo .mp3/.mp4"><select id="sCat" class="field"><option>Sertanejo</option><option>Funk</option><option>Forró</option><option>Pagode</option><option>Eletrônica</option><option>Trap</option><option>Pop</option><option>Rock</option><option>Engraçado</option></select><button class="primary" onclick="saveSong()">Salvar música</button><div id="adminSongs"></div></section><section id="tabBg" style="display:none"><h3>Vídeo de fundo</h3><p class="muted" style="margin:7px 0">O fundo toca junto com a música. Ao terminar, outro é escolhido aleatoriamente.</p><input id="bgUrl" class="field" placeholder="URL direta do .mp4"><input id="bgName" class="field" placeholder="Nome do fundo"><button class="primary" onclick="saveBg()">Salvar fundo</button><div id="adminBg"></div></section><section id="tabCodes" style="display:none"><h3>Códigos de clientes</h3><button class="primary" onclick="generateCode()">🔑 Gerar novo código</button><div class="notice">O código é vinculado ao navegador/aparelho pelo identificador local. Para segurança forte, use Firebase Authentication antes de distribuir.</div><div id="adminCodes"></div></section><section id="tabPass" style="display:none"><h3>Alterar senha ADM</h3><input id="oldPass" class="field" type="password" placeholder="Senha atual"><input id="newPass" class="field" type="password" placeholder="Nova senha"><input id="newPass2" class="field" type="password" placeholder="Confirme"><button class="primary" onclick="changePass()">Alterar senha</button><div class="notice">A versão inicial guarda a senha no navegador do administrador. Não considere isso segurança de produção.</div></section></div></div></div>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script>
+const firebaseConfig={databaseURL:"https://music-nando-default-rtdb.firebaseio.com/"};firebase.initializeApp(firebaseConfig);const db=firebase.database();
+const audio=document.getElementById('audio'),bg=document.getElementById('bgVideo');let songs=[],backgrounds=[],current=-1,shuffle=false,repeat=false,filter='Todas',deferred=null;
+const deviceId=localStorage.getItem('nando_device_id')||'DEV-'+Math.random().toString(36).slice(2,10).toUpperCase();localStorage.setItem('nando_device_id',deviceId);
+const TEST_SONG={id:'test-song',title:'Música de teste',category:'Pop',url:''};const TEST_BG={id:'test-bg',name:'Fundo de teste',url:''};
+const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+function notice(id,t){const e=document.getElementById(id);e.textContent=t;e.style.display='block'}
+function load(){db.ref('musicas').on('value',s=>{songs=[];const d=s.val()||{};Object.keys(d).forEach(id=>songs.push({id,...d[id]}));if(!songs.length)songs=[TEST_SONG];renderFilters();renderSongs();renderAdminSongs()});db.ref('background_videos').on('value',s=>{backgrounds=[];const d=s.val()||{};Object.keys(d).forEach(id=>backgrounds.push({id,...d[id]}));if(!backgrounds.length)backgrounds=[TEST_BG];renderAdminBg();nextBg()});db.ref('codigos_gerados').on('value',s=>renderCodes(s.val()||{}))}
+function renderFilters(){const c=['Todas',...new Set(songs.map(x=>x.category).filter(Boolean))];document.getElementById('filters').innerHTML=c.map((x,i)=>`<button class="chip ${i?'':'active'}" onclick="setFilter('${esc(x)}',this)">${esc(x)}</button>`).join('')}
+function setFilter(x,b){filter=x;document.querySelectorAll('#filters .chip').forEach(e=>e.classList.remove('active'));b.classList.add('active');renderSongs()}
+function renderSongs(){const q=document.getElementById('search').value.toLowerCase();const list=songs.filter(x=>(filter==='Todas'||x.category===filter)&&(`${x.title} ${x.category}`.toLowerCase().includes(q)));document.getElementById('playlist').innerHTML=list.map(x=>`<div class="song"><div class="info" onclick="playSong('${esc(x.id)}')"><div class="songtitle">${esc(x.title)}</div><div class="meta">${esc(x.category||'')}</div></div><button onclick="playSong('${esc(x.id)}')">▶</button><button onclick="downloadSong('${esc(x.id)}')">⬇</button></div>`).join('')||'<div class="notice">Nenhuma música encontrada.</div>'}
+function playSong(id){const i=songs.findIndex(x=>x.id===id);if(i<0)return;current=i;const s=songs[i];if(!s.url)return alert('Item de teste: cadastre uma URL real no painel ADM.');audio.src=s.url;document.getElementById('nowTitle').textContent=s.title;document.getElementById('nowMeta').textContent=s.category||'';audio.play().catch(()=>{});document.getElementById('playBtn').textContent='⏸'}
+function togglePlay(){if(!audio.src)return;if(audio.paused)audio.play().catch(()=>{});else audio.pause()};audio.onplay=()=>document.getElementById('playBtn').textContent='⏸';audio.onpause=()=>document.getElementById('playBtn').textContent='▶';audio.onended=()=>repeat?(audio.currentTime=0,audio.play()):nextSong();
+function nextSong(){if(!songs.length)return;current=shuffle?Math.floor(Math.random()*songs.length):(current+1)%songs.length;playSong(songs[current].id)}function previousSong(){if(!songs.length)return;current=(current-1+songs.length)%songs.length;playSong(songs[current].id)}
+function nextBg(){const a=backgrounds.filter(x=>x.url);if(!a.length){bg.removeAttribute('src');return}let c=a;if(a.length>1&&bg.dataset.last)c=a.filter(x=>x.url!==bg.dataset.last);const x=c[Math.floor(Math.random()*c.length)];bg.dataset.last=x.url;bg.src=x.url;bg.muted=true;bg.play().catch(()=>{})}bg.onended=nextBg;
+function openAdmin(){document.getElementById('adminModal').classList.add('open')}function closeAdmin(){document.getElementById('adminModal').classList.remove('open')}
+function adminLogin(){const p=document.getElementById('admPass').value,s=localStorage.getItem('nando_admin_pass');if(!s){if(p.length<6)return notice('adminMsg','Use pelo menos 6 caracteres.');localStorage.setItem('nando_admin_pass',p);showDash();return}if(p!==s)return notice('adminMsg','Senha incorreta.');showDash()};function showDash(){loginBox.style.display='none';dashboard.style.display='block'}
+function tab(t,b){document.querySelectorAll('#dashboard section').forEach(x=>x.style.display='none');document.getElementById('tab'+t[0].toUpperCase()+t.slice(1)).style.display='block';document.querySelectorAll('#dashboard .chip').forEach(x=>x.classList.remove('active'));b.classList.add('active')}
+function changePass(){const o=oldPass.value,n=newPass.value,n2=newPass2.value;if(o!==localStorage.getItem('nando_admin_pass'))return alert('Senha atual incorreta.');if(n.length<6||n!==n2)return alert('Nova senha inválida.');localStorage.setItem('nando_admin_pass',n);alert('Senha alterada.')}
+function saveSong(){const title=sTitle.value.trim(),url=sUrl.value.trim(),category=sCat.value;if(!title||!url)return alert('Preencha título e URL.');db.ref('musicas').push({title,url,category}).then(()=>{sTitle.value='';sUrl.value='';alert('Música salva.')}).catch(e=>alert(e.message))}
+function saveBg(){const url=bgUrl.value.trim(),name=bgName.value.trim()||'Vídeo de fundo';if(!url)return alert('Informe a URL.');db.ref('background_videos').push({url,name}).then(()=>{bgUrl.value='';bgName.value='';alert('Fundo salvo.')}).catch(e=>alert(e.message))}
+function generateCode(){let c='NANDO-',a='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';for(let i=0;i<4;i++)c+=a[Math.floor(Math.random()*a.length)];c+='-';for(let i=0;i<4;i++)c+=a[Math.floor(Math.random()*a.length)];db.ref('codigos_gerados/'+c).set({usado:false,deviceId:null,createdAt:Date.now()}).then(()=>navigator.clipboard?.writeText(c).catch(()=>{})).then(()=>alert('Código criado: '+c)).catch(e=>alert(e.message))}
+function del(path,id){if(confirm('Excluir?'))db.ref(path+'/'+id).remove()}
+function renderAdminSongs(){adminSongs.innerHTML=songs.filter(x=>x.id!=='test-song').map(x=>`<div class="adminitem"><span>${esc(x.title)}<br><small>${esc(x.category)}</small></span><button class="btn danger" onclick="del('musicas','${esc(x.id)}')">Excluir</button></div>`).join('')||'<div class="notice">Nenhuma música cadastrada. A música de teste é local.</div>'}
+function renderAdminBg(){adminBg.innerHTML=backgrounds.filter(x=>x.id!=='test-bg').map(x=>`<div class="adminitem"><span>${esc(x.name||'Fundo')}</span><button class="btn danger" onclick="del('background_videos','${esc(x.id)}')">Excluir</button></div>`).join('')||'<div class="notice">Nenhum fundo cadastrado. O fundo de teste é local.</div>'}
+function renderCodes(d){adminCodes.innerHTML=Object.keys(d).map(id=>`<div class="adminitem"><span><b>${esc(id)}</b><br><small>${d[id].usado?'🔴 Usado • '+esc(d[id].deviceId||''):'🟢 Disponível'}</small></span><button class="btn danger" onclick="del('codigos_gerados','${esc(id)}')">Excluir</button></div>`).join('')||'<div class="notice">Nenhum código.</div>'}
+function authorize(){const code=accessCode.value.trim().toUpperCase();if(!code)return notice('authMsg','Digite o código.');db.ref('codigos_gerados/'+code).once('value').then(s=>{const d=s.val();if(!d)return notice('authMsg','Código inválido.');if(d.usado&&d.deviceId!==deviceId)return notice('authMsg','Código já está em outro aparelho.');return db.ref('codigos_gerados/'+code).update({usado:true,deviceId}).then(()=>db.ref('dispositivos_autorizados/'+code).set({deviceId})).then(()=>{localStorage.setItem('nando_access_code',code);authModal.classList.remove('open')})}).catch(e=>notice('authMsg','Erro: '+e.message))}
+function checkAuth(){const c=localStorage.getItem('nando_access_code');if(!c)return;db.ref('codigos_gerados/'+c).once('value').then(s=>{const d=s.val();if(d&&d.usado&&d.deviceId===deviceId)authModal.classList.remove('open')})}
+function openOfflineDB(){return new Promise((res,rej)=>{const r=indexedDB.open('NandosMusicOffline',1);r.onupgradeneeded=()=>r.result.createObjectStore('songs',{keyPath:'id'});r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)})}
+async function downloadSong(id){const s=songs.find(x=>x.id===id);if(!s?.url)return alert('O item de teste não possui arquivo.');try{const r=await fetch(s.url,{mode:'cors'});if(!r.ok)throw Error('HTTP '+r.status);const blob=await r.blob();const d=await openOfflineDB();d.transaction('songs','readwrite').objectStore('songs').put({id,title:s.title,category:s.category,blob});alert('Música baixada para uso offline.')}catch(e){alert('Não foi possível baixar. O servidor precisa permitir CORS e fornecer o arquivo diretamente.')}}
+async function downloadCurrent(){if(current<0)return alert('Escolha uma música.');downloadSong(songs[current].id)}
+async function showDownloads(){offline.style.display='block';const d=await openOfflineDB(),r=d.transaction('songs','readonly').objectStore('songs').getAll();r.onsuccess=()=>downloads.innerHTML=(r.result||[]).map(x=>`<div class="song"><div class="info"><div class="songtitle">${esc(x.title)}</div><div class="meta">${esc(x.category||'')} • offline</div></div><button onclick="playOffline('${esc(x.id)}')">▶</button></div>`).join('')||'<div class="notice">Nenhuma música baixada.</div>'}
+async function playOffline(id){const d=await openOfflineDB(),r=d.transaction('songs','readonly').objectStore('songs').get(id);r.onsuccess=()=>{const x=r.result;if(!x)return;audio.src=URL.createObjectURL(x.blob);nowTitle.textContent=x.title;nowMeta.textContent=(x.category||'')+' • offline';audio.play().catch(()=>{})}}
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferred=e;installBtn.style.display='block'});function install(){if(deferred){deferred.prompt();deferred=null}else alert('No navegador Android, use o menu e escolha “Instalar aplicativo” ou “Adicionar à tela inicial”.')}installBtn.onclick=install;installTop.onclick=install;
+if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js').catch(console.error);load();checkAuth();
+</script></body></html>
+  
