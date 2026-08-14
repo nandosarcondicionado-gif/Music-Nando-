@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nando's Music - Ar & Som</title>
+  <title>Nando's Music</title>
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#a855f7">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -15,7 +15,7 @@
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
     body { background: #0b0f19; color: #fff; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
-    header { background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(10px); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    header { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(10px); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.05); }
     .logo { font-size: 1.3rem; font-weight: 700; background: linear-gradient(135deg, #a855f7, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: flex; align-items: center; gap: 10px; }
     .admin-btn { background: rgba(168, 85, 247, 0.2); border: 1px solid #a855f7; color: #fff; padding: 6px 14px; border-radius: 8px; cursor: pointer; transition: 0.3s; font-size: 0.9rem; }
     .admin-btn:hover { background: #a855f7; }
@@ -27,20 +27,18 @@
     video { width: 100%; height: 220px; object-fit: cover; background: #000; }
     .music-info { padding: 15px 20px; text-align: center; }
     .music-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 4px; }
+    .music-category { font-size: 0.8rem; color: #a855f7; }
     .controls { display: flex; align-items: center; justify-content: center; gap: 20px; padding: 15px; background: rgba(0,0,0,0.2); }
     .ctrl-btn { background: none; border: none; color: #fff; font-size: 1.2rem; cursor: pointer; }
     .ctrl-btn.play { font-size: 2.2rem; color: #a855f7; }
+    .playlist-title { font-size: 1rem; font-weight: 600; margin-bottom: 12px; color: #cbd5e1; }
     .playlist { display: flex; flex-direction: column; gap: 10px; }
     .song-item { background: #151b2c; padding: 12px 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: space-between; cursor: pointer; }
-    
-    /* TELA DE BLOQUEIO COM A FOTO DA EMPRESA E EFEITO */
-    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1000; align-items: center; justify-content: center; padding: 20px; background: url('fundo.jpg') no-repeat center center; background-size: cover; }
-    .modal::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(11, 15, 25, 0.88); backdrop-filter: blur(8px); z-index: 1; }
+    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
     .modal.active { display: flex; }
-    .modal-content { position: relative; z-index: 2; background: rgba(17, 24, 39, 0.9); border: 1px solid rgba(168, 85, 247, 0.3); width: 100%; max-width: 450px; border-radius: 20px; padding: 30px; box-shadow: 0 15px 35px rgba(0,0,0,0.5); text-align: center; }
-    
+    .modal-content { background: #111827; border: 1px solid rgba(255,255,255,0.1); width: 100%; max-width: 500px; border-radius: 16px; padding: 25px; }
     .form-group { margin-bottom: 15px; }
-    .form-group input { width: 100%; padding: 12px; background: #0b0f19; border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; color: #fff; font-size: 1.1rem; text-align: center; letter-spacing: 2px; }
+    .form-group input { width: 100%; padding: 10px; background: #0b0f19; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; }
     .btn-submit { width: 100%; background: linear-gradient(135deg, #a855f7, #ec4899); border: none; padding: 12px; border-radius: 8px; color: #fff; font-weight: 600; cursor: pointer; }
     .code-row { background: #0b0f19; padding: 10px; border-radius: 8px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
     .code-text { font-family: monospace; color: #a855f7; font-weight: bold; }
@@ -49,23 +47,18 @@
 </head>
 <body>
 
-  <!-- TELA DE BLOQUEIO PERSONALIZADA COM A EMPRESA -->
   <div id="authModal" class="modal">
-    <div class="modal-content">
-      <div style="margin-bottom: 15px;">
-        <i class="fa-solid fa-snowflake" style="font-size: 2.5rem; color: #a855f7; margin-bottom: 8px;"></i>
-        <h2 style="font-size: 1.4rem; background: linear-gradient(135deg, #a855f7, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Nando's Ar-Condicionado</h2>
-        <p style="color: #94a3b8; font-size: 0.85rem; margin-top: 5px;">Qualidade e confiança em todos os detalhes!</p>
-      </div>
-      <p style="color: #cbd5e1; font-size: 0.9rem; margin-bottom: 15px;">Digite o seu código de acesso exclusivo:</p>
-      <div class="form-group"><input type="text" id="userAccessCode" placeholder="EX: ND-XXXX" style="text-transform: uppercase;"></div>
-      <button class="btn-submit" onclick="validarCodigoUsuario()">Entrar no Aplicativo</button>
-      <p id="authError" style="color: #ef4444; font-size: 0.85rem; margin-top: 10px; display: none;">Código inválido ou já utilizado em outro aparelho.</p>
+    <div class="modal-content" style="text-align: center;">
+      <h3>Acesso Restrito</h3>
+      <p style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 20px;">Digite seu código de acesso:</p>
+      <div class="form-group"><input type="text" id="userAccessCode" style="text-align: center; text-transform: uppercase;"></div>
+      <button class="btn-submit" onclick="validarCodigoUsuario()">Entrar</button>
+      <p id="authError" style="color: #ef4444; margin-top: 10px; display: none;"></p>
     </div>
   </div>
 
   <header>
-    <div class="logo"><i class="fa-solid fa-headphones"></i> Nando's Music</div>
+    <div class="logo">Nando's Music</div>
     <button class="admin-btn" onclick="abrirAdmin()">Painel Admin</button>
   </header>
 
@@ -82,16 +75,13 @@
     <div class="playlist" id="playlistContainer"></div>
   </div>
 
-  <div id="adminModal" class="modal" style="background: rgba(0,0,0,0.85); backdrop-filter: blur(5px);">
-    <div class="modal-content" style="text-align: left;">
-      <h3 style="margin-bottom: 15px;">Painel Admin</h3>
-      <div id="adminLoginBox">
-        <div class="form-group"><input type="password" id="adminPasswordInput" placeholder="Senha ADM"></div>
-        <button class="btn-submit" onclick="logarAdmin()">Entrar</button>
-      </div>
+  <div id="adminModal" class="modal">
+    <div class="modal-content">
+      <h3>Admin</h3>
+      <div id="adminLoginBox"><input type="password" id="adminPasswordInput" placeholder="Senha ADM"><button class="btn-submit" onclick="logarAdmin()">Entrar</button></div>
       <div id="adminDashboardBox" style="display: none;">
         <button class="btn-submit" onclick="gerarNovoCodigo()">Gerar Novo Código</button>
-        <div id="codesListContainer" style="margin-top:20px; max-height: 250px; overflow-y: auto;"></div>
+        <div id="codesListContainer" style="margin-top:20px;"></div>
       </div>
     </div>
   </div>
@@ -110,7 +100,6 @@
         let d = s.val();
         if (d.usado && d.deviceId !== deviceId) { alert("Código já usado em outro aparelho!"); return; }
         db.ref('codigos_gerados/' + code).update({ usado: true, deviceId: deviceId });
-        db.ref('dispositivos_autorizados/' + code).set({ deviceId: deviceId });
         location.reload();
       });
     }
@@ -120,7 +109,7 @@
         document.getElementById('adminLoginBox').style.display = 'none';
         document.getElementById('adminDashboardBox').style.display = 'block';
         carregarListaCodigosAdmin();
-      } else { alert("Senha incorreta!"); }
+      }
     }
 
     function gerarNovoCodigo() {
@@ -133,16 +122,16 @@
         let list = document.getElementById('codesListContainer');
         list.innerHTML = '';
         s.forEach(c => {
-          let val = c.val();
-          list.innerHTML += `<div class="code-row"><span class="code-text">${c.key}</span> <div><button class="admin-btn" style="padding: 4px 8px; font-size:0.75rem;" onclick="copiar('${c.key}')">Copiar</button> <button class="del-code" onclick="remover('${c.key}')">X</button></div></div>`;
+          list.innerHTML += `<div class="code-row"><span class="code-text">${c.key}</span> <div><button class="admin-btn" onclick="copiar('${c.key}')">Copiar</button> <button class="del-code" onclick="remover('${c.key}')">X</button></div></div>`;
         });
       });
     }
 
-    function copiar(t) { navigator.clipboard.writeText(t); alert("Copiado: " + t); }
-    function remover(k) { db.ref('codigos_gerados/' + k).remove(); db.ref('dispositivos_autorizados/' + k).remove(); }
+    function copiar(t) { navigator.clipboard.writeText(t); alert("Copiado!"); }
+    function remover(k) { db.ref('codigos_gerados/' + k).remove(); }
     function abrirAdmin() { document.getElementById('adminModal').classList.add('active'); }
     
+    // Check auth
     db.ref('dispositivos_autorizados').once('value', s => {
       let ok = false;
       s.forEach(child => { if (child.val().deviceId === deviceId) ok = true; });
@@ -150,5 +139,4 @@
     });
   </script>
 </body>
-  </html>
-  
+</html>
