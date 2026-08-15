@@ -366,8 +366,6 @@ background:rgba(239,68,68,.15);
 color:#f87171;
 }
 
-/* INSTALAÇÃO */
-
 #installContainer{
 display:none;
 padding:10px 20px;
@@ -385,6 +383,37 @@ font-family:Poppins,sans-serif;
 font-weight:600;
 cursor:pointer;
 box-shadow:0 4px 15px rgba(168,85,247,.25);
+}
+
+.admin-player{
+margin-top:15px;
+background:#080b14;
+border-radius:12px;
+overflow:hidden;
+border:1px solid rgba(255,255,255,.08);
+}
+
+.admin-player video{
+width:100%;
+height:230px;
+object-fit:cover;
+display:block;
+background:#000;
+}
+
+.admin-player-info{
+padding:12px;
+}
+
+.admin-player-title{
+text-align:center;
+font-weight:600;
+margin-bottom:10px;
+}
+
+.admin-player audio{
+width:100%;
+height:42px;
 }
 
 </style>
@@ -413,8 +442,6 @@ Conectando ao servidor...
 
 </div>
 
-
-<!-- INSTALAR -->
 
 <div id="installContainer">
 
@@ -568,7 +595,7 @@ Carregando músicas...
 </div>
 
 
-<!-- LOGIN CLIENTE -->
+<!-- ACESSO -->
 
 <div
 class="modal active"
@@ -636,7 +663,6 @@ id="adminModal">
 
 <div class="modal-content">
 
-
 <div style="
 display:flex;
 justify-content:space-between;
@@ -662,8 +688,6 @@ onclick="fecharAdmin()">
 
 </div>
 
-
-<!-- LOGIN FIREBASE -->
 
 <div
 id="adminLogin">
@@ -708,8 +732,6 @@ class="message">
 </div>
 
 
-<!-- PAINEL -->
-
 <div
 id="adminPanel"
 style="display:none">
@@ -750,6 +772,8 @@ Config
 </div>
 
 
+<!-- PLAYER ADM -->
+
 <div
 class="admin-section active"
 id="aba-player">
@@ -758,19 +782,53 @@ id="aba-player">
 
 <p class="small">
 
-O administrador também pode ouvir normalmente.
+Aqui o administrador pode testar a música e visualizar o vídeo de fundo normalmente.
 
 </p>
 
+
+<div class="admin-player">
+
+<video
+id="adminBackgroundPlayer"
+playsinline
+muted
+autoplay
+loop
+preload="auto">
+</video>
+
+<div class="admin-player-info">
+
+<div
+id="adminNowPlaying"
+class="admin-player-title">
+
+Nenhuma música reproduzindo
+
+</div>
+
+<audio
+id="adminMusicPlayer"
+controls
+preload="metadata">
+</audio>
+
 <button
 class="btn btn-secondary"
-onclick="pararPlayer()">
+type="button"
+onclick="pararPlayerAdmin()">
 
 <i class="fa-solid fa-stop"></i>
 
-Parar
+Parar Player
 
 </button>
+
+</div>
+
+</div>
+
 
 <div
 id="adminPlayerList"
@@ -779,6 +837,8 @@ style="margin-top:10px">
 
 </div>
 
+
+<!-- MÚSICAS -->
 
 <div
 class="admin-section"
@@ -824,6 +884,8 @@ style="margin-top:15px">
 </div>
 
 
+<!-- FUNDOS -->
+
 <div
 class="admin-section"
 id="aba-fundos">
@@ -856,6 +918,8 @@ style="margin-top:15px">
 
 </div>
 
+
+<!-- CÓDIGOS -->
 
 <div
 class="admin-section"
@@ -930,6 +994,8 @@ Carregando...
 
 </div>
 
+
+<!-- CONFIG -->
 
 <div
 class="admin-section"
@@ -1016,6 +1082,7 @@ const db=firebase.database();
 
 const CHAVE_SECRETA_ADM="NANDOADM";
 
+
 let adminLogado=false;
 
 let allSongs=[];
@@ -1024,7 +1091,7 @@ let bgVideos=[];
 
 
 /* =====================================================
-   APARELHO
+   DEVICE ID
 ===================================================== */
 
 let deviceId=
@@ -1049,7 +1116,7 @@ deviceId
 
 
 /* =====================================================
-   ELEMENTOS
+   ELEMENTOS PLAYER
 ===================================================== */
 
 const backgroundPlayer=
@@ -1065,6 +1132,24 @@ document.getElementById(
 const nowPlaying=
 document.getElementById(
 "nowPlaying"
+);
+
+
+/* PLAYER ADM */
+
+const adminBackgroundPlayer=
+document.getElementById(
+"adminBackgroundPlayer"
+);
+
+const adminMusicPlayer=
+document.getElementById(
+"adminMusicPlayer"
+);
+
+const adminNowPlaying=
+document.getElementById(
+"adminNowPlaying"
 );
 
 
@@ -1121,7 +1206,7 @@ status.style.color=
 
 
 /* =====================================================
-   ACESSO
+   PROCESSAR ACESSO
 ===================================================== */
 
 async function processarAcesso(){
@@ -1131,15 +1216,69 @@ document.getElementById(
 "userAccessCode"
 );
 
-const valor=
-input.value.trim().toUpperCase();
+
+if(!input){
+
+console.error(
+"Campo de acesso não encontrado."
+);
+
+return;
+
+}
+
+
+let valor=
+input.value
+.trim()
+.toUpperCase();
 
 
 /*
-   CHAVE SECRETA ADM
+   Remove espaços internos também.
+   Assim:
+   NANDOADM
+   nandoadm
+   NANDO ADM
+   NANDOADM
+   continuam funcionando.
+*/
+
+valor=
+valor.replace(/\s+/g,"");
+
+
+console.log(
+"Chave informada:",
+valor
+);
+
+
+/*
+   ====================================================
+   CHAVE SECRETA DO ADMINISTRADOR
+   ====================================================
 */
 
 if(valor===CHAVE_SECRETA_ADM){
+
+console.log(
+"CHAVE ADM RECONHECIDA"
+);
+
+
+/*
+   Limpa mensagem anterior
+*/
+
+document.getElementById(
+"authMessage"
+).className="message";
+
+
+/*
+   Abre diretamente o login do Firebase
+*/
 
 abrirLoginAdmin();
 
@@ -1149,7 +1288,9 @@ return;
 
 
 /*
+   ====================================================
    CÓDIGO NORMAL DO CLIENTE
+   ====================================================
 */
 
 await validarCodigoUsuario();
@@ -1163,13 +1304,18 @@ await validarCodigoUsuario();
 
 function abrirLoginAdmin(){
 
+const authModal=
 document.getElementById(
 "authModal"
-).classList.remove("active");
+);
 
-document.getElementById(
-"authModal"
-).style.display="none";
+
+authModal.classList.remove(
+"active"
+);
+
+authModal.style.display=
+"none";
 
 
 const modal=
@@ -1177,24 +1323,36 @@ document.getElementById(
 "adminModal"
 );
 
-modal.classList.add("active");
 
-modal.style.display="flex";
+modal.classList.add(
+"active"
+);
+
+modal.style.display=
+"flex";
 
 
 document.getElementById(
 "adminLogin"
-).style.display="block";
+).style.display=
+"block";
 
 
 document.getElementById(
 "adminPanel"
-).style.display="none";
+).style.display=
+"none";
 
 
 document.getElementById(
 "adminPassword"
 ).value="";
+
+
+document.getElementById(
+"adminLoginMessage"
+).className=
+"message";
 
 
 setTimeout(()=>{
@@ -1203,7 +1361,7 @@ document.getElementById(
 "adminPassword"
 ).focus();
 
-},150);
+},200);
 
 }
 
@@ -1219,9 +1377,12 @@ document.getElementById(
 "adminModal"
 );
 
-modal.classList.remove("active");
+modal.classList.remove(
+"active"
+);
 
-modal.style.display="none";
+modal.style.display=
+"none";
 
 
 const autorizado=
@@ -1237,9 +1398,12 @@ document.getElementById(
 "authModal"
 );
 
-authModal.classList.add("active");
+authModal.classList.add(
+"active"
+);
 
-authModal.style.display="flex";
+authModal.style.display=
+"flex";
 
 }
 
@@ -1248,7 +1412,6 @@ authModal.style.display="flex";
 
 /* =====================================================
    VERIFICAR AUTORIZAÇÃO
-   ATUALIZADO
 ===================================================== */
 
 async function verificarAutorizacao(){
@@ -1262,13 +1425,16 @@ try{
 
 if(!navigator.onLine){
 
-modal.classList.add("active");
+modal.classList.add(
+"active"
+);
 
-modal.style.display="flex";
+modal.style.display=
+"flex";
 
 mostrarMensagem(
 "authMessage",
-"Sem internet. Conecte-se para verificar seu acesso.",
+"Sem internet. Conecte-se para validar o código.",
 "error"
 );
 
@@ -1276,57 +1442,6 @@ return;
 
 }
 
-
-let autorizado=false;
-
-
-/*
-   Primeiro verifica o código salvo
-   no aparelho.
-*/
-
-const codigoSalvo=
-localStorage.getItem(
-"nando_codigo"
-);
-
-
-if(codigoSalvo){
-
-const codigoSnap=
-await db.ref(
-"codigos_gerados/"+codigoSalvo
-).once("value");
-
-
-const codigoDados=
-codigoSnap.val();
-
-
-/*
-   O código precisa continuar existindo
-   e continuar vinculado a este aparelho.
-*/
-
-if(
-codigoDados &&
-codigoDados.usado===true &&
-codigoDados.deviceId===deviceId
-){
-
-autorizado=true;
-
-}
-
-}
-
-
-/*
-   Se não encontrou pelo código salvo,
-   verifica também os dispositivos autorizados.
-*/
-
-if(!autorizado){
 
 const snapshot=
 await db.ref(
@@ -1338,11 +1453,11 @@ const dados=
 snapshot.val()||{};
 
 
-Object.keys(dados).forEach(id=>{
+let autorizado=false;
 
-const item=
-dados[id];
 
+Object.values(dados)
+.forEach(item=>{
 
 if(
 item &&
@@ -1351,26 +1466,10 @@ item.deviceId===deviceId
 
 autorizado=true;
 
-
-if(item.codigo){
-
-localStorage.setItem(
-"nando_codigo",
-item.codigo
-);
-
-}
-
 }
 
 });
 
-}
-
-
-/*
-   APARELHO AUTORIZADO
-*/
 
 if(autorizado){
 
@@ -1379,81 +1478,40 @@ localStorage.setItem(
 "true"
 );
 
-modal.classList.remove("active");
+modal.classList.remove(
+"active"
+);
 
-modal.style.display="none";
+modal.style.display=
+"none";
 
 mostrarBotaoInstalar();
 
-return;
+}else{
+
+modal.classList.add(
+"active"
+);
+
+modal.style.display=
+"flex";
 
 }
 
-
-/*
-   APARELHO NÃO AUTORIZADO
-   Remove a autorização antiga.
-*/
-
-localStorage.removeItem(
-"nando_autorizado"
-);
-
-localStorage.removeItem(
-"nando_codigo"
-);
-
-
-modal.classList.add("active");
-
-modal.style.display="flex";
-
-
-document.getElementById(
-"userAccessCode"
-).value="";
-
-
-mostrarMensagem(
-"authMessage",
-"Seu acesso não está mais autorizado. Digite um novo código.",
-"error"
-);
-
-
 }catch(error){
 
-console.error(
-"Erro ao verificar autorização:",
-error
+console.error(error);
+
+modal.classList.add(
+"active"
 );
 
-
-/*
-   Se houver erro temporário de internet,
-   não derruba uma sessão que já estava
-   autorizada.
-*/
-
-if(
-localStorage.getItem(
-"nando_autorizado"
-)==="true"
-){
-
-modal.classList.remove("active");
-
-modal.style.display="none";
-
-}else{
-
-modal.classList.add("active");
-
-modal.style.display="flex";
+modal.style.display=
+"flex";
 
 mostrarMensagem(
 "authMessage",
-"Não foi possível verificar seu acesso. Tente novamente.",
+"Não foi possível verificar o acesso. Tente novamente.",
 "error"
 );
 
@@ -1473,8 +1531,14 @@ document.getElementById(
 "userAccessCode"
 );
 
-const codigo=
-input.value.trim().toUpperCase();
+let codigo=
+input.value
+.trim()
+.toUpperCase();
+
+
+codigo=
+codigo.replace(/\s+/g,"");
 
 
 if(!codigo){
@@ -1484,15 +1548,6 @@ mostrarMensagem(
 "Digite o código recebido.",
 "error"
 );
-
-return;
-
-}
-
-
-if(codigo==="NANDOADM"){
-
-abrirLoginAdmin();
 
 return;
 
@@ -1576,10 +1631,6 @@ throw new Error(
 }
 
 
-/*
-   Vincula o código ao aparelho.
-*/
-
 await db.ref(
 "codigos_gerados/"+codigo
 ).update({
@@ -1619,18 +1670,23 @@ codigo
 
 document.getElementById(
 "authModal"
-).classList.remove("active");
+).classList.remove(
+"active"
+);
 
 document.getElementById(
 "authModal"
-).style.display="none";
+).style.display=
+"none";
 
 
 input.value="";
 
+
 document.getElementById(
 "authMessage"
-).className="message";
+).className=
+"message";
 
 
 mostrarBotaoInstalar();
@@ -1658,24 +1714,48 @@ error.message ||
 
 async function entrarAdmin(){
 
-const email=
+const emailInput=
 document.getElementById(
 "adminEmail"
-).value.trim();
+);
 
-const senha=
+const senhaInput=
 document.getElementById(
 "adminPassword"
-).value;
+);
 
 
-if(!email || !senha){
+const email=
+emailInput.value.trim();
+
+const senha=
+senhaInput.value;
+
+
+if(!email){
 
 mostrarMensagem(
 "adminLoginMessage",
-"Digite o e-mail e a senha.",
+"Digite o e-mail do administrador.",
 "error"
 );
+
+emailInput.focus();
+
+return;
+
+}
+
+
+if(!senha){
+
+mostrarMensagem(
+"adminLoginMessage",
+"Digite a senha do administrador.",
+"error"
+);
+
+senhaInput.focus();
 
 return;
 
@@ -1684,44 +1764,166 @@ return;
 
 mostrarMensagem(
 "adminLoginMessage",
-"Entrando...",
+"Verificando acesso...",
 "success"
 );
 
 
 try{
 
-await auth.signInWithEmailAndPassword(
+/*
+   Confirma que o Firebase está disponível.
+*/
+
+if(!firebase.apps.length){
+
+firebase.initializeApp(
+firebaseConfig
+);
+
+}
+
+
+/*
+   Login Firebase
+*/
+
+const resultado=
+await firebase
+.auth()
+.signInWithEmailAndPassword(
 email,
 senha
 );
 
+
+if(
+!resultado ||
+!resultado.user
+){
+
+throw new Error(
+"Usuário não retornado pelo Firebase."
+);
+
+}
+
+
 adminLogado=true;
 
+
+console.log(
+"Administrador autenticado:",
+resultado.user.email
+);
+
+
+mostrarMensagem(
+"adminLoginMessage",
+"Acesso autorizado!",
+"success"
+);
+
+
+setTimeout(()=>{
+
 mostrarPainelAdmin();
+
+},300);
 
 
 }catch(error){
 
-console.error(error);
+console.error(
+"ERRO LOGIN ADM:",
+error
+);
 
-let msg=
+
+let mensagem=
+"Não foi possível entrar no painel.";
+
+
+switch(error.code){
+
+case "auth/invalid-email":
+
+mensagem=
+"O e-mail informado é inválido.";
+
+break;
+
+
+case "auth/user-not-found":
+
+mensagem=
+"Esse e-mail não está cadastrado no Firebase Authentication.";
+
+break;
+
+
+case "auth/wrong-password":
+
+mensagem=
+"A senha do administrador está incorreta.";
+
+break;
+
+
+case "auth/invalid-credential":
+
+mensagem=
 "E-mail ou senha incorretos.";
 
+break;
 
-if(
-error.code==="auth/too-many-requests"
-){
 
-msg=
-"Muitas tentativas. Aguarde um pouco.";
+case "auth/user-disabled":
+
+mensagem=
+"Esse usuário administrador está desativado.";
+
+break;
+
+
+case "auth/too-many-requests":
+
+mensagem=
+"Muitas tentativas. Aguarde alguns minutos.";
+
+break;
+
+
+case "auth/network-request-failed":
+
+mensagem=
+"Falha de conexão. Verifique a internet.";
+
+break;
+
+
+case "auth/operation-not-allowed":
+
+mensagem=
+"O login por e-mail e senha não está ativado no Firebase.";
+
+break;
+
+
+default:
+
+mensagem=
+"Erro do Firebase: "+
+(error.message ||
+error.code ||
+"erro desconhecido.");
 
 }
 
 
 mostrarMensagem(
 "adminLoginMessage",
-msg,
+mensagem,
 "error"
 );
 
@@ -1738,11 +1940,14 @@ function mostrarPainelAdmin(){
 
 document.getElementById(
 "adminLogin"
-).style.display="none";
+).style.display=
+"none";
+
 
 document.getElementById(
 "adminPanel"
-).style.display="block";
+).style.display=
+"block";
 
 
 carregarCodigosAdmin();
@@ -1750,6 +1955,8 @@ carregarCodigosAdmin();
 carregarListaAdmin();
 
 renderizarAdminPlayer();
+
+atualizarPlayerAdmin();
 
 }
 
@@ -1764,7 +1971,11 @@ try{
 
 await auth.signOut();
 
-}catch(e){}
+}catch(e){
+
+console.warn(e);
+
+}
 
 
 adminLogado=false;
@@ -1772,17 +1983,25 @@ adminLogado=false;
 
 document.getElementById(
 "adminPanel"
-).style.display="none";
+).style.display=
+"none";
 
 
 document.getElementById(
 "adminLogin"
-).style.display="block";
+).style.display=
+"block";
 
 
 document.getElementById(
 "adminPassword"
 ).value="";
+
+
+document.getElementById(
+"adminLoginMessage"
+).className=
+"message";
 
 
 fecharAdmin();
@@ -1838,6 +2057,150 @@ carregarCodigosAdmin();
 
 }
 
+
+if(nome==="player"){
+
+atualizarPlayerAdmin();
+
+}
+
+}
+
+
+/* =====================================================
+   PLAYER ADMIN
+===================================================== */
+
+function tocarAdmin(url,title){
+
+if(!adminLogado)return;
+
+if(!url)return;
+
+
+adminMusicPlayer.src=url;
+
+adminNowPlaying.innerText=
+title || "Reproduzindo";
+
+
+adminMusicPlayer.play()
+.catch(error=>{
+
+console.warn(
+"Reprodução aguardando interação:",
+error
+);
+
+});
+
+
+atualizarPlayerAdmin();
+
+}
+
+
+/* =====================================================
+   ATUALIZAR PLAYER ADMIN
+===================================================== */
+
+function atualizarPlayerAdmin(){
+
+if(!adminLogado)return;
+
+
+if(
+bgVideos.length &&
+!adminBackgroundPlayer.src
+){
+
+const video=
+bgVideos[
+Math.floor(
+Math.random()*bgVideos.length
+)
+];
+
+
+adminBackgroundPlayer.src=
+video.url;
+
+adminBackgroundPlayer.muted=true;
+
+adminBackgroundPlayer.play()
+.catch(()=>{});
+
+}
+
+}
+
+
+/* =====================================================
+   PARAR PLAYER ADMIN
+===================================================== */
+
+function pararPlayerAdmin(){
+
+adminMusicPlayer.pause();
+
+adminMusicPlayer.removeAttribute(
+"src"
+);
+
+adminMusicPlayer.load();
+
+
+adminNowPlaying.innerText=
+"Nenhuma música reproduzindo";
+
+}
+
+
+/* =====================================================
+   PLAYER NORMAL
+===================================================== */
+
+function tocar(url,title){
+
+if(!url)return;
+
+
+musicPlayer.src=url;
+
+nowPlaying.innerText=
+title || "Reproduzindo";
+
+
+musicPlayer.play()
+.catch(error=>{
+
+console.warn(
+"Reprodução automática bloqueada:",
+error
+);
+
+});
+
+}
+
+
+/* =====================================================
+   PARAR PLAYER NORMAL
+===================================================== */
+
+function pararPlayer(){
+
+musicPlayer.pause();
+
+musicPlayer.removeAttribute(
+"src"
+);
+
+musicPlayer.load();
+
+nowPlaying.innerText=
+"Nenhuma música reproduzindo";
+
 }
 
 
@@ -1860,6 +2223,7 @@ return;
 
 const chars=
 "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+
 
 let codigo="ND-";
 
@@ -1893,12 +2257,14 @@ criadoEm:Date.now()
 
 document.getElementById(
 "generatedCode"
-).innerText=codigo;
+).innerText=
+codigo;
 
 
 document.getElementById(
 "generatedCodeBox"
-).style.display="block";
+).style.display=
+"block";
 
 
 document.getElementById(
@@ -2010,6 +2376,7 @@ ids.forEach(id=>{
 const item=
 dados[id]||{};
 
+
 const usado=
 item.usado===true;
 
@@ -2071,7 +2438,8 @@ onclick="excluirCodigo('${escapar(id)}')">
 });
 
 
-container.innerHTML=html;
+container.innerHTML=
+html;
 
 
 }catch(error){
@@ -2378,53 +2746,6 @@ error.message
 
 
 /* =====================================================
-   PLAYER
-===================================================== */
-
-function tocar(url,title){
-
-if(!url)return;
-
-
-musicPlayer.src=url;
-
-nowPlaying.innerText=title;
-
-
-musicPlayer.play()
-.catch(error=>{
-
-console.warn(
-"Reprodução automática bloqueada:",
-error
-);
-
-});
-
-}
-
-
-/* =====================================================
-   PARAR PLAYER
-===================================================== */
-
-function pararPlayer(){
-
-musicPlayer.pause();
-
-musicPlayer.removeAttribute(
-"src"
-);
-
-musicPlayer.load();
-
-nowPlaying.innerText=
-"Nenhuma música reproduzindo";
-
-}
-
-
-/* =====================================================
    MÚSICAS FIREBASE
 ===================================================== */
 
@@ -2549,13 +2870,14 @@ onclick="tocar('${url}','${title}')">
 });
 
 
-container.innerHTML=html;
+container.innerHTML=
+html;
 
 }
 
 
 /* =====================================================
-   PLAYER ADM
+   PLAYER ADMIN LISTA
 ===================================================== */
 
 function renderizarAdminPlayer(){
@@ -2579,12 +2901,14 @@ html+=`
 <div class="admin-row">
 
 <span>
+
 ${escapar(song.title)}
+
 </span>
 
 <button
 style="background:#a855f7"
-onclick="tocar('${escapar(song.url)}','${escapar(song.title)}')">
+onclick="tocarAdmin('${escapar(song.url)}','${escapar(song.title)}')">
 
 <i class="fa-solid fa-play"></i>
 
@@ -2740,11 +3064,20 @@ tocarFundoAleatorio();
 
 }
 
+
+if(
+adminLogado
+){
+
+atualizarPlayerAdmin();
+
+}
+
 });
 
 
 /* =====================================================
-   FUNDO ALEATÓRIO
+   FUNDO ALEATÓRIO CLIENTE
 ===================================================== */
 
 function tocarFundoAleatorio(){
@@ -2875,7 +3208,7 @@ return String(texto)
 
 
 /* =====================================================
-   ENTER
+   ENTER CÓDIGO
 ===================================================== */
 
 document.getElementById(
@@ -2894,6 +3227,10 @@ processarAcesso();
 });
 
 
+/* =====================================================
+   ENTER SENHA ADM
+===================================================== */
+
 document.getElementById(
 "adminPassword"
 )
@@ -2911,7 +3248,7 @@ entrarAdmin();
 
 
 /* =====================================================
-   PWA - INSTALAÇÃO
+   PWA
 ===================================================== */
 
 let deferredPrompt=null;
@@ -3023,32 +3360,46 @@ installContainer.style.display=
 
 }
 
-
-console.log(
-"Nando's Music instalado com sucesso."
-);
-
 });
 
 
 /* =====================================================
    INICIALIZAÇÃO
-   ATUALIZADA
 ===================================================== */
 
 window.addEventListener(
 "load",
 ()=>{
 
-/*
-   IMPORTANTE:
-   Sempre verifica no Firebase ao abrir.
-   
-   Assim, se o ADM excluir o código,
-   o aparelho perde o acesso.
-*/
+const autorizadoLocal=
+localStorage.getItem(
+"nando_autorizado"
+)==="true";
+
+
+if(autorizadoLocal){
+
+document.getElementById(
+"authModal"
+).classList.remove(
+"active"
+);
+
+
+document.getElementById(
+"authModal"
+).style.display=
+"none";
+
+
+mostrarBotaoInstalar();
+
+
+}else{
 
 verificarAutorizacao();
+
+}
 
 });
 
