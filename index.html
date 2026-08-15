@@ -2,11 +2,9 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 
 <meta name="theme-color" content="#a855f7">
-
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Nando's Music">
@@ -27,7 +25,6 @@ rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <style>
-
 :root{
 --primary:#a855f7;
 --secondary:#ec4899;
@@ -101,6 +98,49 @@ width:100%;
 max-width:850px;
 margin:auto;
 padding:20px;
+}
+
+.video-box{
+position:relative;
+width:100%;
+height:300px;
+background:#000;
+border-radius:14px;
+overflow:hidden;
+box-shadow:0 10px 35px rgba(0,0,0,.35);
+}
+
+#backgroundPlayer{
+width:100%;
+height:100%;
+object-fit:cover;
+display:block;
+background:#000;
+}
+
+.video-overlay{
+position:absolute;
+left:0;
+right:0;
+bottom:0;
+background:linear-gradient(
+transparent,
+rgba(0,0,0,.9)
+);
+padding:45px 15px 12px;
+}
+
+#nowPlaying{
+text-align:center;
+color:white;
+font-size:.9rem;
+font-weight:600;
+margin-bottom:8px;
+}
+
+#musicPlayer{
+width:100%;
+height:42px;
 }
 
 .playlist-container{
@@ -207,17 +247,9 @@ margin-top:7px;
 cursor:pointer;
 }
 
-.btn-danger{
-background:#ef4444;
-}
-
-.btn-secondary{
-background:#334155;
-}
-
-.btn-success{
-background:#16a34a;
-}
+.btn-danger{background:#ef4444;}
+.btn-secondary{background:#334155;}
+.btn-success{background:#16a34a;}
 
 .close{
 background:none;
@@ -357,9 +389,7 @@ border-radius:9px;
 font-family:Poppins,sans-serif;
 font-weight:600;
 cursor:pointer;
-box-shadow:0 4px 15px rgba(168,85,247,.25);
 }
-
 </style>
 </head>
 
@@ -385,116 +415,51 @@ Instalar Nando's Music
 
 <div class="filter-bar">
 
-<button class="filter-btn active" onclick="filtrar('Todas',this)">
-Todas
-</button>
-
-<button class="filter-btn" onclick="filtrar('Sertanejo',this)">
-Sertanejo
-</button>
-
-<button class="filter-btn" onclick="filtrar('Funk',this)">
-Funk
-</button>
-
-<button class="filter-btn" onclick="filtrar('Forró',this)">
-Forró
-</button>
-
-<button class="filter-btn" onclick="filtrar('Pagode',this)">
-Pagode
-</button>
-
-<button class="filter-btn" onclick="filtrar('Eletrônica',this)">
-Eletrônica
-</button>
-
-<button class="filter-btn" onclick="filtrar('Trap',this)">
-Trap
-</button>
-
-<button class="filter-btn" onclick="filtrar('Pop',this)">
-Pop
-</button>
-
-<button class="filter-btn" onclick="filtrar('Rock',this)">
-Rock
-</button>
-
-<button class="filter-btn" onclick="filtrar('Engraçado',this)">
-Engraçados
-</button>
+<button class="filter-btn active" onclick="filtrar('Todas',this)">Todas</button>
+<button class="filter-btn" onclick="filtrar('Sertanejo',this)">Sertanejo</button>
+<button class="filter-btn" onclick="filtrar('Funk',this)">Funk</button>
+<button class="filter-btn" onclick="filtrar('Forró',this)">Forró</button>
+<button class="filter-btn" onclick="filtrar('Pagode',this)">Pagode</button>
+<button class="filter-btn" onclick="filtrar('Eletrônica',this)">Eletrônica</button>
+<button class="filter-btn" onclick="filtrar('Trap',this)">Trap</button>
+<button class="filter-btn" onclick="filtrar('Pop',this)">Pop</button>
+<button class="filter-btn" onclick="filtrar('Rock',this)">Rock</button>
+<button class="filter-btn" onclick="filtrar('Engraçado',this)">Engraçados</button>
 
 </div>
 
 <section class="player-section">
 
-<div style="
-position:relative;
-width:100%;
-height:300px;
-background:#000;
-border-radius:14px;
-overflow:hidden
-">
+<div class="video-box">
 
 <video
 id="backgroundPlayer"
 playsinline
 muted
+autoplay
+loop
 preload="auto"
-style="
-width:100%;
-height:100%;
-object-fit:cover;
-display:block
-">
-</video>
+></video>
 
-<div style="
-position:absolute;
-left:0;
-right:0;
-bottom:0;
-background:linear-gradient(
-transparent,
-rgba(0,0,0,.85)
-);
-padding:35px 15px 12px
-">
+<div class="video-overlay">
 
-<div
-id="nowPlaying"
-style="
-text-align:center;
-color:white;
-font-size:.9rem;
-font-weight:600;
-margin-bottom:8px
-">
+<div id="nowPlaying">
 Nenhuma música reproduzindo
 </div>
 
 <audio
 id="musicPlayer"
 controls
-preload="metadata"
-style="
-width:100%;
-height:42px
-">
+preload="metadata">
 </audio>
 
 </div>
 </div>
+
 </section>
 
-<div
-class="playlist-container"
-id="playlistContainer">
-<div class="loading">
-Carregando músicas...
-</div>
+<div class="playlist-container" id="playlistContainer">
+<div class="loading">Carregando músicas...</div>
 </div>
 
 <!-- LOGIN CLIENTE -->
@@ -517,17 +482,9 @@ id="userAccessCode"
 placeholder="ND-XXXXXX"
 maxlength="20"
 autocomplete="off"
-style="
-text-align:center;
-text-transform:uppercase;
-font-size:1.3rem;
-letter-spacing:2px
-">
+style="text-align:center;text-transform:uppercase;font-size:1.3rem;letter-spacing:2px">
 
-<button
-class="btn"
-type="button"
-onclick="processarAcesso()">
+<button class="btn" type="button" onclick="processarAcesso()">
 Entrar
 </button>
 
@@ -542,23 +499,14 @@ Entrar
 
 <div class="modal-content">
 
-<div style="
-display:flex;
-justify-content:space-between;
-align-items:center
-">
+<div style="display:flex;justify-content:space-between;align-items:center">
 
 <h2>
 <i class="fa-solid fa-user-shield"></i>
 Painel ADM
 </h2>
 
-<button
-class="close"
-type="button"
-onclick="fecharAdmin()">
-×
-</button>
+<button class="close" type="button" onclick="fecharAdmin()">×</button>
 
 </div>
 
@@ -581,10 +529,7 @@ id="adminPassword"
 placeholder="Senha do administrador"
 autocomplete="current-password">
 
-<button
-class="btn"
-type="button"
-onclick="entrarAdmin()">
+<button class="btn" type="button" onclick="entrarAdmin()">
 <i class="fa-solid fa-right-to-bracket"></i>
 Entrar no painel
 </button>
@@ -597,37 +542,29 @@ Entrar no painel
 
 <div class="admin-tabs">
 
-<button
-class="filter-btn active"
-onclick="abaAdmin('player',this)">
+<button class="filter-btn active" onclick="abaAdmin('player',this)">
 Player
 </button>
 
-<button
-class="filter-btn"
-onclick="abaAdmin('musicas',this)">
+<button class="filter-btn" onclick="abaAdmin('musicas',this)">
 Músicas
 </button>
 
-<button
-class="filter-btn"
-onclick="abaAdmin('fundos',this)">
+<button class="filter-btn" onclick="abaAdmin('fundos',this)">
 Fundos
 </button>
 
-<button
-class="filter-btn"
-onclick="abaAdmin('codigos',this)">
+<button class="filter-btn" onclick="abaAdmin('codigos',this)">
 Códigos
 </button>
 
-<button
-class="filter-btn"
-onclick="abaAdmin('config',this)">
+<button class="filter-btn" onclick="abaAdmin('config',this)">
 Config
 </button>
 
 </div>
+
+<!-- PLAYER ADM -->
 
 <div class="admin-section active" id="aba-player">
 
@@ -637,16 +574,45 @@ Config
 O administrador também pode ouvir e visualizar o vídeo de fundo.
 </p>
 
-<button
-class="btn btn-secondary"
-onclick="pararPlayer()">
+<div style="margin-top:12px">
+
+<div class="video-box" style="height:250px">
+
+<video
+id="adminBackgroundPlayer"
+playsinline
+muted
+preload="auto">
+</video>
+
+<div class="video-overlay">
+
+<div id="adminNowPlaying"
+style="text-align:center;color:white;font-size:.85rem;margin-bottom:8px">
+Nenhuma música reproduzindo
+</div>
+
+<audio
+id="adminMusicPlayer"
+controls
+style="width:100%;height:40px">
+</audio>
+
+</div>
+</div>
+
+</div>
+
+<div id="adminPlayerList" style="margin-top:10px"></div>
+
+<button class="btn btn-secondary" onclick="pararPlayer()">
 <i class="fa-solid fa-stop"></i>
 Parar
 </button>
 
-<div id="adminPlayerList" style="margin-top:10px"></div>
-
 </div>
+
+<!-- MÚSICAS -->
 
 <div class="admin-section" id="aba-musicas">
 
@@ -654,9 +620,7 @@ Parar
 
 <input id="songTitle" placeholder="Título">
 
-<input
-id="songUrl"
-placeholder="Link direto do arquivo .mp3">
+<input id="songUrl" placeholder="Link direto do arquivo .mp3 ou .mp4">
 
 <select id="songCategory">
 <option>Sertanejo</option>
@@ -678,17 +642,17 @@ Salvar música
 
 </div>
 
+<!-- FUNDOS -->
+
 <div class="admin-section" id="aba-fundos">
 
 <h3>Vídeos de fundo</h3>
 
 <p class="small">
-Cadastre vídeos .mp4. O sistema escolherá um aleatoriamente.
+Cadastre vídeos MP4. O sistema poderá escolher um aleatoriamente.
 </p>
 
-<input
-id="backgroundUrl"
-placeholder="Link direto .mp4">
+<input id="backgroundUrl" placeholder="Link direto do vídeo .mp4">
 
 <button class="btn" onclick="salvarFundo()">
 Adicionar vídeo de fundo
@@ -698,13 +662,14 @@ Adicionar vídeo de fundo
 
 </div>
 
+<!-- CÓDIGOS -->
+
 <div class="admin-section" id="aba-codigos">
 
 <h3>Códigos para clientes</h3>
 
 <p class="small">
 Gere um código e envie para o cliente.
-Cada código pode ser vinculado a um aparelho.
 </p>
 
 <button class="btn" onclick="gerarCodigoCliente()">
@@ -712,14 +677,9 @@ Cada código pode ser vinculado a um aparelho.
 Gerar código para cliente
 </button>
 
-<div
-id="generatedCodeBox"
-class="code-box"
-style="display:none">
+<div id="generatedCodeBox" class="code-box" style="display:none">
 
-<div class="small">
-NOVO CÓDIGO
-</div>
+<div class="small">NOVO CÓDIGO</div>
 
 <div id="generatedCode" class="generated-code"></div>
 
@@ -742,6 +702,8 @@ Carregando...
 
 </div>
 
+<!-- CONFIG -->
+
 <div class="admin-section" id="aba-config">
 
 <h3>Configurações</h3>
@@ -760,37 +722,24 @@ Sair do ADM
 </div>
 
 </div>
-
 </div>
 </div>
 
 <script>
 
 /* =====================================================
-   FIREBASE
+FIREBASE
 ===================================================== */
 
-const firebaseConfig = {
-
+const firebaseConfig={
 apiKey:"AIzaSyDnId6VY94Fw9lhW_i5iZEP0nnxVEjNoqo",
-
 authDomain:"nandomusic-c77a3.firebaseapp.com",
-
-databaseURL:
-"https://nandomusic-c77a3-default-rtdb.firebaseio.com",
-
+databaseURL:"https://nandomusic-c77a3-default-rtdb.firebaseio.com",
 projectId:"nandomusic-c77a3",
-
-storageBucket:
-"nandomusic-c77a3.firebasestorage.app",
-
+storageBucket:"nandomusic-c77a3.firebasestorage.app",
 messagingSenderId:"509221491611",
-
-appId:
-"1:509221491611:web:e9b7ffc4cde7ee9477473e",
-
+appId:"1:509221491611:web:e9b7ffc4cde7ee9477473e",
 measurementId:"G-K6WVWHTVP7"
-
 };
 
 if(!firebase.apps.length){
@@ -800,10 +749,6 @@ firebase.initializeApp(firebaseConfig);
 const auth=firebase.auth();
 const db=firebase.database();
 
-/* =====================================================
-   CHAVE ADM
-===================================================== */
-
 const CHAVE_SECRETA_ADM="NANDOADM";
 
 let adminLogado=false;
@@ -811,7 +756,17 @@ let allSongs=[];
 let bgVideos=[];
 
 /* =====================================================
-   APARELHO
+ARQUIVOS DE TESTE
+===================================================== */
+
+const MUSICA_TESTE =
+"https://github.com/nandosarcondicionado-gif/Music-Nando-/raw/refs/heads/main/midia/musicas/DJ%20Guuga%20e%20MC%20Pierre%20-%20Helic%C3%B3ptero%202.mp3";
+
+const VIDEO_TESTE =
+"https://github.com/nandosarcondicionado-gif/Music-Nando-/raw/refs/heads/main/midia/videos/20260807_092150486.mp4_play_BR.mp4";
+
+/* =====================================================
+DEVICE ID
 ===================================================== */
 
 let deviceId=localStorage.getItem("nando_device_id");
@@ -820,33 +775,31 @@ if(!deviceId){
 
 deviceId=
 "DEV-"+
-Math.random()
-.toString(36)
-.substring(2,10)
-.toUpperCase();
+Math.random().toString(36).substring(2,10).toUpperCase();
 
-localStorage.setItem(
-"nando_device_id",
-deviceId
-);
+localStorage.setItem("nando_device_id",deviceId);
 
 }
 
 /* =====================================================
-   ELEMENTOS
+ELEMENTOS
 ===================================================== */
 
-const backgroundPlayer=
-document.getElementById("backgroundPlayer");
+const backgroundPlayer=document.getElementById("backgroundPlayer");
+const musicPlayer=document.getElementById("musicPlayer");
+const nowPlaying=document.getElementById("nowPlaying");
 
-const musicPlayer=
-document.getElementById("musicPlayer");
+const adminBackgroundPlayer=
+document.getElementById("adminBackgroundPlayer");
 
-const nowPlaying=
-document.getElementById("nowPlaying");
+const adminMusicPlayer=
+document.getElementById("adminMusicPlayer");
+
+const adminNowPlaying=
+document.getElementById("adminNowPlaying");
 
 /* =====================================================
-   MENSAGEM
+MENSAGENS
 ===================================================== */
 
 function mostrarMensagem(id,text,tipo){
@@ -861,7 +814,7 @@ el.className="message "+tipo;
 }
 
 /* =====================================================
-   CONEXÃO
+CONEXÃO
 ===================================================== */
 
 db.ref(".info/connected").on("value",snap=>{
@@ -883,20 +836,18 @@ status.style.color="#f87171";
 });
 
 /* =====================================================
-   ACESSO
+ACESSO
 ===================================================== */
 
 async function processarAcesso(){
 
 const input=document.getElementById("userAccessCode");
 
-const valor=
-input.value.trim().toUpperCase();
+const valor=input.value.trim().toUpperCase();
 
 if(valor===CHAVE_SECRETA_ADM){
 
 abrirLoginAdmin();
-
 return;
 
 }
@@ -906,7 +857,7 @@ await validarCodigoUsuario();
 }
 
 /* =====================================================
-   LOGIN ADM
+LOGIN ADM
 ===================================================== */
 
 function abrirLoginAdmin(){
@@ -921,13 +872,10 @@ modal.style.display="flex";
 
 document.getElementById("adminLogin").style.display="block";
 document.getElementById("adminPanel").style.display="none";
-
 document.getElementById("adminPassword").value="";
 
 setTimeout(()=>{
-
 document.getElementById("adminPassword").focus();
-
 },150);
 
 }
@@ -939,10 +887,7 @@ const modal=document.getElementById("adminModal");
 modal.classList.remove("active");
 modal.style.display="none";
 
-const autorizado=
-localStorage.getItem("nando_autorizado")==="true";
-
-if(!autorizado){
+if(localStorage.getItem("nando_autorizado")!=="true"){
 
 const authModal=document.getElementById("authModal");
 
@@ -954,7 +899,7 @@ authModal.style.display="flex";
 }
 
 /* =====================================================
-   AUTORIZAÇÃO
+AUTORIZAÇÃO
 ===================================================== */
 
 async function verificarAutorizacao(){
@@ -970,54 +915,30 @@ modal.style.display="flex";
 
 mostrarMensagem(
 "authMessage",
-"Sem internet. Conecte-se para validar o acesso.",
+"Sem internet. Conecte-se para validar o código.",
 "error"
 );
-
-return;
-
-}
-
-const codigoLocal=
-localStorage.getItem("nando_codigo");
-
-if(!codigoLocal){
-
-localStorage.removeItem("nando_autorizado");
-
-modal.classList.add("active");
-modal.style.display="flex";
 
 return;
 
 }
 
 const snapshot=
-await db.ref("codigos_gerados/"+codigoLocal).once("value");
+await db.ref("dispositivos_autorizados").once("value");
 
-const dados=snapshot.val();
+const dados=snapshot.val()||{};
 
-if(
-!dados ||
-dados.usado!==true ||
-dados.deviceId!==deviceId
-){
+let autorizado=false;
 
-localStorage.removeItem("nando_autorizado");
-localStorage.removeItem("nando_codigo");
+Object.values(dados).forEach(item=>{
 
-modal.classList.add("active");
-modal.style.display="flex";
-
-mostrarMensagem(
-"authMessage",
-"Seu acesso não está mais autorizado.",
-"error"
-);
-
-return;
-
+if(item && item.deviceId===deviceId){
+autorizado=true;
 }
+
+});
+
+if(autorizado){
 
 localStorage.setItem("nando_autorizado","true");
 
@@ -1025,6 +946,15 @@ modal.classList.remove("active");
 modal.style.display="none";
 
 mostrarBotaoInstalar();
+
+iniciarVideoTeste();
+
+}else{
+
+modal.classList.add("active");
+modal.style.display="flex";
+
+}
 
 }catch(error){
 
@@ -1044,15 +974,14 @@ mostrarMensagem(
 }
 
 /* =====================================================
-   VALIDAR CÓDIGO
+VALIDAR CÓDIGO
 ===================================================== */
 
 async function validarCodigoUsuario(){
 
 const input=document.getElementById("userAccessCode");
 
-const codigo=
-input.value.trim().toUpperCase();
+const codigo=input.value.trim().toUpperCase();
 
 if(!codigo){
 
@@ -1086,40 +1015,18 @@ mostrarMensagem(
 
 try{
 
-const timeout=new Promise((_,reject)=>{
-
-setTimeout(()=>{
-
-reject(
-new Error(
-"Tempo limite excedido. Verifique sua internet."
-)
-);
-
-},10000);
-
-});
-
-const consulta=
-db.ref("codigos_gerados/"+codigo).once("value");
-
 const snapshot=
-await Promise.race([consulta,timeout]);
+await db.ref("codigos_gerados/"+codigo).once("value");
 
 const dados=snapshot.val();
 
 if(!dados){
 
-throw new Error(
-"Código inválido ou não encontrado."
-);
+throw new Error("Código inválido ou não encontrado.");
 
 }
 
-if(
-dados.usado===true &&
-dados.deviceId!==deviceId
-){
+if(dados.usado===true && dados.deviceId!==deviceId){
 
 throw new Error(
 "Esse código já está vinculado a outro aparelho."
@@ -1143,15 +1050,8 @@ data:Date.now()
 
 });
 
-localStorage.setItem(
-"nando_autorizado",
-"true"
-);
-
-localStorage.setItem(
-"nando_codigo",
-codigo
-);
+localStorage.setItem("nando_autorizado","true");
+localStorage.setItem("nando_codigo",codigo);
 
 document.getElementById("authModal").classList.remove("active");
 document.getElementById("authModal").style.display="none";
@@ -1162,14 +1062,15 @@ document.getElementById("authMessage").className="message";
 
 mostrarBotaoInstalar();
 
+iniciarVideoTeste();
+
 }catch(error){
 
 console.error(error);
 
 mostrarMensagem(
 "authMessage",
-error.message ||
-"Não foi possível validar o código.",
+error.message || "Não foi possível validar o código.",
 "error"
 );
 
@@ -1178,16 +1079,13 @@ error.message ||
 }
 
 /* =====================================================
-   LOGIN FIREBASE
+LOGIN FIREBASE ADM
 ===================================================== */
 
 async function entrarAdmin(){
 
-const email=
-document.getElementById("adminEmail").value.trim();
-
-const senha=
-document.getElementById("adminPassword").value;
+const email=document.getElementById("adminEmail").value.trim();
+const senha=document.getElementById("adminPassword").value;
 
 if(!email || !senha){
 
@@ -1209,10 +1107,7 @@ mostrarMensagem(
 
 try{
 
-await auth.signInWithEmailAndPassword(
-email,
-senha
-);
+await auth.signInWithEmailAndPassword(email,senha);
 
 adminLogado=true;
 
@@ -1225,9 +1120,7 @@ console.error(error);
 let msg="E-mail ou senha incorretos.";
 
 if(error.code==="auth/too-many-requests"){
-
 msg="Muitas tentativas. Aguarde um pouco.";
-
 }
 
 mostrarMensagem(
@@ -1241,23 +1134,23 @@ msg,
 }
 
 /* =====================================================
-   PAINEL ADM
+PAINEL ADM
 ===================================================== */
 
 function mostrarPainelAdmin(){
 
 document.getElementById("adminLogin").style.display="none";
-
 document.getElementById("adminPanel").style.display="block";
 
 carregarCodigosAdmin();
 carregarListaAdmin();
 renderizarAdminPlayer();
+iniciarVideoAdmin();
 
 }
 
 /* =====================================================
-   SAIR ADM
+SAIR ADM
 ===================================================== */
 
 async function sairAdmin(){
@@ -1269,9 +1162,7 @@ await auth.signOut();
 adminLogado=false;
 
 document.getElementById("adminPanel").style.display="none";
-
 document.getElementById("adminLogin").style.display="block";
-
 document.getElementById("adminPassword").value="";
 
 fecharAdmin();
@@ -1279,7 +1170,7 @@ fecharAdmin();
 }
 
 /* =====================================================
-   ABAS
+ABAS
 ===================================================== */
 
 function abaAdmin(nome,btn){
@@ -1289,29 +1180,25 @@ document.querySelectorAll(".admin-section")
 
 const aba=document.getElementById("aba-"+nome);
 
-if(aba){
-aba.classList.add("active");
-}
+if(aba)aba.classList.add("active");
 
 document.querySelectorAll(".admin-tabs .filter-btn")
 .forEach(el=>el.classList.remove("active"));
 
-if(btn){
-btn.classList.add("active");
-}
+if(btn)btn.classList.add("active");
 
 if(nome==="codigos"){
 carregarCodigosAdmin();
 }
 
 if(nome==="player"){
-renderizarAdminPlayer();
+iniciarVideoAdmin();
 }
 
 }
 
 /* =====================================================
-   GERAR CÓDIGO
+GERAR CÓDIGO
 ===================================================== */
 
 async function gerarCodigoCliente(){
@@ -1319,13 +1206,11 @@ async function gerarCodigoCliente(){
 if(!adminLogado){
 
 alert("Faça login como administrador.");
-
 return;
 
 }
 
-const chars=
-"ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+const chars="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 
 let codigo="ND-";
 
@@ -1358,22 +1243,19 @@ carregarCodigosAdmin();
 
 }catch(error){
 
-alert(
-"Erro ao gerar código:\n"+error.message
-);
+alert("Erro ao gerar código:\n"+error.message);
 
 }
 
 }
 
 /* =====================================================
-   COPIAR
+COPIAR
 ===================================================== */
 
 async function copiarCodigo(){
 
-const codigo=
-document.getElementById("generatedCode").innerText;
+const codigo=document.getElementById("generatedCode").innerText;
 
 if(!codigo)return;
 
@@ -1392,37 +1274,19 @@ prompt("Copie o código:",codigo);
 
 }
 
-async function copiarDireto(codigo){
-
-try{
-
-await navigator.clipboard.writeText(codigo);
-
-alert("Código "+codigo+" copiado!");
-
-}catch(e){
-
-prompt("Copie o código:",codigo);
-
-}
-
-}
-
 /* =====================================================
-   LISTAR CÓDIGOS
+LISTAR CÓDIGOS
 ===================================================== */
 
 async function carregarCodigosAdmin(){
 
-const container=
-document.getElementById("codesAdminList");
+const container=document.getElementById("codesAdminList");
 
 if(!container)return;
 
 try{
 
-const snap=
-await db.ref("codigos_gerados").once("value");
+const snap=await db.ref("codigos_gerados").once("value");
 
 const dados=snap.val()||{};
 
@@ -1442,7 +1306,6 @@ let html="";
 ids.forEach(id=>{
 
 const item=dados[id]||{};
-
 const usado=item.usado===true;
 
 html+=`
@@ -1454,7 +1317,9 @@ html+=`
 <strong>${escapar(id)}</strong><br>
 
 <span class="status ${usado?"used":"available"}">
+
 ${usado?"USADO":"DISPONÍVEL"}
+
 </span>
 
 ${
@@ -1472,7 +1337,7 @@ Aparelho: ${escapar(item.deviceId)}
 
 <button
 style="background:#334155"
-onclick="copiarDireto('${escapar(id)}')">
+onclick="copiarDireto('${id}')">
 
 <i class="fa-solid fa-copy"></i>
 
@@ -1480,7 +1345,7 @@ onclick="copiarDireto('${escapar(id)}')">
 
 <button
 style="background:#ef4444"
-onclick="excluirCodigo('${escapar(id)}')">
+onclick="excluirCodigo('${id}')">
 
 <i class="fa-solid fa-trash"></i>
 
@@ -1506,16 +1371,34 @@ container.innerHTML=
 }
 
 /* =====================================================
-   EXCLUIR CÓDIGO
+COPIAR DIRETO
+===================================================== */
+
+async function copiarDireto(codigo){
+
+try{
+
+await navigator.clipboard.writeText(codigo);
+
+alert("Código "+codigo+" copiado!");
+
+}catch(e){
+
+prompt("Copie o código:",codigo);
+
+}
+
+}
+
+/* =====================================================
+EXCLUIR CÓDIGO
 ===================================================== */
 
 async function excluirCodigo(codigo){
 
 if(!adminLogado)return;
 
-if(!confirm(
-"Excluir o código "+codigo+"? O aparelho perderá o acesso."
-))return;
+if(!confirm("Excluir o código "+codigo+"?"))return;
 
 try{
 
@@ -1527,16 +1410,14 @@ carregarCodigosAdmin();
 
 }catch(error){
 
-alert(
-"Erro ao excluir:\n"+error.message
-);
+alert("Erro ao excluir:\n"+error.message);
 
 }
 
 }
 
 /* =====================================================
-   MÚSICAS
+SALVAR MÚSICA
 ===================================================== */
 
 async function salvarMusica(){
@@ -1544,24 +1425,17 @@ async function salvarMusica(){
 if(!adminLogado){
 
 alert("Faça login como administrador.");
-
 return;
 
 }
 
-const title=
-document.getElementById("songTitle").value.trim();
-
-const url=
-document.getElementById("songUrl").value.trim();
-
-const category=
-document.getElementById("songCategory").value;
+const title=document.getElementById("songTitle").value.trim();
+const url=document.getElementById("songUrl").value.trim();
+const category=document.getElementById("songCategory").value;
 
 if(!title || !url){
 
 alert("Preencha o título e o link.");
-
 return;
 
 }
@@ -1590,6 +1464,10 @@ alert("Erro:\n"+error.message);
 
 }
 
+/* =====================================================
+EXCLUIR MÚSICA
+===================================================== */
+
 async function excluirMusica(id){
 
 if(!adminLogado)return;
@@ -1609,7 +1487,7 @@ alert("Erro:\n"+error.message);
 }
 
 /* =====================================================
-   VÍDEOS
+SALVAR FUNDO
 ===================================================== */
 
 async function salvarFundo(){
@@ -1617,18 +1495,15 @@ async function salvarFundo(){
 if(!adminLogado){
 
 alert("Faça login como administrador.");
-
 return;
 
 }
 
-const url=
-document.getElementById("backgroundUrl").value.trim();
+const url=document.getElementById("backgroundUrl").value.trim();
 
 if(!url){
 
 alert("Digite o link do vídeo.");
-
 return;
 
 }
@@ -1654,6 +1529,10 @@ alert("Erro:\n"+error.message);
 
 }
 
+/* =====================================================
+EXCLUIR FUNDO
+===================================================== */
+
 async function excluirFundo(id){
 
 if(!adminLogado)return;
@@ -1673,115 +1552,100 @@ alert("Erro:\n"+error.message);
 }
 
 /* =====================================================
-   PLAYER - CORREÇÃO PRINCIPAL
+INICIAR VÍDEO DE TESTE
 ===================================================== */
 
-async function tocar(url,title){
+function iniciarVideoTeste(){
+
+if(!backgroundPlayer)return;
+
+backgroundPlayer.src=VIDEO_TESTE;
+backgroundPlayer.muted=true;
+backgroundPlayer.loop=true;
+
+backgroundPlayer.play().catch(error=>{
+
+console.warn("Vídeo aguardando interação:",error);
+
+});
+
+}
+
+/* =====================================================
+INICIAR VÍDEO ADM
+===================================================== */
+
+function iniciarVideoAdmin(){
+
+if(!adminBackgroundPlayer)return;
+
+adminBackgroundPlayer.src=VIDEO_TESTE;
+adminBackgroundPlayer.muted=true;
+adminBackgroundPlayer.loop=true;
+
+adminBackgroundPlayer.play().catch(error=>{
+
+console.warn("Vídeo ADM aguardando interação:",error);
+
+});
+
+}
+
+/* =====================================================
+TOCAR MÚSICA
+===================================================== */
+
+function tocar(url,title){
 
 if(!url)return;
 
-/*
-   Coloca a música no player.
-*/
-
 musicPlayer.src=url;
-
 nowPlaying.innerText=title;
 
-/*
-   CORREÇÃO:
-   Assim que o usuário/ADM tocar em uma música,
-   iniciamos também o vídeo de fundo.
-*/
+musicPlayer.play().catch(error=>{
 
-iniciarVideoDeFundo();
+console.warn("Reprodução automática bloqueada:",error);
 
-/*
-   Inicia a música.
-*/
-
-try{
-
-await musicPlayer.play();
-
-}catch(error){
-
-console.warn(
-"Reprodução da música aguardando interação:",
-error
-);
+});
 
 }
+
+function tocarAdmin(url,title){
+
+if(!url)return;
+
+adminMusicPlayer.src=url;
+adminNowPlaying.innerText=title;
+
+adminMusicPlayer.play().catch(error=>{
+
+console.warn("Reprodução ADM bloqueada:",error);
+
+});
 
 }
 
 /* =====================================================
-   INICIAR VÍDEO DE FUNDO
-===================================================== */
-
-async function iniciarVideoDeFundo(){
-
-if(!bgVideos.length)return;
-
-/*
-   Se não existe vídeo carregado,
-   escolhe um aleatório.
-*/
-
-if(
-!backgroundPlayer.src ||
-backgroundPlayer.readyState===0
-){
-
-tocarFundoAleatorio();
-
-return;
-
-}
-
-/*
-   Garante que o áudio do vídeo fique desligado.
-*/
-
-backgroundPlayer.muted=true;
-backgroundPlayer.volume=0;
-
-try{
-
-await backgroundPlayer.play();
-
-}catch(error){
-
-console.warn(
-"Vídeo aguardando interação:",
-error
-);
-
-}
-
-}
-
-/* =====================================================
-   PARAR PLAYER
+PARAR PLAYER
 ===================================================== */
 
 function pararPlayer(){
 
 musicPlayer.pause();
-
 musicPlayer.removeAttribute("src");
-
 musicPlayer.load();
 
-backgroundPlayer.pause();
+adminMusicPlayer.pause();
+adminMusicPlayer.removeAttribute("src");
+adminMusicPlayer.load();
 
-nowPlaying.innerText=
-"Nenhuma música reproduzindo";
+nowPlaying.innerText="Nenhuma música reproduzindo";
+adminNowPlaying.innerText="Nenhuma música reproduzindo";
 
 }
 
 /* =====================================================
-   MÚSICAS FIREBASE
+MÚSICAS FIREBASE
 ===================================================== */
 
 db.ref("musicas").on("value",snapshot=>{
@@ -1802,21 +1666,18 @@ id:id,
 });
 
 renderizarMusicas(allSongs);
-
 renderizarAdminPlayer();
-
 carregarListaAdmin();
 
 });
 
 /* =====================================================
-   RENDER MÚSICAS
+RENDER MÚSICAS
 ===================================================== */
 
 function renderizarMusicas(lista){
 
-const container=
-document.getElementById("playlistContainer");
+const container=document.getElementById("playlistContainer");
 
 if(!lista.length){
 
@@ -1868,6 +1729,7 @@ class="icon">
 <i
 class="fa-solid fa-play icon"
 onclick="tocar('${url}','${title}')">
+
 </i>
 
 </div>
@@ -1883,13 +1745,12 @@ container.innerHTML=html;
 }
 
 /* =====================================================
-   PLAYER ADM
+PLAYER ADM
 ===================================================== */
 
 function renderizarAdminPlayer(){
 
-const container=
-document.getElementById("adminPlayerList");
+const container=document.getElementById("adminPlayerList");
 
 if(!container)return;
 
@@ -1907,7 +1768,7 @@ ${escapar(song.title)}
 
 <button
 style="background:#a855f7"
-onclick="tocar('${escapar(song.url)}','${escapar(song.title)}')">
+onclick="tocarAdmin('${escapar(song.url)}','${escapar(song.title)}')">
 
 <i class="fa-solid fa-play"></i>
 
@@ -1926,13 +1787,12 @@ html ||
 }
 
 /* =====================================================
-   LISTA ADMIN
+LISTA ADMIN
 ===================================================== */
 
 function carregarListaAdmin(){
 
-const container=
-document.getElementById("musicAdminList");
+const container=document.getElementById("musicAdminList");
 
 if(!container)return;
 
@@ -1969,7 +1829,7 @@ html ||
 }
 
 /* =====================================================
-   FUNDOS FIREBASE
+FUNDOS FIREBASE
 ===================================================== */
 
 db.ref("background_videos").on("value",snapshot=>{
@@ -1989,8 +1849,7 @@ url:dados[id].url
 
 });
 
-const container=
-document.getElementById("backgroundAdminList");
+const container=document.getElementById("backgroundAdminList");
 
 if(container){
 
@@ -2022,142 +1881,47 @@ Excluir
 
 container.innerHTML=
 html ||
-'<div class="empty">Nenhum vídeo.</div>';
-
-}
-
-/*
-   Carrega o primeiro vídeo.
-*/
-
-if(bgVideos.length){
-
-const atual=
-backgroundPlayer.getAttribute("data-video-loaded");
-
-if(!atual){
-
-tocarFundoAleatorio();
-
-}
+'<div class="empty">Nenhum vídeo cadastrado.</div>';
 
 }
 
 });
 
 /* =====================================================
-   VÍDEO ALEATÓRIO
-===================================================== */
-
-function tocarFundoAleatorio(){
-
-if(!bgVideos.length)return;
-
-const video=
-bgVideos[
-Math.floor(
-Math.random()*bgVideos.length
-)
-];
-
-backgroundPlayer.src=video.url;
-
-backgroundPlayer.setAttribute(
-"data-video-loaded",
-"true"
-);
-
-backgroundPlayer.muted=true;
-backgroundPlayer.volume=0;
-backgroundPlayer.loop=false;
-
-/*
-   Tentativa inicial.
-   Se o navegador bloquear, tocar()
-   tentará novamente quando o usuário
-   apertar Play.
-*/
-
-backgroundPlayer.play()
-.catch(error=>{
-
-console.warn(
-"Vídeo aguardando interação do usuário:",
-error
-);
-
-});
-
-}
-
-/*
-   Quando um vídeo terminar,
-   escolhe outro.
-*/
-
-backgroundPlayer.addEventListener(
-"ended",
-()=>{
-
-backgroundPlayer.removeAttribute(
-"data-video-loaded"
-);
-
-tocarFundoAleatorio();
-
-}
-);
-
-/* =====================================================
-   FILTRO
+FILTRO
 ===================================================== */
 
 function filtrar(cat,btn){
 
-document.querySelectorAll(
-".filter-bar .filter-btn"
-)
-.forEach(el=>
-el.classList.remove("active")
-);
+document.querySelectorAll(".filter-bar .filter-btn")
+.forEach(el=>el.classList.remove("active"));
 
 btn.classList.add("active");
 
 if(cat==="Todas"){
 
 renderizarMusicas(allSongs);
-
 return;
 
 }
 
 renderizarMusicas(
-
-allSongs.filter(
-song=>song.category===cat
-)
-
+allSongs.filter(song=>song.category===cat)
 );
 
 }
 
 /* =====================================================
-   ESCAPAR
+ESCAPAR
 ===================================================== */
 
 function escapar(texto){
 
-if(
-texto===undefined ||
-texto===null
-){
-
+if(texto===undefined || texto===null){
 return "";
-
 }
 
 return String(texto)
-
 .replace(/&/g,"&amp;")
 .replace(/</g,"&lt;")
 .replace(/>/g,"&gt;")
@@ -2167,14 +1931,11 @@ return String(texto)
 }
 
 /* =====================================================
-   ENTER
+ENTER
 ===================================================== */
 
-document.getElementById(
-"userAccessCode"
-).addEventListener(
-"keydown",
-e=>{
+document.getElementById("userAccessCode")
+.addEventListener("keydown",e=>{
 
 if(e.key==="Enter"){
 processarAcesso();
@@ -2182,11 +1943,8 @@ processarAcesso();
 
 });
 
-document.getElementById(
-"adminPassword"
-).addEventListener(
-"keydown",
-e=>{
+document.getElementById("adminPassword")
+.addEventListener("keydown",e=>{
 
 if(e.key==="Enter"){
 entrarAdmin();
@@ -2195,7 +1953,7 @@ entrarAdmin();
 });
 
 /* =====================================================
-   PWA
+PWA
 ===================================================== */
 
 let deferredPrompt=null;
@@ -2206,20 +1964,13 @@ document.getElementById("installContainer");
 const installButton=
 document.getElementById("installButton");
 
-window.addEventListener(
-"beforeinstallprompt",
-event=>{
+window.addEventListener("beforeinstallprompt",event=>{
 
 event.preventDefault();
 
 deferredPrompt=event;
 
-const autorizado=
-localStorage.getItem(
-"nando_autorizado"
-)==="true";
-
-if(autorizado){
+if(localStorage.getItem("nando_autorizado")==="true"){
 mostrarBotaoInstalar();
 }
 
@@ -2227,10 +1978,7 @@ mostrarBotaoInstalar();
 
 function mostrarBotaoInstalar(){
 
-if(
-deferredPrompt &&
-installContainer
-){
+if(deferredPrompt && installContainer){
 
 installContainer.style.display="block";
 
@@ -2240,14 +1988,12 @@ installContainer.style.display="block";
 
 if(installButton){
 
-installButton.addEventListener(
-"click",
-async()=>{
+installButton.addEventListener("click",async()=>{
 
 if(!deferredPrompt){
 
 alert(
-"Se a opção de instalação não aparecer, abra o menu do navegador e procure por 'Instalar aplicativo' ou 'Adicionar à tela inicial'."
+"Abra o menu do navegador e procure por 'Instalar aplicativo' ou 'Adicionar à tela inicial'."
 );
 
 return;
@@ -2272,42 +2018,33 @@ installContainer.style.display="none";
 
 }
 
-window.addEventListener(
-"appinstalled",
-()=>{
+window.addEventListener("appinstalled",()=>{
 
 deferredPrompt=null;
 
 if(installContainer){
-
 installContainer.style.display="none";
-
 }
-
-console.log(
-"Nando's Music instalado com sucesso."
-);
 
 });
 
 /* =====================================================
-   INICIALIZAÇÃO
+INICIALIZAÇÃO
 ===================================================== */
 
-window.addEventListener(
-"load",
-()=>{
+window.addEventListener("load",()=>{
 
 const autorizadoLocal=
-localStorage.getItem(
-"nando_autorizado"
-)==="true";
+localStorage.getItem("nando_autorizado")==="true";
 
 if(autorizadoLocal){
 
-verificarAutorizacao();
+document.getElementById("authModal").classList.remove("active");
+document.getElementById("authModal").style.display="none";
 
 mostrarBotaoInstalar();
+
+iniciarVideoTeste();
 
 }else{
 
@@ -2318,34 +2055,23 @@ verificarAutorizacao();
 });
 
 /* =====================================================
-   SERVICE WORKER
+SERVICE WORKER
 ===================================================== */
 
 if("serviceWorker" in navigator){
 
-window.addEventListener(
-"load",
-()=>{
+window.addEventListener("load",()=>{
 
 navigator.serviceWorker
-
 .register("./service-worker.js")
-
 .then(reg=>{
 
-console.log(
-"PWA ativo:",
-reg.scope
-);
+console.log("PWA ativo:",reg.scope);
 
 })
-
 .catch(err=>{
 
-console.warn(
-"Service Worker:",
-err
-);
+console.warn("Service Worker:",err);
 
 });
 
