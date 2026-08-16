@@ -2,9 +2,9 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 
-<meta name="theme-color" content="#09090b">
+<meta name="theme-color" content="#a855f7">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Nando's Music">
@@ -17,7 +17,7 @@
 <link rel="stylesheet"
 href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
 rel="stylesheet">
 
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -26,1502 +26,503 @@ rel="stylesheet">
 
 <style>
 
-/* =========================================================
-   NANDO'S MUSIC
-   IDENTIDADE VISUAL
-========================================================= */
-
 :root{
-    --purple:#a855f7;
-    --purple2:#7c3aed;
-    --pink:#ec4899;
-    --bg:#07070a;
-    --bg2:#0d0d12;
-    --card:#131318;
-    --card2:#18181f;
-    --border:rgba(255,255,255,.07);
-    --white:#ffffff;
-    --muted:#9696a3;
-    --green:#22c55e;
-    --red:#ef4444;
-    --nav-height:76px;
+--primary:#a855f7;
+--primary2:#7c3aed;
+--secondary:#ec4899;
+--bg:#080b14;
+--card:#111827;
+--card2:#151b2c;
+--text:#ffffff;
+--muted:#94a3b8;
+--danger:#ef4444;
+--success:#22c55e;
 }
 
 *{
-    box-sizing:border-box;
-    margin:0;
-    padding:0;
-    font-family:Poppins,sans-serif;
-    -webkit-tap-highlight-color:transparent;
-}
-
-html{
-    scroll-behavior:smooth;
+box-sizing:border-box;
+margin:0;
+padding:0;
+font-family:Poppins,sans-serif;
 }
 
 body{
-    background:
-        radial-gradient(
-            circle at 50% -20%,
-            rgba(168,85,247,.14),
-            transparent 35%
-        ),
-        var(--bg);
-    color:var(--white);
-    min-height:100vh;
-    padding-bottom:90px;
+background:
+radial-gradient(circle at top,#24103d 0%,#080b14 42%);
+color:white;
+min-height:100vh;
+padding-bottom:30px;
 }
 
 button,
-input{
-    font-family:Poppins,sans-serif;
+input,
+select{
+font-family:Poppins,sans-serif;
 }
 
 button{
-    cursor:pointer;
+-webkit-tap-highlight-color:transparent;
 }
 
-/* =========================================================
-   SCROLLBAR
-========================================================= */
-
-::-webkit-scrollbar{
-    width:5px;
-    height:5px;
+header{
+position:sticky;
+top:0;
+z-index:100;
+background:rgba(8,11,20,.94);
+backdrop-filter:blur(14px);
+padding:15px 20px;
+border-bottom:1px solid rgba(255,255,255,.07);
+display:flex;
+justify-content:center;
+align-items:center;
 }
 
-::-webkit-scrollbar-track{
-    background:transparent;
+.logo{
+font-size:1.25rem;
+font-weight:700;
+background:linear-gradient(135deg,#a855f7,#ec4899);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
 }
-
-::-webkit-scrollbar-thumb{
-    background:#3b3b46;
-    border-radius:20px;
-}
-
-/* =========================================================
-   HEADER
-========================================================= */
-
-.top-header{
-    position:sticky;
-    top:0;
-    z-index:500;
-    height:70px;
-
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-
-    padding:0 18px;
-
-    background:rgba(7,7,10,.90);
-    backdrop-filter:blur(18px);
-    -webkit-backdrop-filter:blur(18px);
-
-    border-bottom:1px solid rgba(255,255,255,.04);
-}
-
-.brand{
-    display:flex;
-    align-items:center;
-    gap:9px;
-    font-size:21px;
-    font-weight:800;
-    letter-spacing:-.6px;
-}
-
-.brand-icon{
-    width:39px;
-    height:39px;
-    border-radius:12px;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    color:white;
-
-    background:linear-gradient(
-        135deg,
-        var(--purple),
-        var(--pink)
-    );
-
-    box-shadow:
-        0 8px 25px rgba(168,85,247,.25);
-}
-
-.brand span{
-    color:white;
-}
-
-.brand .brand-purple{
-    color:var(--purple);
-}
-
-.header-actions{
-    display:flex;
-    align-items:center;
-    gap:8px;
-}
-
-.header-button{
-    width:40px;
-    height:40px;
-    border:0;
-    border-radius:50%;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    color:#ddd;
-    background:transparent;
-
-    font-size:18px;
-}
-
-.header-button:active{
-    background:#1b1b23;
-}
-
-/* =========================================================
-   CONNECTION
-========================================================= */
 
 .connection-status{
-    text-align:center;
-    font-size:10px;
-    padding:4px 0;
-
-    color:#888;
-
-    background:#0b0b10;
+text-align:center;
+padding:6px;
+font-size:.7rem;
+background:#0d1220;
+color:#94a3b8;
 }
 
-.connection-status.online{
-    color:#4ade80;
+.filter-bar{
+display:flex;
+gap:8px;
+padding:12px 18px;
+overflow-x:auto;
+background:rgba(16,23,41,.94);
+scrollbar-width:none;
 }
 
-.connection-status.offline{
-    color:#f87171;
+.filter-bar::-webkit-scrollbar{
+display:none;
 }
 
-/* =========================================================
-   INSTALL
-========================================================= */
-
-#installContainer{
-    display:none;
-    padding:10px 18px;
-    background:#111118;
+.filter-btn{
+border:none;
+cursor:pointer;
+color:white;
+background:#1e293b;
+padding:8px 15px;
+border-radius:20px;
+white-space:nowrap;
+transition:.2s;
 }
 
-#installButton{
-    width:100%;
-    border:0;
-    padding:11px;
-    border-radius:12px;
-
-    color:white;
-    font-weight:700;
-
-    background:linear-gradient(
-        135deg,
-        var(--purple),
-        var(--pink)
-    );
+.filter-btn.active{
+background:linear-gradient(135deg,#a855f7,#ec4899);
+box-shadow:0 4px 15px rgba(168,85,247,.25);
 }
 
-/* =========================================================
-   MAIN
-========================================================= */
-
-.main{
-    width:100%;
-    max-width:1200px;
-    margin:auto;
+.player-section{
+width:100%;
+max-width:900px;
+margin:auto;
+padding:18px;
 }
 
-.page{
-    display:none;
+.video-box{
+position:relative;
+width:100%;
+height:310px;
+background:#000;
+border-radius:16px;
+overflow:hidden;
+box-shadow:0 12px 40px rgba(0,0,0,.45);
 }
 
-.page.active{
-    display:block;
+#backgroundPlayer,
+#adminBackgroundPlayer{
+width:100%;
+height:100%;
+object-fit:cover;
+display:block;
+background:#000;
 }
 
-/* =========================================================
-   CATEGORY BAR
-========================================================= */
-
-.categories{
-    display:flex;
-    gap:9px;
-
-    overflow-x:auto;
-    padding:16px 18px 10px;
-
-    scrollbar-width:none;
+.video-overlay{
+position:absolute;
+left:0;
+right:0;
+bottom:0;
+background:linear-gradient(
+transparent,
+rgba(0,0,0,.94)
+);
+padding:55px 15px 12px;
 }
 
-.categories::-webkit-scrollbar{
-    display:none;
+#nowPlaying,
+#adminNowPlaying{
+text-align:center;
+color:white;
+font-size:.9rem;
+font-weight:600;
+margin-bottom:8px;
 }
 
-.category{
-    flex:none;
-
-    border:0;
-    padding:9px 16px;
-
-    border-radius:25px;
-
-    color:#ddd;
-    background:#18181f;
-
-    font-size:12px;
-    font-weight:600;
-
-    white-space:nowrap;
+#musicPlayer,
+#adminMusicPlayer{
+width:100%;
+height:42px;
 }
 
-.category.active{
-    color:white;
-
-    background:linear-gradient(
-        135deg,
-        var(--purple),
-        var(--purple2)
-    );
-
-    box-shadow:
-        0 5px 20px rgba(168,85,247,.22);
+.playlist-container{
+max-width:900px;
+margin:auto;
+padding:0 18px 35px;
 }
 
-/* =========================================================
-   HERO
-========================================================= */
-
-.hero{
-    margin:8px 18px 25px;
-    min-height:240px;
-
-    position:relative;
-    overflow:hidden;
-
-    border-radius:22px;
-
-    background:
-        radial-gradient(
-            circle at 80% 20%,
-            rgba(236,72,153,.32),
-            transparent 35%
-        ),
-        radial-gradient(
-            circle at 20% 80%,
-            rgba(168,85,247,.35),
-            transparent 45%
-        ),
-        linear-gradient(
-            135deg,
-            #211331,
-            #0e0e15
-        );
-
-    border:1px solid rgba(255,255,255,.07);
+.song-item{
+background:rgba(21,27,44,.95);
+border:1px solid rgba(255,255,255,.06);
+border-radius:12px;
+padding:13px;
+margin-bottom:9px;
+display:flex;
+align-items:center;
+gap:10px;
+transition:.2s;
 }
 
-.hero-video{
-    position:absolute;
-    inset:0;
-
-    width:100%;
-    height:100%;
-
-    object-fit:cover;
-
-    opacity:.32;
+.song-item:active{
+transform:scale(.99);
 }
 
-.hero-overlay{
-    position:absolute;
-    inset:0;
-
-    background:
-        linear-gradient(
-            90deg,
-            rgba(7,7,10,.95) 0%,
-            rgba(7,7,10,.68) 48%,
-            rgba(7,7,10,.2) 100%
-        );
+.song-info{
+flex:1;
+cursor:pointer;
+min-width:0;
 }
 
-.hero-content{
-    position:relative;
-    z-index:2;
-
-    padding:28px 25px;
-    max-width:570px;
-}
-
-.hero-small{
-    color:#c084fc;
-    font-size:11px;
-    font-weight:700;
-
-    text-transform:uppercase;
-    letter-spacing:1.5px;
-
-    margin-bottom:8px;
-}
-
-.hero h1{
-    font-size:30px;
-    line-height:1.15;
-    margin-bottom:9px;
-}
-
-.hero p{
-    color:#b5b5bf;
-    font-size:12px;
-    line-height:1.6;
-    max-width:420px;
-}
-
-.hero-button{
-    margin-top:18px;
-
-    border:0;
-    padding:11px 18px;
-
-    border-radius:12px;
-
-    color:white;
-    background:linear-gradient(
-        135deg,
-        var(--purple),
-        var(--pink)
-    );
-
-    font-size:12px;
-    font-weight:700;
-}
-
-/* =========================================================
-   SECTION HEADER
-========================================================= */
-
-.section{
-    margin-bottom:27px;
-}
-
-.section-header{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-
-    padding:0 18px;
-    margin-bottom:13px;
-}
-
-.section-title{
-    font-size:17px;
-    font-weight:700;
-}
-
-.section-more{
-    border:0;
-    background:none;
-    color:#a855f7;
-    font-size:11px;
-    font-weight:600;
-}
-
-/* =========================================================
-   HORIZONTAL CARDS
-========================================================= */
-
-.horizontal-list{
-    display:flex;
-    gap:13px;
-
-    overflow-x:auto;
-
-    padding:0 18px 5px;
-
-    scrollbar-width:none;
-}
-
-.horizontal-list::-webkit-scrollbar{
-    display:none;
-}
-
-.music-card{
-    width:145px;
-    min-width:145px;
-
-    cursor:pointer;
-}
-
-.cover{
-    position:relative;
-
-    width:145px;
-    height:145px;
-
-    border-radius:15px;
-
-    overflow:hidden;
-
-    background:
-        linear-gradient(
-            135deg,
-            #3b1768,
-            #111118
-        );
-
-    box-shadow:
-        0 10px 25px rgba(0,0,0,.35);
-}
-
-.cover img{
-    width:100%;
-    height:100%;
-
-    object-fit:cover;
-
-    display:block;
-}
-
-.cover-placeholder{
-    width:100%;
-    height:100%;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    flex-direction:column;
-
-    gap:8px;
-
-    color:#fff;
-
-    background:
-        radial-gradient(
-            circle at 30% 20%,
-            rgba(236,72,153,.8),
-            transparent 35%
-        ),
-        linear-gradient(
-            135deg,
-            #7c3aed,
-            #261037
-        );
-}
-
-.cover-placeholder i{
-    font-size:34px;
-}
-
-.cover-play{
-    position:absolute;
-
-    right:9px;
-    bottom:9px;
-
-    width:38px;
-    height:38px;
-
-    border:0;
-    border-radius:50%;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    color:#111;
-
-    background:white;
-
-    box-shadow:0 5px 15px rgba(0,0,0,.4);
-
-    opacity:0;
-    transform:translateY(5px);
-
-    transition:.2s;
-}
-
-.music-card:hover .cover-play,
-.music-card:active .cover-play{
-    opacity:1;
-    transform:translateY(0);
-}
-
-.music-card-title{
-    font-size:12px;
-    font-weight:600;
-
-    margin-top:9px;
-
-    white-space:nowrap;
-    overflow:hidden;
-    text-overflow:ellipsis;
-}
-
-.music-card-artist{
-    color:#81818d;
-    font-size:10px;
-
-    white-space:nowrap;
-    overflow:hidden;
-    text-overflow:ellipsis;
-
-    margin-top:2px;
-}
-
-/* =========================================================
-   BIG PLAYLIST CARDS
-========================================================= */
-
-.playlist-card{
-    min-width:230px;
-    width:230px;
-}
-
-.playlist-cover{
-    width:230px;
-    height:135px;
-
-    border-radius:16px;
-
-    overflow:hidden;
-
-    position:relative;
-
-    background:
-        linear-gradient(
-            135deg,
-            #a855f7,
-            #ec4899
-        );
-}
-
-.playlist-cover img{
-    width:100%;
-    height:100%;
-    object-fit:cover;
-}
-
-.playlist-overlay{
-    position:absolute;
-    inset:0;
-
-    display:flex;
-    align-items:flex-end;
-
-    padding:14px;
-
-    background:
-        linear-gradient(
-            transparent,
-            rgba(0,0,0,.75)
-        );
-}
-
-.playlist-name{
-    font-size:14px;
-    font-weight:700;
-}
-
-/* =========================================================
-   GRID
-========================================================= */
-
-.music-grid{
-    display:grid;
-
-    grid-template-columns:
-        repeat(2,minmax(0,1fr));
-
-    gap:12px;
-
-    padding:0 18px;
-}
-
-.grid-card{
-    background:#111117;
-
-    border-radius:15px;
-
-    overflow:hidden;
-
-    border:1px solid rgba(255,255,255,.04);
-
-    cursor:pointer;
-}
-
-.grid-cover{
-    width:100%;
-    aspect-ratio:1;
-
-    background:#18181f;
-}
-
-.grid-cover img{
-    width:100%;
-    height:100%;
-    object-fit:cover;
-}
-
-.grid-info{
-    padding:10px;
-}
-
-.grid-title{
-    font-size:12px;
-    font-weight:600;
-
-    white-space:nowrap;
-    overflow:hidden;
-    text-overflow:ellipsis;
-}
-
-.grid-artist{
-    color:#858591;
-    font-size:10px;
-    margin-top:2px;
-}
-
-/* =========================================================
-   SEARCH
-========================================================= */
-
-.search-box{
-    margin:18px;
-    position:relative;
-}
-
-.search-box i{
-    position:absolute;
-    left:15px;
-    top:50%;
-
-    transform:translateY(-50%);
-
-    color:#777;
-}
-
-.search-box input{
-    width:100%;
-
-    border:1px solid rgba(255,255,255,.06);
-    border-radius:13px;
-
-    padding:13px 15px 13px 42px;
-
-    outline:none;
-
-    color:white;
-    background:#14141b;
-}
-
-.search-box input:focus{
-    border-color:rgba(168,85,247,.5);
-}
-
-/* =========================================================
-   LIST SONG
-========================================================= */
-
-.song-list{
-    padding:0 18px;
-}
-
-.song-row{
-    display:flex;
-    align-items:center;
-
-    gap:11px;
-
-    padding:9px 5px;
-
-    border-bottom:1px solid rgba(255,255,255,.04);
-}
-
-.song-thumb{
-    width:54px;
-    height:54px;
-
-    flex:none;
-
-    border-radius:10px;
-    overflow:hidden;
-
-    background:linear-gradient(
-        135deg,
-        #7c3aed,
-        #ec4899
-    );
-}
-
-.song-thumb img{
-    width:100%;
-    height:100%;
-    object-fit:cover;
-}
-
-.song-details{
-    flex:1;
-    min-width:0;
-}
-
-.song-name{
-    font-size:12px;
-    font-weight:600;
-
-    white-space:nowrap;
-    overflow:hidden;
-    text-overflow:ellipsis;
-}
-
-.song-artist{
-    font-size:10px;
-    color:#858591;
-
-    white-space:nowrap;
-    overflow:hidden;
-    text-overflow:ellipsis;
+.song-title{
+font-weight:600;
+white-space:nowrap;
+overflow:hidden;
+text-overflow:ellipsis;
 }
 
 .song-category{
-    display:inline-block;
-
-    margin-top:4px;
-
-    font-size:8px;
-
-    color:#c084fc;
-
-    background:rgba(168,85,247,.1);
-
-    padding:2px 6px;
-
-    border-radius:10px;
+font-size:.72rem;
+color:#c084fc;
+margin-top:2px;
 }
 
 .song-actions{
-    display:flex;
-    align-items:center;
-    gap:5px;
+display:flex;
+gap:14px;
+align-items:center;
 }
 
-.song-action{
-    width:36px;
-    height:36px;
-
-    border:0;
-    border-radius:50%;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    color:#aaa;
-    background:transparent;
+.icon{
+cursor:pointer;
+color:#94a3b8;
+font-size:1.05rem;
 }
 
-.song-action.play{
-    color:#111;
-    background:white;
+.icon:hover{
+color:#a855f7;
 }
-
-.song-action.favorite.active{
-    color:#ec4899;
-}
-
-/* =========================================================
-   MINI PLAYER
-========================================================= */
-
-.mini-player{
-    position:fixed;
-
-    left:10px;
-    right:10px;
-    bottom:82px;
-
-    z-index:800;
-
-    display:none;
-
-    align-items:center;
-
-    gap:10px;
-
-    padding:9px 10px;
-
-    border-radius:15px;
-
-    background:
-        rgba(24,24,31,.96);
-
-    backdrop-filter:blur(18px);
-
-    border:1px solid rgba(255,255,255,.08);
-
-    box-shadow:
-        0 12px 40px rgba(0,0,0,.5);
-}
-
-.mini-player.show{
-    display:flex;
-}
-
-.mini-cover{
-    width:46px;
-    height:46px;
-
-    flex:none;
-
-    border-radius:9px;
-
-    overflow:hidden;
-
-    background:linear-gradient(
-        135deg,
-        #7c3aed,
-        #ec4899
-    );
-}
-
-.mini-cover img{
-    width:100%;
-    height:100%;
-    object-fit:cover;
-}
-
-.mini-info{
-    flex:1;
-    min-width:0;
-}
-
-.mini-title{
-    font-size:11px;
-    font-weight:700;
-
-    white-space:nowrap;
-    overflow:hidden;
-    text-overflow:ellipsis;
-}
-
-.mini-artist{
-    color:#888;
-    font-size:9px;
-}
-
-.mini-controls{
-    display:flex;
-    align-items:center;
-    gap:2px;
-}
-
-.mini-button{
-    width:35px;
-    height:35px;
-
-    border:0;
-    border-radius:50%;
-
-    color:white;
-    background:transparent;
-}
-
-.mini-button.main{
-    color:#111;
-    background:white;
-}
-
-.progress-line{
-    position:absolute;
-
-    left:10px;
-    right:10px;
-    bottom:2px;
-
-    height:2px;
-
-    background:#34343d;
-
-    overflow:hidden;
-}
-
-.progress-line span{
-    display:block;
-
-    width:0%;
-    height:100%;
-
-    background:linear-gradient(
-        90deg,
-        var(--purple),
-        var(--pink)
-    );
-}
-
-/* =========================================================
-   FULL PLAYER
-========================================================= */
-
-.player-modal{
-    position:fixed;
-    inset:0;
-
-    z-index:1500;
-
-    display:none;
-    flex-direction:column;
-
-    background:#08080c;
-}
-
-.player-modal.active{
-    display:flex;
-}
-
-.player-top{
-    height:65px;
-
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-
-    padding:0 18px;
-}
-
-.player-close,
-.player-more{
-    border:0;
-    background:none;
-
-    color:white;
-
-    width:40px;
-    height:40px;
-}
-
-.player-title{
-    font-size:13px;
-    font-weight:700;
-}
-
-.player-content{
-    flex:1;
-
-    display:flex;
-    flex-direction:column;
-
-    justify-content:center;
-
-    padding:20px;
-}
-
-.full-cover{
-    width:min(85vw,360px);
-    aspect-ratio:1;
-
-    margin:0 auto 30px;
-
-    border-radius:22px;
-
-    overflow:hidden;
-
-    background:
-        linear-gradient(
-            135deg,
-            #7c3aed,
-            #ec4899
-        );
-
-    box-shadow:
-        0 25px 60px rgba(0,0,0,.5);
-}
-
-.full-cover img{
-    width:100%;
-    height:100%;
-    object-fit:cover;
-}
-
-.full-info{
-    max-width:500px;
-    width:100%;
-    margin:auto;
-}
-
-.full-song-title{
-    font-size:22px;
-    font-weight:700;
-}
-
-.full-song-artist{
-    color:#888;
-    font-size:12px;
-    margin-top:3px;
-}
-
-.range{
-    width:100%;
-    margin-top:25px;
-
-    accent-color:var(--purple);
-}
-
-.time-row{
-    display:flex;
-    justify-content:space-between;
-
-    color:#777;
-    font-size:9px;
-}
-
-.full-controls{
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    gap:22px;
-
-    margin-top:20px;
-}
-
-.full-control{
-    width:48px;
-    height:48px;
-
-    border:0;
-    border-radius:50%;
-
-    color:white;
-    background:transparent;
-
-    font-size:17px;
-}
-
-.full-control.main{
-    width:62px;
-    height:62px;
-
-    color:#111;
-
-    background:white;
-
-    font-size:21px;
-}
-
-/* =========================================================
-   BOTTOM NAV
-========================================================= */
-
-.bottom-nav{
-    position:fixed;
-
-    left:0;
-    right:0;
-    bottom:0;
-
-    height:76px;
-
-    z-index:700;
-
-    display:flex;
-    align-items:center;
-    justify-content:space-around;
-
-    background:rgba(10,10,14,.96);
-
-    backdrop-filter:blur(18px);
-
-    border-top:1px solid rgba(255,255,255,.06);
-
-    padding-bottom:env(safe-area-inset-bottom);
-}
-
-.nav-item{
-    border:0;
-    background:none;
-
-    color:#777;
-
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-
-    gap:5px;
-
-    min-width:55px;
-
-    font-size:9px;
-}
-
-.nav-item i{
-    font-size:19px;
-}
-
-.nav-item.active{
-    color:var(--purple);
-}
-
-.nav-item.active i{
-    filter:
-        drop-shadow(
-            0 0 8px
-            rgba(168,85,247,.5)
-        );
-}
-
-/* =========================================================
-   EMPTY / LOADING
-========================================================= */
-
-.empty{
-    text-align:center;
-    color:#656570;
-    padding:35px 15px;
-    font-size:12px;
-}
-
-.loading{
-    text-align:center;
-    color:#999;
-    padding:40px;
-    font-size:12px;
-}
-
-/* =========================================================
-   MODAL
-========================================================= */
 
 .modal{
-    position:fixed;
-    inset:0;
-
-    z-index:2000;
-
-    display:none;
-
-    align-items:center;
-    justify-content:center;
-
-    padding:18px;
-
-    background:rgba(0,0,0,.9);
-
-    backdrop-filter:blur(8px);
+position:fixed;
+inset:0;
+background:rgba(0,0,0,.94);
+backdrop-filter:blur(7px);
+display:none;
+align-items:center;
+justify-content:center;
+padding:18px;
+z-index:1000;
 }
 
 .modal.active{
-    display:flex;
+display:flex!important;
 }
 
 #adminModal{
-    z-index:3000;
+z-index:3000;
 }
 
 .modal-content{
-    width:100%;
-    max-width:600px;
-    max-height:92vh;
-
-    overflow:auto;
-
-    padding:22px;
-
-    border-radius:20px;
-
-    background:#121219;
-
-    border:1px solid rgba(255,255,255,.08);
-}
-
-.modal-title{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-
-    margin-bottom:15px;
-}
-
-.close{
-    width:38px;
-    height:38px;
-
-    border:0;
-    border-radius:50%;
-
-    color:white;
-    background:#202027;
-
-    font-size:20px;
+width:100%;
+max-width:650px;
+max-height:92vh;
+overflow:auto;
+background:#111827;
+border:1px solid rgba(255,255,255,.1);
+border-radius:18px;
+padding:22px;
+box-shadow:0 20px 70px rgba(0,0,0,.55);
 }
 
 input,
 select{
-    width:100%;
-
-    padding:12px;
-
-    margin:5px 0 10px;
-
-    border-radius:10px;
-
-    border:1px solid rgba(255,255,255,.08);
-
-    outline:none;
-
-    color:white;
-    background:#08080d;
+width:100%;
+background:#080b14;
+border:1px solid rgba(255,255,255,.12);
+color:white;
+padding:12px;
+border-radius:9px;
+margin:6px 0 10px;
+outline:none;
 }
 
 input:focus,
 select:focus{
-    border-color:var(--purple);
+border-color:#a855f7;
+box-shadow:0 0 0 2px rgba(168,85,247,.12);
 }
 
 .btn{
-    width:100%;
-
-    padding:12px;
-
-    border:0;
-    border-radius:10px;
-
-    color:white;
-
-    background:linear-gradient(
-        135deg,
-        var(--purple),
-        var(--pink)
-    );
-
-    font-weight:700;
-
-    margin-top:7px;
-}
-
-.btn-secondary{
-    background:#30303a;
+width:100%;
+padding:12px;
+border:none;
+border-radius:9px;
+background:linear-gradient(135deg,#a855f7,#ec4899);
+color:white;
+font-weight:600;
+margin-top:7px;
+cursor:pointer;
 }
 
 .btn-danger{
-    background:#ef4444;
+background:#ef4444;
+}
+
+.btn-secondary{
+background:#334155;
 }
 
 .btn-success{
-    background:#16a34a;
+background:#16a34a;
+}
+
+.close{
+background:none;
+border:none;
+color:white;
+font-size:1.5rem;
+cursor:pointer;
 }
 
 .small{
-    color:#858591;
-    font-size:10px;
+font-size:.75rem;
+color:var(--muted);
+}
+
+.empty{
+text-align:center;
+color:#64748b;
+padding:22px;
+}
+
+.loading{
+text-align:center;
+padding:22px;
+color:#94a3b8;
 }
 
 .message{
-    display:none;
-
-    padding:10px;
-
-    margin-top:10px;
-
-    border-radius:9px;
-
-    font-size:11px;
+padding:10px;
+border-radius:8px;
+margin-top:10px;
+display:none;
+font-size:.82rem;
 }
 
 .message.error{
-    display:block;
-
-    color:#f87171;
-    background:rgba(239,68,68,.1);
+display:block;
+background:rgba(239,68,68,.12);
+color:#f87171;
 }
 
 .message.success{
-    display:block;
-
-    color:#4ade80;
-    background:rgba(34,197,94,.1);
+display:block;
+background:rgba(34,197,94,.12);
+color:#4ade80;
 }
-
-/* =========================================================
-   ADMIN
-========================================================= */
 
 .admin-tabs{
-    display:flex;
-    gap:6px;
-
-    overflow-x:auto;
-
-    margin:15px 0;
+display:flex;
+gap:5px;
+overflow-x:auto;
+margin:15px 0;
+scrollbar-width:none;
 }
 
-.admin-tab{
-    flex:none;
-
-    border:0;
-
-    padding:8px 13px;
-
-    border-radius:20px;
-
-    color:#bbb;
-    background:#22222a;
-
-    font-size:10px;
-}
-
-.admin-tab.active{
-    color:white;
-    background:var(--purple);
+.admin-tabs::-webkit-scrollbar{
+display:none;
 }
 
 .admin-section{
-    display:none;
+display:none;
 }
 
 .admin-section.active{
-    display:block;
+display:block;
 }
 
 .admin-row{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-
-    gap:8px;
-
-    padding:10px;
-
-    margin-top:7px;
-
-    border-radius:10px;
-
-    background:#08080d;
-
-    font-size:11px;
+background:#080b14;
+border-radius:9px;
+padding:10px;
+margin-top:7px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:8px;
+font-size:.82rem;
 }
 
 .admin-row button{
-    border:0;
-
-    padding:7px 9px;
-
-    border-radius:7px;
-
-    color:white;
+border:none;
+border-radius:6px;
+padding:7px 10px;
+color:white;
+cursor:pointer;
 }
 
 .code-box{
-    margin-top:15px;
-
-    padding:18px;
-
-    text-align:center;
-
-    border-radius:15px;
-
-    border:2px solid var(--purple);
-
-    background:#08080d;
+margin-top:15px;
+background:#080b14;
+border:2px solid #a855f7;
+border-radius:12px;
+padding:18px;
+text-align:center;
 }
 
 .generated-code{
-    font-size:28px;
-
-    font-weight:800;
-
-    letter-spacing:3px;
-
-    margin:8px 0 15px;
+font-size:2rem;
+font-weight:700;
+letter-spacing:3px;
+color:#fff;
+margin:8px 0 15px;
+word-break:break-all;
 }
 
 .status{
-    display:inline-block;
-
-    padding:3px 7px;
-
-    border-radius:10px;
-
-    font-size:8px;
+font-size:.75rem;
+padding:4px 8px;
+border-radius:10px;
+display:inline-block;
+margin-top:5px;
 }
 
 .status.available{
-    color:#4ade80;
-    background:rgba(34,197,94,.12);
+background:rgba(34,197,94,.15);
+color:#4ade80;
 }
 
 .status.used{
-    color:#f87171;
-    background:rgba(239,68,68,.12);
+background:rgba(239,68,68,.15);
+color:#f87171;
 }
 
-/* =========================================================
-   RESPONSIVO
-========================================================= */
-
-@media(min-width:700px){
-
-    .music-grid{
-        grid-template-columns:
-            repeat(4,minmax(0,1fr));
-    }
-
-    .hero{
-        min-height:300px;
-    }
-
-    .hero h1{
-        font-size:38px;
-    }
-
-    .cover,
-    .music-card{
-        width:175px;
-    }
-
-    .cover{
-        height:175px;
-    }
-
+#installContainer{
+display:none;
+padding:10px 18px;
+background:#101729;
+text-align:center;
 }
 
-@media(min-width:1000px){
-
-    .music-grid{
-        grid-template-columns:
-            repeat(5,minmax(0,1fr));
-    }
-
-    .bottom-nav{
-        max-width:700px;
-        left:50%;
-        transform:translateX(-50%);
-        border:1px solid rgba(255,255,255,.07);
-        border-bottom:0;
-        border-radius:20px 20px 0 0;
-    }
-
+#installButton{
+border:none;
+background:linear-gradient(135deg,#a855f7,#ec4899);
+color:white;
+padding:11px 18px;
+border-radius:9px;
+font-weight:600;
+cursor:pointer;
 }
 
-/* =========================================================
-   HIDDEN AUDIO
-========================================================= */
+#adminMenuButton{
+display:none;
+position:fixed;
+right:16px;
+bottom:18px;
+width:52px;
+height:52px;
+border:none;
+border-radius:50%;
+background:linear-gradient(135deg,#a855f7,#ec4899);
+color:white;
+font-size:1.2rem;
+box-shadow:0 8px 25px rgba(168,85,247,.4);
+z-index:500;
+cursor:pointer;
+}
 
-#audioPlayer{
-    display:none;
+#adminMenu{
+position:fixed;
+right:15px;
+bottom:78px;
+width:230px;
+background:#111827;
+border:1px solid rgba(255,255,255,.1);
+border-radius:15px;
+padding:10px;
+box-shadow:0 15px 45px rgba(0,0,0,.5);
+display:none;
+z-index:499;
+}
+
+#adminMenu.active{
+display:block;
+}
+
+.menu-title{
+font-size:.75rem;
+color:#94a3b8;
+padding:8px;
+}
+
+.menu-item{
+width:100%;
+background:#1e293b;
+color:white;
+border:none;
+padding:11px;
+border-radius:8px;
+margin-top:5px;
+text-align:left;
+cursor:pointer;
+}
+
+.menu-item:hover{
+background:#2d3748;
+}
+
+@media(max-width:600px){
+
+.video-box{
+height:235px;
+}
+
+.player-section{
+padding:12px;
+}
+
+.playlist-container{
+padding:0 12px 30px;
+}
+
+.modal-content{
+padding:17px;
+}
+
+.generated-code{
+font-size:1.7rem;
+}
+
 }
 
 </style>
@@ -1529,4083 +530,2773 @@ select:focus{
 
 <body>
 
-<!-- ======================================================
-     HEADER
-====================================================== -->
-
-<header class="top-header">
-
-    <div class="brand">
-
-        <div class="brand-icon">
-            <i class="fa-solid fa-headphones"></i>
-        </div>
-
-        <span>Nando's <span class="brand-purple">Music</span></span>
-
-    </div>
-
-    <div class="header-actions">
-
-        <button
-            class="header-button"
-            type="button"
-            onclick="abrirHistorico()"
-            title="Histórico">
-
-            <i class="fa-solid fa-clock-rotate-left"></i>
-
-        </button>
-
-        <button
-            class="header-button"
-            type="button"
-            onclick="abrirAdmin()"
-            title="Configurações">
-
-            <i class="fa-solid fa-gear"></i>
-
-        </button>
-
-    </div>
-
+<header>
+<div class="logo">
+<i class="fa-solid fa-headphones"></i>
+Nando's Music
+</div>
 </header>
 
-<div
-    id="connectionStatus"
-    class="connection-status">
-
-    Conectando ao servidor...
-
+<div id="connectionStatus" class="connection-status">
+Conectando ao servidor...
 </div>
-
-<!-- ======================================================
-     INSTALL
-====================================================== -->
 
 <div id="installContainer">
+<button id="installButton" type="button">
+<i class="fa-solid fa-download"></i>
+Instalar Nando's Music
+</button>
+</div>
 
-    <button
-        id="installButton"
-        type="button">
+<div class="filter-bar">
 
-        <i class="fa-solid fa-download"></i>
-        Instalar Nando's Music
+<button class="filter-btn active"
+onclick="filtrar('Todas',this)">
+Todas
+</button>
 
-    </button>
+<button class="filter-btn"
+onclick="filtrar('Sertanejo',this)">
+Sertanejo
+</button>
+
+<button class="filter-btn"
+onclick="filtrar('Funk',this)">
+Funk
+</button>
+
+<button class="filter-btn"
+onclick="filtrar('Forró',this)">
+Forró
+</button>
+
+<button class="filter-btn"
+onclick="filtrar('Pagode',this)">
+Pagode
+</button>
+
+<button class="filter-btn"
+onclick="filtrar('Eletrônica',this)">
+Eletrônica
+</button>
+
+<button class="filter-btn"
+onclick="filtrar('Trap',this)">
+Trap
+</button>
+
+<button class="filter-btn"
+onclick="filtrar('Pop',this)">
+Pop
+</button>
+
+<button class="filter-btn"
+onclick="filtrar('Rock',this)">
+Rock
+</button>
+
+<button class="filter-btn"
+onclick="filtrar('Engraçado',this)">
+Engraçados
+</button>
 
 </div>
 
-<!-- ======================================================
-     MAIN
-====================================================== -->
+<section class="player-section">
 
-<main class="main">
+<div class="video-box">
 
-<!-- ======================================================
-     HOME
-====================================================== -->
+<video
+id="backgroundPlayer"
+playsinline
+muted
+autoplay
+loop
+preload="auto">
+</video>
 
-<section
-    id="homePage"
-    class="page active">
+<div class="video-overlay">
 
-    <!-- CATEGORIAS -->
+<div id="nowPlaying">
+Nenhuma música reproduzindo
+</div>
 
-    <div class="categories">
+<audio
+id="musicPlayer"
+controls
+preload="metadata">
+</audio>
 
-        <button
-            class="category active"
-            onclick="filtrarCategoria('Todas',this)">
-            Tudo
-        </button>
-
-        <button
-            class="category"
-            onclick="filtrarCategoria('Sertanejo',this)">
-            Sertanejo
-        </button>
-
-        <button
-            class="category"
-            onclick="filtrarCategoria('Funk',this)">
-            Funk
-        </button>
-
-        <button
-            class="category"
-            onclick="filtrarCategoria('Forró',this)">
-            Forró
-        </button>
-
-        <button
-            class="category"
-            onclick="filtrarCategoria('Pagode',this)">
-            Pagode
-        </button>
-
-        <button
-            class="category"
-            onclick="filtrarCategoria('Eletrônica',this)">
-            Eletrônica
-        </button>
-
-        <button
-            class="category"
-            onclick="filtrarCategoria('Trap',this)">
-            Trap
-        </button>
-
-        <button
-            class="category"
-            onclick="filtrarCategoria('Pop',this)">
-            Pop
-        </button>
-
-        <button
-            class="category"
-            onclick="filtrarCategoria('Rock',this)">
-            Rock
-        </button>
-
-        <button
-            class="category"
-            onclick="filtrarCategoria('Engraçado',this)">
-            Engraçados
-        </button>
-
-    </div>
-
-    <!-- HERO -->
-
-    <div class="hero">
-
-        <video
-            id="heroVideo"
-            class="hero-video"
-            muted
-            loop
-            playsinline
-            preload="metadata">
-        </video>
-
-        <div class="hero-overlay"></div>
-
-        <div class="hero-content">
-
-            <div class="hero-small">
-                NANDO'S MUSIC
-            </div>
-
-            <h1>
-                Sua música.<br>
-                Seu estilo.
-            </h1>
-
-            <p>
-                Ouça suas músicas favoritas,
-                descubra novos sons e aproveite
-                uma experiência feita especialmente
-                para você.
-            </p>
-
-            <button
-                class="hero-button"
-                onclick="irParaMusicas()">
-
-                <i class="fa-solid fa-play"></i>
-                Começar a ouvir
-
-            </button>
-
-        </div>
-
-    </div>
-
-    <!-- MÚSICAS CURTIDAS -->
-
-    <section class="section">
-
-        <div class="section-header">
-
-            <h2 class="section-title">
-                Músicas Curtidas
-            </h2>
-
-            <button
-                class="section-more"
-                onclick="abrirPagina('favoritos')">
-
-                Ver todas
-
-            </button>
-
-        </div>
-
-        <div
-            id="favoriteHorizontal"
-            class="horizontal-list">
-
-            <div class="empty">
-                Suas músicas favoritas aparecerão aqui.
-            </div>
-
-        </div>
-
-    </section>
-
-    <!-- MAIS TOCADAS -->
-
-    <section class="section">
-
-        <div class="section-header">
-
-            <h2 class="section-title">
-                Mais ouvidas
-            </h2>
-
-            <button
-                class="section-more"
-                onclick="abrirPagina('musicas')">
-
-                Ver todas
-
-            </button>
-
-        </div>
-
-        <div
-            id="popularHorizontal"
-            class="horizontal-list">
-
-            <div class="loading">
-                Carregando músicas...
-            </div>
-
-        </div>
-
-    </section>
-
-    <!-- RECOMENDADAS -->
-
-    <section class="section">
-
-        <div class="section-header">
-
-            <h2 class="section-title">
-                Recomendadas para você
-            </h2>
-
-        </div>
-
-        <div
-            id="recommendedGrid"
-            class="music-grid">
-
-            <div class="loading">
-                Carregando...
-            </div>
-
-        </div>
-
-    </section>
+</div>
+</div>
 
 </section>
 
-<!-- ======================================================
-     BUSCA
-====================================================== -->
+<div class="playlist-container"
+id="playlistContainer">
 
-<section
-    id="searchPage"
-    class="page">
+<div class="loading">
+Carregando músicas...
+</div>
 
-    <div class="search-box">
+</div>
 
-        <i class="fa-solid fa-magnifying-glass"></i>
+<!-- =====================================================
+BOTÃO ADMINISTRATIVO
+FICA INVISÍVEL PARA CLIENTES
+SÓ É MOSTRADO APÓS AUTENTICAÇÃO DO ADM
+===================================================== -->
 
-        <input
-            id="searchInput"
-            type="search"
-            placeholder="Buscar músicas, artistas ou categorias..."
-            autocomplete="off">
+<button
+id="adminMenuButton"
+type="button"
+onclick="abrirMenuAdmin()">
 
-    </div>
+<i class="fa-solid fa-gear"></i>
 
-    <div class="section-header">
+</button>
 
-        <h2 class="section-title">
-            Resultados
-        </h2>
+<div id="adminMenu">
 
-    </div>
+<div class="menu-title">
+<i class="fa-solid fa-user-shield"></i>
+Área administrativa
+</div>
 
-    <div
-        id="searchResults"
-        class="song-list">
+<button
+class="menu-item"
+onclick="abrirPainelAdmin()">
 
-        <div class="empty">
-            Digite algo para pesquisar.
-        </div>
+<i class="fa-solid fa-sliders"></i>
+Configurações do ADM
 
-    </div>
+</button>
 
-</section>
+<button
+class="menu-item"
+onclick="fecharMenuAdmin()">
 
-<!-- ======================================================
-     DOWNLOADS
-====================================================== -->
+<i class="fa-solid fa-xmark"></i>
+Fechar menu
 
-<section
-    id="downloadsPage"
-    class="page">
+</button>
 
-    <div
-        class="section-header"
-        style="margin-top:22px">
+</div>
 
-        <h2 class="section-title">
-            Downloads
-        </h2>
+<!-- =====================================================
+BLOQUEIO DO CLIENTE
+===================================================== -->
 
-    </div>
+<div class="modal active" id="authModal">
 
-    <div
-        id="downloadsList"
-        class="song-list">
+<div class="modal-content"
+style="text-align:center">
 
-        <div class="empty">
-            Nenhuma música baixada.
-        </div>
+<h2>
+<i class="fa-solid fa-lock"
+style="color:#a855f7"></i>
+</h2>
 
-    </div>
+<h2 style="margin-top:5px">
+Acesso restrito
+</h2>
 
-</section>
+<p class="small"
+style="margin:10px 0 15px">
 
-<!-- ======================================================
-     FAVORITOS
-====================================================== -->
+Digite o código de acesso fornecido pelo administrador.
 
-<section
-    id="favoritesPage"
-    class="page">
+</p>
 
-    <div
-        class="section-header"
-        style="margin-top:22px">
+<input
+id="userAccessCode"
+placeholder="ND-XXXXXX"
+maxlength="20"
+autocomplete="off"
+style="
+text-align:center;
+text-transform:uppercase;
+font-size:1.3rem;
+letter-spacing:2px;
+">
 
-        <h2 class="section-title">
-            Favoritos
-        </h2>
+<button
+class="btn"
+type="button"
+onclick="processarAcesso()">
 
-    </div>
+<i class="fa-solid fa-right-to-bracket"></i>
+Entrar
 
-    <div
-        id="favoritesList"
-        class="song-list">
+</button>
 
-        <div class="empty">
-            Você ainda não favoritou nenhuma música.
-        </div>
+<div id="authMessage"
+class="message">
+</div>
 
-    </div>
+</div>
 
-</section>
+</div>
 
-<!-- ======================================================
-     BIBLIOTECA
-====================================================== -->
+<!-- =====================================================
+LOGIN ADMINISTRADOR
+===================================================== -->
 
-<section
-    id="libraryPage"
-    class="page">
+<div class="modal"
+id="adminModal">
 
-    <div
-        class="section-header"
-        style="margin-top:22px">
+<div class="modal-content">
 
-        <h2 class="section-title">
-            Sua biblioteca
-        </h2>
+<div style="
+display:flex;
+justify-content:space-between;
+align-items:center">
 
-    </div>
+<h2>
+<i class="fa-solid fa-user-shield"></i>
+Administrador
+</h2>
 
-    <div
-        id="libraryList"
-        class="song-list">
+<button
+class="close"
+type="button"
+onclick="fecharAdminLogin()">
 
-        <div class="empty">
-            Carregando biblioteca...
-        </div>
+×
+</button>
 
-    </div>
+</div>
 
-</section>
+<div id="adminLogin">
 
-</main>
+<p class="small"
+style="margin:12px 0">
 
-<!-- ======================================================
-     MINI PLAYER
-====================================================== -->
+Autenticação administrativa
+
+</p>
+
+<input
+type="email"
+id="adminEmail"
+placeholder="E-mail do administrador"
+autocomplete="username"
+value="nandosarcondicionado@gmail.com">
+
+<input
+type="password"
+id="adminPassword"
+placeholder="Senha do administrador"
+autocomplete="current-password">
+
+<button
+class="btn"
+type="button"
+onclick="entrarAdmin()">
+
+<i class="fa-solid fa-right-to-bracket"></i>
+Entrar no painel
+
+</button>
 
 <div
-    id="miniPlayer"
-    class="mini-player">
+id="adminLoginMessage"
+class="message">
+</div>
 
-    <div
-        class="mini-cover"
-        onclick="abrirPlayerCompleto()">
+</div>
 
-        <img
-            id="miniCover"
-            src=""
-            alt="Capa">
+</div>
 
-    </div>
+</div>
 
-    <div
-        class="mini-info"
-        onclick="abrirPlayerCompleto()">
+<!-- =====================================================
+PAINEL ADMINISTRATIVO
+===================================================== -->
 
-        <div
-            id="miniTitle"
-            class="mini-title">
+<div class="modal"
+id="adminPanelModal">
 
-            Nenhuma música
+<div class="modal-content">
 
-        </div>
+<div style="
+display:flex;
+justify-content:space-between;
+align-items:center">
 
-        <div
-            id="miniArtist"
-            class="mini-artist">
+<h2>
+<i class="fa-solid fa-sliders"></i>
+Configurações
+</h2>
 
-            Nando's Music
+<button
+class="close"
+onclick="fecharPainelAdmin()">
 
-        </div>
+×
+</button>
 
-    </div>
+</div>
 
-    <div class="mini-controls">
+<div class="admin-tabs">
 
-        <button
-            class="mini-button"
-            onclick="musicaAnterior()">
+<button
+class="filter-btn active"
+onclick="abaAdmin('player',this)">
+Player
+</button>
 
-            <i class="fa-solid fa-backward-step"></i>
+<button
+class="filter-btn"
+onclick="abaAdmin('musicas',this)">
+Músicas
+</button>
 
-        </button>
+<button
+class="filter-btn"
+onclick="abaAdmin('fundos',this)">
+Fundos
+</button>
 
-        <button
-            id="miniPlay"
-            class="mini-button main"
-            onclick="alternarPlay()">
+<button
+class="filter-btn"
+onclick="abaAdmin('codigos',this)">
+Códigos
+</button>
 
-            <i class="fa-solid fa-play"></i>
+<button
+class="filter-btn"
+onclick="abaAdmin('config',this)">
+Config
+</button>
 
-        </button>
+</div>
 
-        <button
-            class="mini-button"
-            onclick="proximaMusica()">
+<!-- PLAYER -->
 
-            <i class="fa-solid fa-forward-step"></i>
+<div
+class="admin-section active"
+id="aba-player">
 
-        </button>
+<h3>Player</h3>
 
-    </div>
+<p class="small">
+Player administrativo do Nando's Music.
+</p>
 
-    <div class="progress-line">
+<div style="margin-top:12px">
 
-        <span id="progressMini"></span>
+<div class="video-box"
+style="height:250px">
 
-    </div>
+<video
+id="adminBackgroundPlayer"
+playsinline
+muted
+preload="auto">
+</video>
+
+<div class="video-overlay">
+
+<div id="adminNowPlaying"
+style="
+text-align:center;
+color:white;
+font-size:.85rem;
+margin-bottom:8px">
+
+Nenhuma música reproduzindo
 
 </div>
 
 <audio
-    id="audioPlayer"
-    preload="metadata">
+id="adminMusicPlayer"
+controls
+style="width:100%;height:40px">
 </audio>
 
-<!-- ======================================================
-     PLAYER COMPLETO
-====================================================== -->
-
-<div
-    id="playerModal"
-    class="player-modal">
-
-    <div class="player-top">
-
-        <button
-            class="player-close"
-            onclick="fecharPlayerCompleto()">
-
-            <i class="fa-solid fa-chevron-down"></i>
-
-        </button>
-
-        <div class="player-title">
-            TOCANDO AGORA
-        </div>
-
-        <button
-            class="player-more">
-
-            <i class="fa-solid fa-ellipsis"></i>
-
-        </button>
-
-    </div>
-
-    <div class="player-content">
-
-        <div class="full-cover">
-
-            <img
-                id="fullCover"
-                src=""
-                alt="Capa da música">
-
-        </div>
-
-        <div class="full-info">
-
-            <div
-                id="fullTitle"
-                class="full-song-title">
-
-                Nenhuma música
-
-            </div>
-
-            <div
-                id="fullArtist"
-                class="full-song-artist">
-
-                Nando's Music
-
-            </div>
-
-            <input
-                id="progressRange"
-                class="range"
-                type="range"
-                min="0"
-                max="100"
-                value="0">
-
-            <div class="time-row">
-
-                <span id="currentTime">
-                    0:00
-                </span>
-
-                <span id="duration">
-                    0:00
-                </span>
-
-            </div>
-
-            <div class="full-controls">
-
-                <button
-                    class="full-control"
-                    onclick="alternarFavoritoAtual()">
-
-                    <i
-                        id="fullFavoriteIcon"
-                        class="fa-regular fa-heart">
-                    </i>
-
-                </button>
-
-                <button
-                    class="full-control"
-                    onclick="musicaAnterior()">
-
-                    <i class="fa-solid fa-backward-step"></i>
-
-                </button>
-
-                <button
-                    id="fullPlay"
-                    class="full-control main"
-                    onclick="alternarPlay()">
-
-                    <i class="fa-solid fa-play"></i>
-
-                </button>
-
-                <button
-                    class="full-control"
-                    onclick="proximaMusica()">
-
-                    <i class="fa-solid fa-forward-step"></i>
-
-                </button>
-
-                <button
-                    class="full-control"
-                    onclick="baixarAtual()">
-
-                    <i class="fa-solid fa-download"></i>
-
-                </button>
-
-            </div>
-
-        </div>
-
-    </div>
+</div>
 
 </div>
 
-<!-- ======================================================
-     NAVEGAÇÃO
-====================================================== -->
-
-<nav class="bottom-nav">
-
-    <button
-        id="navHome"
-        class="nav-item active"
-        onclick="abrirPagina('home')">
-
-        <i class="fa-solid fa-house"></i>
-
-        <span>Início</span>
-
-    </button>
-
-    <button
-        id="navSearch"
-        class="nav-item"
-        onclick="abrirPagina('search')">
-
-        <i class="fa-solid fa-magnifying-glass"></i>
-
-        <span>Buscar</span>
-
-    </button>
-
-    <button
-        id="navDownloads"
-        class="nav-item"
-        onclick="abrirPagina('downloads')">
-
-        <i class="fa-solid fa-download"></i>
-
-        <span>Downloads</span>
-
-    </button>
-
-    <button
-        id="navFavorites"
-        class="nav-item"
-        onclick="abrirPagina('favoritos')">
-
-        <i class="fa-regular fa-heart"></i>
-
-        <span>Favoritos</span>
-
-    </button>
-
-    <button
-        id="navLibrary"
-        class="nav-item"
-        onclick="abrirPagina('library')">
-
-        <i class="fa-solid fa-layer-group"></i>
-
-        <span>Biblioteca</span>
-
-    </button>
-
-</nav>
-
-<!-- ======================================================
-     LOGIN CLIENTE
-====================================================== -->
+</div>
 
 <div
-    class="modal active"
-    id="authModal">
+id="adminPlayerList"
+style="margin-top:10px">
+</div>
 
-    <div
-        class="modal-content"
-        style="text-align:center;max-width:420px">
+<button
+class="btn btn-secondary"
+onclick="pararPlayer()">
 
-        <div
-            class="brand-icon"
-            style="margin:0 auto 15px">
+<i class="fa-solid fa-stop"></i>
+Parar
 
-            <i class="fa-solid fa-headphones"></i>
-
-        </div>
-
-        <h2>
-            Bem-vindo ao<br>
-            <span style="color:#a855f7">
-                Nando's Music
-            </span>
-        </h2>
-
-        <p
-            class="small"
-            style="margin:10px 0 18px">
-
-            Digite o código fornecido pelo administrador
-            para acessar o aplicativo.
-
-        </p>
-
-        <input
-            id="userAccessCode"
-            placeholder="ND-XXXXXX"
-            maxlength="20"
-            autocomplete="off"
-            style="
-                text-align:center;
-                text-transform:uppercase;
-                font-size:18px;
-                letter-spacing:3px
-            ">
-
-        <button
-            class="btn"
-            onclick="processarAcesso()">
-
-            <i class="fa-solid fa-right-to-bracket"></i>
-            Entrar
-
-        </button>
-
-        <div
-            id="authMessage"
-            class="message">
-        </div>
-
-    </div>
+</button>
 
 </div>
 
-<!-- ======================================================
-     ADMIN
-====================================================== -->
+<!-- MÚSICAS -->
 
 <div
-    class="modal"
-    id="adminModal">
+class="admin-section"
+id="aba-musicas">
 
-    <div class="modal-content">
+<h3>Adicionar música</h3>
 
-        <div class="modal-title">
+<input
+id="songTitle"
+placeholder="Título da música">
 
-            <h2>
-                <i
-                    class="fa-solid fa-user-shield"
-                    style="color:#a855f7">
-                </i>
+<input
+id="songUrl"
+placeholder="Link direto do arquivo .mp3 ou .mp4">
 
-                Painel ADM
-            </h2>
+<select id="songCategory">
 
-            <button
-                class="close"
-                onclick="fecharAdmin()">
+<option>Sertanejo</option>
+<option>Funk</option>
+<option>Forró</option>
+<option>Pagode</option>
+<option>Eletrônica</option>
+<option>Trap</option>
+<option>Pop</option>
+<option>Rock</option>
+<option>Engraçado</option>
 
-                ×
+</select>
 
-            </button>
+<button
+class="btn"
+onclick="salvarMusica()">
 
-        </div>
+<i class="fa-solid fa-plus"></i>
+Salvar música
 
-        <!-- LOGIN -->
+</button>
 
-        <div id="adminLogin">
+<div
+id="musicAdminList"
+style="margin-top:15px">
+</div>
 
-            <p
-                class="small"
-                style="margin-bottom:10px">
+</div>
 
-                Login do administrador
+<!-- FUNDOS -->
 
-            </p>
+<div
+class="admin-section"
+id="aba-fundos">
 
-            <input
-                type="email"
-                id="adminEmail"
-                placeholder="E-mail do administrador"
-                autocomplete="username"
-                value="nandosarcondicionado@gmail.com">
+<h3>Vídeos de fundo</h3>
 
-            <input
-                type="password"
-                id="adminPassword"
-                placeholder="Senha do administrador"
-                autocomplete="current-password">
+<p class="small">
+Cadastre vídeos MP4 para utilizar como fundo.
+</p>
 
-            <button
-                class="btn"
-                onclick="entrarAdmin()">
+<input
+id="backgroundUrl"
+placeholder="Link direto do vídeo .mp4">
 
-                Entrar no painel
+<button
+class="btn"
+onclick="salvarFundo()">
 
-            </button>
+<i class="fa-solid fa-video"></i>
+Adicionar vídeo
 
-            <div
-                id="adminLoginMessage"
-                class="message">
-            </div>
+</button>
 
-        </div>
+<div
+id="backgroundAdminList"
+style="margin-top:15px">
+</div>
 
-        <!-- PAINEL -->
+</div>
 
-        <div
-            id="adminPanel"
-            style="display:none">
+<!-- CÓDIGOS -->
 
-            <div class="admin-tabs">
+<div
+class="admin-section"
+id="aba-codigos">
 
-                <button
-                    class="admin-tab active"
-                    onclick="abaAdmin('musicas',this)">
+<h3>Códigos para clientes</h3>
 
-                    Músicas
+<p class="small">
 
-                </button>
+Gere um código individual para cada aparelho.
 
-                <button
-                    class="admin-tab"
-                    onclick="abaAdmin('fundos',this)">
+</p>
 
-                    Fundos
+<button
+class="btn"
+onclick="gerarCodigoCliente()">
 
-                </button>
+<i class="fa-solid fa-key"></i>
+Gerar novo código
 
-                <button
-                    class="admin-tab"
-                    onclick="abaAdmin('codigos',this)">
+</button>
 
-                    Códigos
+<div
+id="generatedCodeBox"
+class="code-box"
+style="display:none">
 
-                </button>
+<div class="small">
+NOVO CÓDIGO
+</div>
 
-                <button
-                    class="admin-tab"
-                    onclick="abaAdmin('player',this)">
+<div
+id="generatedCode"
+class="generated-code">
+</div>
 
-                    Player
+<button
+class="btn btn-success"
+onclick="copiarCodigo()">
 
-                </button>
+<i class="fa-solid fa-copy"></i>
+Copiar código
 
-                <button
-                    class="admin-tab"
-                    onclick="abaAdmin('config',this)">
+</button>
 
-                    Config
+<div
+id="copyMessage"
+class="small"
+style="margin-top:8px">
+</div>
 
-                </button>
+</div>
 
-            </div>
+<h4 style="margin-top:20px">
+Códigos existentes
+</h4>
 
-            <!-- MÚSICAS -->
+<div id="codesAdminList">
+Carregando...
+</div>
 
-            <div
-                id="aba-musicas"
-                class="admin-section active">
+</div>
 
-                <h3>
-                    Adicionar música
-                </h3>
+<!-- CONFIG -->
 
-                <p class="small">
-                    Você pode adicionar capa e artista
-                    ou deixar esses campos vazios.
-                </p>
+<div
+class="admin-section"
+id="aba-config">
 
-                <input
-                    id="songTitle"
-                    placeholder="Título da música">
+<h3>Configurações administrativas</h3>
 
-                <input
-                    id="songArtist"
-                    placeholder="Artista">
+<p class="small"
+style="margin-top:10px">
 
-                <input
-                    id="songCover"
-                    placeholder="Link direto da capa JPG/PNG">
+Administrador autenticado pelo Firebase Authentication.
 
-                <input
-                    id="songUrl"
-                    placeholder="Link direto do arquivo MP3">
+</p>
 
-                <select id="songCategory">
+<hr
+style="
+border-color:rgba(255,255,255,.06);
+margin:20px 0">
 
-                    <option>Sertanejo</option>
-                    <option>Funk</option>
-                    <option>Forró</option>
-                    <option>Pagode</option>
-                    <option>Eletrônica</option>
-                    <option>Trap</option>
-                    <option>Pop</option>
-                    <option>Rock</option>
-                    <option>Engraçado</option>
+<button
+class="btn btn-danger"
+onclick="sairAdmin()">
 
-                </select>
+<i class="fa-solid fa-right-from-bracket"></i>
+Sair do ADM
 
-                <button
-                    class="btn"
-                    onclick="salvarMusica()">
+</button>
 
-                    <i class="fa-solid fa-plus"></i>
-                    Adicionar música
+</div>
 
-                </button>
-
-                <div
-                    id="musicAdminList"
-                    style="margin-top:15px">
-                </div>
-
-            </div>
-
-            <!-- FUNDOS -->
-
-            <div
-                id="aba-fundos"
-                class="admin-section">
-
-                <h3>
-                    Vídeos de fundo
-                </h3>
-
-                <p class="small">
-                    Adicione vídeos MP4 para aparecerem
-                    no visual do aplicativo.
-                </p>
-
-                <input
-                    id="backgroundUrl"
-                    placeholder="Link direto do vídeo MP4">
-
-                <button
-                    class="btn"
-                    onclick="salvarFundo()">
-
-                    <i class="fa-solid fa-video"></i>
-                    Adicionar vídeo
-
-                </button>
-
-                <div
-                    id="backgroundAdminList"
-                    style="margin-top:15px">
-                </div>
-
-            </div>
-
-            <!-- CÓDIGOS -->
-
-            <div
-                id="aba-codigos"
-                class="admin-section">
-
-                <h3>
-                    Códigos para clientes
-                </h3>
-
-                <p class="small">
-                    Gere um código individual para cada cliente.
-                </p>
-
-                <button
-                    class="btn"
-                    onclick="gerarCodigoCliente()">
-
-                    <i class="fa-solid fa-key"></i>
-                    Gerar código
-
-                </button>
-
-                <div
-                    id="generatedCodeBox"
-                    class="code-box"
-                    style="display:none">
-
-                    <div class="small">
-                        NOVO CÓDIGO
-                    </div>
-
-                    <div
-                        id="generatedCode"
-                        class="generated-code">
-                    </div>
-
-                    <button
-                        class="btn btn-success"
-                        onclick="copiarCodigo()">
-
-                        <i class="fa-solid fa-copy"></i>
-                        Copiar código
-
-                    </button>
-
-                    <div
-                        id="copyMessage"
-                        class="small"
-                        style="margin-top:8px">
-                    </div>
-
-                </div>
-
-                <h4 style="margin-top:20px">
-                    Códigos existentes
-                </h4>
-
-                <div id="codesAdminList">
-                    Carregando...
-                </div>
-
-            </div>
-
-            <!-- PLAYER -->
-
-            <div
-                id="aba-player"
-                class="admin-section">
-
-                <h3>
-                    Player ADM
-                </h3>
-
-                <p class="small">
-                    Teste as músicas diretamente pelo painel.
-                </p>
-
-                <div
-                    id="adminPlayerList"
-                    style="margin-top:12px">
-                </div>
-
-            </div>
-
-            <!-- CONFIG -->
-
-            <div
-                id="aba-config"
-                class="admin-section">
-
-                <h3>
-                    Configurações
-                </h3>
-
-                <p
-                    class="small"
-                    style="margin:10px 0 20px">
-
-                    O administrador é protegido pelo
-                    Firebase Authentication.
-
-                </p>
-
-                <button
-                    class="btn btn-danger"
-                    onclick="sairAdmin()">
-
-                    <i class="fa-solid fa-right-from-bracket"></i>
-                    Sair do ADM
-
-                </button>
-
-            </div>
-
-        </div>
-
-    </div>
+</div>
 
 </div>
 
 <script>
 
-/* =========================================================
-   FIREBASE
-========================================================= */
+/* =====================================================
+FIREBASE
+===================================================== */
 
-const firebaseConfig = {
+const firebaseConfig={
 
-    apiKey:
-        "AIzaSyDnId6VY94Fw9lhW_i5iZEP0nnxVEjNoqo",
+apiKey:"AIzaSyDnId6VY94Fw9lhW_i5iZEP0nnxVEjNoqo",
 
-    authDomain:
-        "nandomusic-c77a3.firebaseapp.com",
+authDomain:
+"nandomusic-c77a3.firebaseapp.com",
 
-    databaseURL:
-        "https://nandomusic-c77a3-default-rtdb.firebaseio.com",
+databaseURL:
+"https://nandomusic-c77a3-default-rtdb.firebaseio.com",
 
-    projectId:
-        "nandomusic-c77a3",
+projectId:
+"nandomusic-c77a3",
 
-    storageBucket:
-        "nandomusic-c77a3.firebasestorage.app",
+storageBucket:
+"nandomusic-c77a3.firebasestorage.app",
 
-    messagingSenderId:
-        "509221491611",
+messagingSenderId:
+"509221491611",
 
-    appId:
-        "1:509221491611:web:e9b7ffc4cde7ee9477473e",
+appId:
+"1:509221491611:web:e9b7ffc4cde7ee9477473e",
 
-    measurementId:
-        "G-K6WVWHTVP7"
+measurementId:
+"G-K6WVWHTVP7"
 
 };
 
 if(!firebase.apps.length){
-    firebase.initializeApp(firebaseConfig);
+
+firebase.initializeApp(firebaseConfig);
+
 }
 
-const auth = firebase.auth();
-const db = firebase.database();
+const auth=firebase.auth();
 
-const CHAVE_SECRETA_ADM = "NANDOADM";
+const db=firebase.database();
 
-/* =========================================================
-   ESTADO
-========================================================= */
+/* =====================================================
+CHAVE ADMIN
+===================================================== */
 
-let adminLogado = false;
+const CHAVE_SECRETA_ADM="NANDOADM";
 
-let allSongs = [];
+/* =====================================================
+ESTADO
+===================================================== */
 
-let currentSong = null;
+let adminLogado=false;
 
-let currentIndex = -1;
+let allSongs=[];
 
-let filteredSongs = [];
+let bgVideos=[];
 
-let bgVideos = [];
+let acessoValido=false;
 
-let favoritos =
-    JSON.parse(
-        localStorage.getItem("nando_favoritos") || "[]"
-    );
+let codigoAtualCliente=null;
 
-let downloads =
-    JSON.parse(
-        localStorage.getItem("nando_downloads") || "[]"
-    );
-
-/* =========================================================
-   DEVICE ID
-========================================================= */
-
-let deviceId =
-    localStorage.getItem("nando_device_id");
+let deviceId=localStorage.getItem(
+"nando_device_id"
+);
 
 if(!deviceId){
 
-    deviceId =
-        "DEV-" +
-        Math.random()
-        .toString(36)
-        .substring(2,10)
-        .toUpperCase();
+deviceId=
+"DEV-"+
+Math.random()
+.toString(36)
+.substring(2,10)
+.toUpperCase();
 
-    localStorage.setItem(
-        "nando_device_id",
-        deviceId
-    );
-
-}
-
-/* =========================================================
-   ELEMENTOS
-========================================================= */
-
-const audioPlayer =
-    document.getElementById("audioPlayer");
-
-const miniPlayer =
-    document.getElementById("miniPlayer");
-
-const miniCover =
-    document.getElementById("miniCover");
-
-const miniTitle =
-    document.getElementById("miniTitle");
-
-const miniArtist =
-    document.getElementById("miniArtist");
-
-const miniPlay =
-    document.getElementById("miniPlay");
-
-const fullCover =
-    document.getElementById("fullCover");
-
-const fullTitle =
-    document.getElementById("fullTitle");
-
-const fullArtist =
-    document.getElementById("fullArtist");
-
-const fullPlay =
-    document.getElementById("fullPlay");
-
-const progressRange =
-    document.getElementById("progressRange");
-
-/* =========================================================
-   FALLBACK CAPA
-========================================================= */
-
-const FALLBACK_COVER =
-    "data:image/svg+xml;charset=UTF-8," +
-    encodeURIComponent(`
-        <svg xmlns="http://www.w3.org/2000/svg"
-             width="600"
-             height="600"
-             viewBox="0 0 600 600">
-
-            <defs>
-
-                <linearGradient
-                    id="g"
-                    x1="0"
-                    y1="0"
-                    x2="1"
-                    y2="1">
-
-                    <stop
-                        offset="0%"
-                        stop-color="#a855f7"/>
-
-                    <stop
-                        offset="100%"
-                        stop-color="#ec4899"/>
-
-                </linearGradient>
-
-            </defs>
-
-            <rect
-                width="600"
-                height="600"
-                fill="url(#g)"/>
-
-            <circle
-                cx="300"
-                cy="260"
-                r="105"
-                fill="rgba(255,255,255,.15)"/>
-
-            <text
-                x="300"
-                y="285"
-                text-anchor="middle"
-                font-family="Arial"
-                font-size="90"
-                fill="white">
-
-                ♪
-
-            </text>
-
-            <text
-                x="300"
-                y="470"
-                text-anchor="middle"
-                font-family="Arial"
-                font-weight="bold"
-                font-size="42"
-                fill="white">
-
-                NANDO'S
-
-            </text>
-
-            <text
-                x="300"
-                y="515"
-                text-anchor="middle"
-                font-family="Arial"
-                font-size="30"
-                fill="white">
-
-                MUSIC
-
-            </text>
-
-        </svg>
-    `);
-
-/* =========================================================
-   MENSAGEM
-========================================================= */
-
-function mostrarMensagem(id,text,tipo){
-
-    const el =
-        document.getElementById(id);
-
-    if(!el)return;
-
-    el.innerText = text;
-
-    el.className =
-        "message " + tipo;
+localStorage.setItem(
+"nando_device_id",
+deviceId
+);
 
 }
 
-/* =========================================================
-   CONEXÃO
-========================================================= */
+/* =====================================================
+ELEMENTOS
+===================================================== */
+
+const backgroundPlayer=
+document.getElementById(
+"backgroundPlayer"
+);
+
+const musicPlayer=
+document.getElementById(
+"musicPlayer"
+);
+
+const nowPlaying=
+document.getElementById(
+"nowPlaying"
+);
+
+const adminBackgroundPlayer=
+document.getElementById(
+"adminBackgroundPlayer"
+);
+
+const adminMusicPlayer=
+document.getElementById(
+"adminMusicPlayer"
+);
+
+const adminNowPlaying=
+document.getElementById(
+"adminNowPlaying"
+);
+
+/* =====================================================
+MENSAGENS
+===================================================== */
+
+function mostrarMensagem(
+id,
+text,
+tipo
+){
+
+const el=document.getElementById(id);
+
+if(!el)return;
+
+el.innerText=text;
+
+el.className=
+"message "+tipo;
+
+}
+
+/* =====================================================
+CONEXÃO
+===================================================== */
 
 db.ref(".info/connected")
-.on("value",snapshot=>{
+.on("value",snap=>{
 
-    const status =
-        document.getElementById(
-            "connectionStatus"
-        );
+const status=
+document.getElementById(
+"connectionStatus"
+);
 
-    if(snapshot.val() === true){
+if(snap.val()===true){
 
-        status.innerText =
-            "● Conectado ao Nando's Music";
+status.innerText="● Conectado";
 
-        status.className =
-            "connection-status online";
+status.style.color="#4ade80";
 
-    }else{
+}else{
 
-        status.innerText =
-            "● Sem conexão com o servidor";
+status.innerText=
+"● Sem conexão com o servidor";
 
-        status.className =
-            "connection-status offline";
+status.style.color="#f87171";
 
-    }
+}
 
 });
 
-/* =========================================================
-   ACESSO
-========================================================= */
-
-async function processarAcesso(){
-
-    const input =
-        document.getElementById(
-            "userAccessCode"
-        );
-
-    const valor =
-        input.value
-        .trim()
-        .toUpperCase();
-
-    if(valor === CHAVE_SECRETA_ADM){
-
-        abrirLoginAdmin();
-
-        return;
-
-    }
-
-    await validarCodigoUsuario();
-
-}
-
-/* =========================================================
-   VALIDAR CÓDIGO
-========================================================= */
-
-async function validarCodigoUsuario(){
-
-    const input =
-        document.getElementById(
-            "userAccessCode"
-        );
-
-    const codigo =
-        input.value
-        .trim()
-        .toUpperCase();
-
-    if(!codigo){
-
-        mostrarMensagem(
-            "authMessage",
-            "Digite o código recebido.",
-            "error"
-        );
-
-        return;
-
-    }
-
-    if(!/^ND-[A-Z0-9]{6}$/.test(codigo)){
-
-        mostrarMensagem(
-            "authMessage",
-            "Código inválido. Use ND-XXXXXX.",
-            "error"
-        );
-
-        return;
-
-    }
-
-    mostrarMensagem(
-        "authMessage",
-        "Verificando código...",
-        "success"
-    );
-
-    try{
-
-        const snapshot =
-            await db
-            .ref("codigos_gerados/" + codigo)
-            .once("value");
-
-        const dados =
-            snapshot.val();
-
-        if(!dados){
-
-            throw new Error(
-                "Código inválido ou não encontrado."
-            );
-
-        }
-
-        if(
-            dados.usado === true &&
-            dados.deviceId &&
-            dados.deviceId !== deviceId
-        ){
-
-            throw new Error(
-                "Esse código já está vinculado a outro aparelho."
-            );
-
-        }
-
-        await db
-        .ref("codigos_gerados/" + codigo)
-        .update({
-
-            usado:true,
-
-            deviceId:deviceId,
-
-            ultimoAcesso:Date.now()
-
-        });
-
-        await db
-        .ref("dispositivos_autorizados/" + codigo)
-        .set({
-
-            codigo:codigo,
-
-            deviceId:deviceId,
-
-            data:Date.now()
-
-        });
-
-        localStorage.setItem(
-            "nando_autorizado",
-            "true"
-        );
-
-        localStorage.setItem(
-            "nando_codigo",
-            codigo
-        );
-
-        fecharAuth();
-
-        iniciarAplicativo();
-
-    }catch(error){
-
-        console.error(error);
-
-        mostrarMensagem(
-            "authMessage",
-            error.message ||
-            "Não foi possível validar o código.",
-            "error"
-        );
-
-    }
-
-}
-
-/* =========================================================
-   FECHAR LOGIN
-========================================================= */
-
-function fecharAuth(){
-
-    const modal =
-        document.getElementById(
-            "authModal"
-        );
-
-    modal.classList.remove("active");
-
-}
-
-/* =========================================================
-   VERIFICAR AUTORIZAÇÃO
-========================================================= */
+/* =====================================================
+VERIFICAÇÃO REAL DO APARELHO
+===================================================== */
 
 async function verificarAutorizacao(){
 
-    const autorizadoLocal =
-        localStorage.getItem(
-            "nando_autorizado"
-        ) === "true";
+if(adminLogado)return;
 
-    if(autorizadoLocal){
+const modal=
+document.getElementById("authModal");
 
-        fecharAuth();
+try{
 
-        iniciarAplicativo();
+const snapshot=
+await db.ref(
+"dispositivos_autorizados"
+).once("value");
 
-        return;
+const dados=
+snapshot.val()||{};
 
-    }
+let encontrado=false;
 
-    const modal =
-        document.getElementById(
-            "authModal"
-        );
+let codigoEncontrado=null;
 
-    modal.classList.add("active");
+Object.keys(dados).forEach(codigo=>{
+
+const item=dados[codigo];
+
+if(
+item &&
+item.deviceId===deviceId
+){
+
+encontrado=true;
+
+codigoEncontrado=codigo;
+
+}
+
+});
+
+if(encontrado){
+
+acessoValido=true;
+
+codigoAtualCliente=
+codigoEncontrado;
+
+modal.classList.remove("active");
+
+modal.style.display="none";
+
+iniciarVideoTeste();
+
+mostrarBotaoInstalar();
+
+}else{
+
+revogarAcessoLocal(
+"Digite o código de acesso para entrar."
+);
 
 }
 
-/* =========================================================
-   LOGIN ADM
-========================================================= */
+}catch(error){
 
-function abrirAdmin(){
+console.error(error);
 
-    document
-        .getElementById("authModal")
-        .classList
-        .remove("active");
-
-    abrirLoginAdmin();
+revogarAcessoLocal(
+"Não foi possível verificar seu acesso."
+);
 
 }
+
+}
+
+/* =====================================================
+MONITORAMENTO EM TEMPO REAL
+=====================================================
+
+ESTA PARTE É O QUE FAZ O CLIENTE
+SER BLOQUEADO QUANDO O ADM REMOVE O CÓDIGO.
+===================================================== */
+
+db.ref("dispositivos_autorizados")
+.on("value",snapshot=>{
+
+if(adminLogado)return;
+
+const dados=
+snapshot.val()||{};
+
+let autorizado=false;
+
+let codigoEncontrado=null;
+
+Object.keys(dados).forEach(codigo=>{
+
+const item=dados[codigo];
+
+if(
+item &&
+item.deviceId===deviceId
+){
+
+autorizado=true;
+
+codigoEncontrado=codigo;
+
+}
+
+});
+
+if(autorizado){
+
+if(!acessoValido){
+
+acessoValido=true;
+
+codigoAtualCliente=
+codigoEncontrado;
+
+const modal=
+document.getElementById(
+"authModal"
+);
+
+modal.classList.remove("active");
+
+modal.style.display="none";
+
+iniciarVideoTeste();
+
+mostrarBotaoInstalar();
+
+}
+
+}else{
+
+if(acessoValido){
+
+revogarAcessoLocal(
+"Seu código de acesso foi removido pelo administrador."
+);
+
+}
+
+}
+
+});
+
+/* =====================================================
+REVOGAR ACESSO LOCAL
+===================================================== */
+
+function revogarAcessoLocal(
+mensagem
+){
+
+acessoValido=false;
+
+codigoAtualCliente=null;
+
+/*
+O localStorage NÃO é usado como autorização.
+Apagamos apenas informações antigas.
+*/
+
+localStorage.removeItem(
+"nando_autorizado"
+);
+
+localStorage.removeItem(
+"nando_codigo"
+);
+
+/* parar música */
+
+musicPlayer.pause();
+
+musicPlayer.removeAttribute("src");
+
+musicPlayer.load();
+
+nowPlaying.innerText=
+"Nenhuma música reproduzindo";
+
+/* parar vídeo */
+
+backgroundPlayer.pause();
+
+backgroundPlayer.removeAttribute("src");
+
+backgroundPlayer.load();
+
+/* esconder menu ADM */
+
+document.getElementById(
+"adminMenuButton"
+).style.display="none";
+
+document.getElementById(
+"adminMenu"
+).classList.remove("active");
+
+/* abrir bloqueio */
+
+const modal=
+document.getElementById(
+"authModal"
+);
+
+modal.classList.add("active");
+
+modal.style.display="flex";
+
+const input=
+document.getElementById(
+"userAccessCode"
+);
+
+if(input){
+
+input.value="";
+
+}
+
+mostrarMensagem(
+"authMessage",
+mensagem,
+"error"
+);
+
+/* esconder instalação */
+
+document.getElementById(
+"installContainer"
+).style.display="none";
+
+}
+
+/* =====================================================
+PROCESSAR ACESSO
+===================================================== */
+
+async function processarAcesso(){
+
+const input=
+document.getElementById(
+"userAccessCode"
+);
+
+const valor=
+input.value.trim().toUpperCase();
+
+if(!valor){
+
+mostrarMensagem(
+"authMessage",
+"Digite o código de acesso.",
+"error"
+);
+
+return;
+
+}
+
+/*
+ACESSO SECRETO DO ADMIN.
+NÃO É MOSTRADO AO CLIENTE.
+*/
+
+if(valor===CHAVE_SECRETA_ADM){
+
+abrirLoginAdmin();
+
+return;
+
+}
+
+await validarCodigoUsuario();
+
+}
+
+/* =====================================================
+VALIDAR CÓDIGO CLIENTE
+===================================================== */
+
+async function validarCodigoUsuario(){
+
+const input=
+document.getElementById(
+"userAccessCode"
+);
+
+const codigo=
+input.value.trim().toUpperCase();
+
+if(!/^ND-[A-Z0-9]{6}$/.test(codigo)){
+
+mostrarMensagem(
+"authMessage",
+"Digite um código válido no formato ND-XXXXXX.",
+"error"
+);
+
+return;
+
+}
+
+mostrarMensagem(
+"authMessage",
+"Verificando código...",
+"success"
+);
+
+try{
+
+const snapshot=
+await db.ref(
+"codigos_gerados/"+codigo
+).once("value");
+
+const dados=snapshot.val();
+
+if(!dados){
+
+throw new Error(
+"Código inválido ou não encontrado."
+);
+
+}
+
+/*
+SE JÁ ESTIVER VINCULADO A OUTRO APARELHO,
+NÃO PERMITE ENTRADA.
+*/
+
+if(
+dados.usado===true &&
+dados.deviceId &&
+dados.deviceId!==deviceId
+){
+
+throw new Error(
+"Esse código já está vinculado a outro aparelho."
+);
+
+}
+
+/*
+VINCULA O CÓDIGO AO APARELHO.
+*/
+
+await db.ref(
+"codigos_gerados/"+codigo
+).update({
+
+usado:true,
+
+deviceId:deviceId,
+
+ultimoAcesso:Date.now()
+
+});
+
+/*
+CRIA A AUTORIZAÇÃO REAL.
+*/
+
+await db.ref(
+"dispositivos_autorizados/"+codigo
+).set({
+
+codigo:codigo,
+
+deviceId:deviceId,
+
+data:Date.now()
+
+});
+
+acessoValido=true;
+
+codigoAtualCliente=codigo;
+
+input.value="";
+
+document.getElementById(
+"authMessage"
+).className="message";
+
+document.getElementById(
+"authModal"
+).classList.remove("active");
+
+document.getElementById(
+"authModal"
+).style.display="none";
+
+iniciarVideoTeste();
+
+mostrarBotaoInstalar();
+
+}catch(error){
+
+console.error(error);
+
+mostrarMensagem(
+"authMessage",
+error.message ||
+"Não foi possível validar o código.",
+"error"
+);
+
+}
+
+}
+
+/* =====================================================
+LOGIN ADMIN
+===================================================== */
 
 function abrirLoginAdmin(){
 
-    const modal =
-        document.getElementById(
-            "adminModal"
-        );
+document.getElementById(
+"authModal"
+).classList.remove("active");
 
-    modal.classList.add("active");
+document.getElementById(
+"authModal"
+).style.display="none";
 
-    document
-        .getElementById("adminLogin")
-        .style.display = "block";
+const modal=
+document.getElementById(
+"adminModal"
+);
 
-    document
-        .getElementById("adminPanel")
-        .style.display = "none";
+modal.classList.add("active");
 
-    document
-        .getElementById("adminPassword")
-        .value = "";
+modal.style.display="flex";
 
-}
+document.getElementById(
+"adminPassword"
+).value="";
 
-/* =========================================================
-   FECHAR ADM
-========================================================= */
+document.getElementById(
+"adminLoginMessage"
+).className="message";
 
-function fecharAdmin(){
+setTimeout(()=>{
 
-    const modal =
-        document.getElementById(
-            "adminModal"
-        );
+document.getElementById(
+"adminPassword"
+).focus();
 
-    modal.classList.remove("active");
-
-    if(
-        localStorage.getItem(
-            "nando_autorizado"
-        ) !== "true"
-    ){
-
-        document
-            .getElementById("authModal")
-            .classList.add("active");
-
-    }
+},150);
 
 }
 
-/* =========================================================
-   LOGIN FIREBASE
-========================================================= */
+/* =====================================================
+FECHAR LOGIN ADMIN
+===================================================== */
+
+function fecharAdminLogin(){
+
+const modal=
+document.getElementById(
+"adminModal"
+);
+
+modal.classList.remove("active");
+
+modal.style.display="none";
+
+if(!acessoValido){
+
+const authModal=
+document.getElementById(
+"authModal"
+);
+
+authModal.classList.add("active");
+
+authModal.style.display="flex";
+
+}
+
+}
+
+/* =====================================================
+ENTRAR ADMIN FIREBASE
+===================================================== */
 
 async function entrarAdmin(){
 
-    const email =
-        document
-        .getElementById("adminEmail")
-        .value
-        .trim();
+const email=
+document.getElementById(
+"adminEmail"
+).value.trim();
 
-    const senha =
-        document
-        .getElementById("adminPassword")
-        .value;
+const senha=
+document.getElementById(
+"adminPassword"
+).value;
 
-    if(!email || !senha){
+if(!email || !senha){
 
-        mostrarMensagem(
-            "adminLoginMessage",
-            "Digite o e-mail e a senha.",
-            "error"
-        );
+mostrarMensagem(
+"adminLoginMessage",
+"Digite o e-mail e a senha.",
+"error"
+);
 
-        return;
-
-    }
-
-    mostrarMensagem(
-        "adminLoginMessage",
-        "Entrando...",
-        "success"
-    );
-
-    try{
-
-        await auth
-        .signInWithEmailAndPassword(
-            email,
-            senha
-        );
-
-        adminLogado = true;
-
-        mostrarPainelAdmin();
-
-    }catch(error){
-
-        console.error(error);
-
-        let mensagem =
-            "E-mail ou senha incorretos.";
-
-        if(
-            error.code ===
-            "auth/too-many-requests"
-        ){
-
-            mensagem =
-                "Muitas tentativas. Aguarde um pouco.";
-
-        }
-
-        mostrarMensagem(
-            "adminLoginMessage",
-            mensagem,
-            "error"
-        );
-
-    }
+return;
 
 }
 
-/* =========================================================
-   PAINEL ADM
-========================================================= */
+mostrarMensagem(
+"adminLoginMessage",
+"Autenticando administrador...",
+"success"
+);
 
-function mostrarPainelAdmin(){
+try{
 
-    document
-        .getElementById("adminLogin")
-        .style.display = "none";
+await auth.signInWithEmailAndPassword(
+email,
+senha
+);
 
-    document
-        .getElementById("adminPanel")
-        .style.display = "block";
+adminLogado=true;
 
-    carregarCodigosAdmin();
+acessoValido=true;
 
-    carregarListaAdmin();
+/*
+A tela principal continua sendo a mesma.
+Somente o menu administrativo aparece.
+*/
 
-    renderizarAdminPlayer();
+document.getElementById(
+"adminModal"
+).classList.remove("active");
 
-    renderizarFundosAdmin();
+document.getElementById(
+"adminModal"
+).style.display="none";
+
+/*
+Cliente nunca recebe este botão.
+Ele só aparece depois do Firebase
+confirmar o administrador.
+*/
+
+document.getElementById(
+"adminMenuButton"
+).style.display="block";
+
+/*
+O bloqueio de cliente não aparece
+para o administrador.
+*/
+
+document.getElementById(
+"authModal"
+).classList.remove("active");
+
+document.getElementById(
+"authModal"
+).style.display="none";
+
+iniciarVideoTeste();
+
+}catch(error){
+
+console.error(error);
+
+let msg=
+"E-mail ou senha incorretos.";
+
+if(
+error.code==="auth/too-many-requests"
+){
+
+msg=
+"Muitas tentativas. Aguarde um pouco.";
 
 }
 
-/* =========================================================
-   SAIR ADM
-========================================================= */
+mostrarMensagem(
+"adminLoginMessage",
+msg,
+"error"
+);
+
+}
+
+}
+
+/* =====================================================
+MENU ADMIN
+===================================================== */
+
+function abrirMenuAdmin(){
+
+if(!adminLogado)return;
+
+document.getElementById(
+"adminMenu"
+).classList.add("active");
+
+}
+
+function fecharMenuAdmin(){
+
+document.getElementById(
+"adminMenu"
+).classList.remove("active");
+
+}
+
+/* =====================================================
+ABRIR PAINEL
+===================================================== */
+
+function abrirPainelAdmin(){
+
+if(!adminLogado)return;
+
+fecharMenuAdmin();
+
+const modal=
+document.getElementById(
+"adminPanelModal"
+);
+
+modal.classList.add("active");
+
+modal.style.display="flex";
+
+carregarCodigosAdmin();
+
+carregarListaAdmin();
+
+renderizarAdminPlayer();
+
+iniciarVideoAdmin();
+
+}
+
+/* =====================================================
+FECHAR PAINEL
+===================================================== */
+
+function fecharPainelAdmin(){
+
+const modal=
+document.getElementById(
+"adminPanelModal"
+);
+
+modal.classList.remove("active");
+
+modal.style.display="none";
+
+}
+
+/* =====================================================
+SAIR ADMIN
+===================================================== */
 
 async function sairAdmin(){
 
-    try{
+try{
 
-        await auth.signOut();
+await auth.signOut();
 
-    }catch(e){}
+}catch(e){}
 
-    adminLogado = false;
+adminLogado=false;
 
-    document
-        .getElementById("adminPanel")
-        .style.display = "none";
+fecharPainelAdmin();
 
-    document
-        .getElementById("adminLogin")
-        .style.display = "block";
+fecharMenuAdmin();
 
-    document
-        .getElementById("adminPassword")
-        .value = "";
+document.getElementById(
+"adminMenuButton"
+).style.display="none";
 
-    fecharAdmin();
+/*
+Ao sair do ADM, o sistema volta
+para a proteção normal do cliente.
+*/
+
+acessoValido=false;
+
+revogarAcessoLocal(
+"Digite o código de acesso para entrar."
+);
 
 }
 
-/* =========================================================
-   ABAS ADM
-========================================================= */
+/* =====================================================
+ABAS ADMIN
+===================================================== */
 
 function abaAdmin(nome,btn){
 
-    document
-        .querySelectorAll(".admin-section")
-        .forEach(el=>{
-            el.classList.remove("active");
-        });
+document.querySelectorAll(
+".admin-section"
+).forEach(el=>{
 
-    const aba =
-        document.getElementById(
-            "aba-" + nome
-        );
+el.classList.remove("active");
 
-    if(aba){
-        aba.classList.add("active");
-    }
+});
 
-    document
-        .querySelectorAll(".admin-tab")
-        .forEach(el=>{
-            el.classList.remove("active");
-        });
+const aba=
+document.getElementById(
+"aba-"+nome
+);
 
-    if(btn){
-        btn.classList.add("active");
-    }
+if(aba){
 
-    if(nome === "codigos"){
-        carregarCodigosAdmin();
-    }
-
-    if(nome === "player"){
-        renderizarAdminPlayer();
-    }
+aba.classList.add("active");
 
 }
 
-/* =========================================================
-   GERAR CÓDIGO
-========================================================= */
+document.querySelectorAll(
+".admin-tabs .filter-btn"
+).forEach(el=>{
+
+el.classList.remove("active");
+
+});
+
+if(btn){
+
+btn.classList.add("active");
+
+}
+
+if(nome==="codigos"){
+
+carregarCodigosAdmin();
+
+}
+
+if(nome==="player"){
+
+iniciarVideoAdmin();
+
+}
+
+}
+
+/* =====================================================
+GERAR CÓDIGO
+===================================================== */
 
 async function gerarCodigoCliente(){
 
-    if(!adminLogado){
+if(!adminLogado){
 
-        alert(
-            "Faça login como administrador."
-        );
+alert(
+"Faça login como administrador."
+);
 
-        return;
-
-    }
-
-    const chars =
-        "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-
-    let codigo = "ND-";
-
-    for(let i=0;i<6;i++){
-
-        codigo +=
-            chars.charAt(
-                Math.floor(
-                    Math.random() *
-                    chars.length
-                )
-            );
-
-    }
-
-    try{
-
-        await db
-        .ref("codigos_gerados/" + codigo)
-        .set({
-
-            usado:false,
-
-            deviceId:null,
-
-            criadoEm:Date.now()
-
-        });
-
-        document
-            .getElementById("generatedCode")
-            .innerText = codigo;
-
-        document
-            .getElementById("generatedCodeBox")
-            .style.display = "block";
-
-        document
-            .getElementById("copyMessage")
-            .innerText =
-            "✓ Código salvo com sucesso.";
-
-        carregarCodigosAdmin();
-
-    }catch(error){
-
-        alert(
-            "Erro ao gerar código:\n" +
-            error.message
-        );
-
-    }
+return;
 
 }
 
-/* =========================================================
-   COPIAR
-========================================================= */
+const chars=
+"ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+
+let codigo="ND-";
+
+for(let i=0;i<6;i++){
+
+codigo+=chars.charAt(
+Math.floor(
+Math.random()*chars.length
+)
+);
+
+}
+
+try{
+
+await db.ref(
+"codigos_gerados/"+codigo
+).set({
+
+usado:false,
+
+deviceId:null,
+
+criadoEm:Date.now()
+
+});
+
+document.getElementById(
+"generatedCode"
+).innerText=codigo;
+
+document.getElementById(
+"generatedCodeBox"
+).style.display="block";
+
+document.getElementById(
+"copyMessage"
+).innerText=
+"✓ Código salvo com sucesso!";
+
+carregarCodigosAdmin();
+
+}catch(error){
+
+alert(
+"Erro ao gerar código:\n"+
+error.message
+);
+
+}
+
+}
+
+/* =====================================================
+COPIAR CÓDIGO
+===================================================== */
 
 async function copiarCodigo(){
 
-    const codigo =
-        document
-        .getElementById("generatedCode")
-        .innerText;
+const codigo=
+document.getElementById(
+"generatedCode"
+).innerText;
 
-    if(!codigo)return;
+if(!codigo)return;
 
-    try{
+try{
 
-        await navigator.clipboard
-        .writeText(codigo);
+await navigator.clipboard.writeText(
+codigo
+);
 
-        document
-            .getElementById("copyMessage")
-            .innerText =
-            "✓ Código copiado!";
+document.getElementById(
+"copyMessage"
+).innerText=
+"✓ Código copiado!";
 
-    }catch(error){
+}catch(error){
 
-        prompt(
-            "Copie o código:",
-            codigo
-        );
-
-    }
+prompt(
+"Copie o código:",
+codigo
+);
 
 }
 
-/* =========================================================
-   LISTAR CÓDIGOS
-========================================================= */
+}
+
+/* =====================================================
+LISTAR CÓDIGOS
+===================================================== */
 
 async function carregarCodigosAdmin(){
 
-    const container =
-        document.getElementById(
-            "codesAdminList"
-        );
+if(!adminLogado)return;
 
-    if(!container)return;
+const container=
+document.getElementById(
+"codesAdminList"
+);
 
-    try{
+if(!container)return;
 
-        const snap =
-            await db
-            .ref("codigos_gerados")
-            .once("value");
+try{
 
-        const dados =
-            snap.val() || {};
+const snap=
+await db.ref(
+"codigos_gerados"
+).once("value");
 
-        const ids =
-            Object.keys(dados)
-            .reverse();
+const dados=
+snap.val()||{};
 
-        if(!ids.length){
+const ids=
+Object.keys(dados).reverse();
 
-            container.innerHTML =
-                '<div class="empty">Nenhum código criado.</div>';
+if(!ids.length){
 
-            return;
+container.innerHTML=
+'<div class="empty">Nenhum código criado.</div>';
 
-        }
-
-        let html = "";
-
-        ids.forEach(id=>{
-
-            const item =
-                dados[id] || {};
-
-            const usado =
-                item.usado === true;
-
-            html += `
-
-                <div class="admin-row">
-
-                    <div>
-
-                        <strong>
-                            ${escapar(id)}
-                        </strong>
-
-                        <br>
-
-                        <span class="status ${
-                            usado
-                            ? "used"
-                            : "available"
-                        }">
-
-                            ${
-                                usado
-                                ? "USADO"
-                                : "DISPONÍVEL"
-                            }
-
-                        </span>
-
-                        ${
-                            usado &&
-                            item.deviceId
-                            ?
-                            `
-                            <div class="small">
-                                Aparelho:
-                                ${escapar(item.deviceId)}
-                            </div>
-                            `
-                            :
-                            ""
-                        }
-
-                    </div>
-
-                    <div style="
-                        display:flex;
-                        gap:5px
-                    ">
-
-                        <button
-                            style="background:#30303a"
-                            onclick="copiarDireto('${id}')">
-
-                            <i class="
-                                fa-solid
-                                fa-copy
-                            "></i>
-
-                        </button>
-
-                        <button
-                            style="background:#ef4444"
-                            onclick="excluirCodigo('${id}')">
-
-                            <i class="
-                                fa-solid
-                                fa-trash
-                            "></i>
-
-                        </button>
-
-                    </div>
-
-                </div>
-
-            `;
-
-        });
-
-        container.innerHTML = html;
-
-    }catch(error){
-
-        container.innerHTML =
-            '<div class="empty">Erro ao carregar códigos.</div>';
-
-    }
+return;
 
 }
 
-/* =========================================================
-   COPIAR DIRETO
-========================================================= */
+let html="";
+
+ids.forEach(id=>{
+
+const item=
+dados[id]||{};
+
+const usado=
+item.usado===true;
+
+html+=`
+
+<div class="admin-row">
+
+<div>
+
+<strong>${escapar(id)}</strong>
+
+<br>
+
+<span class="status ${
+usado?"used":"available"
+}">
+
+${usado?"USADO":"DISPONÍVEL"}
+
+</span>
+
+${
+usado && item.deviceId
+?
+`
+<div class="small">
+Aparelho: ${escapar(item.deviceId)}
+</div>
+`
+:""
+}
+
+</div>
+
+<div style="
+display:flex;
+gap:5px">
+
+<button
+style="background:#334155"
+onclick="copiarDireto('${escapar(id)}')">
+
+<i class="fa-solid fa-copy"></i>
+
+</button>
+
+<button
+style="background:#ef4444"
+onclick="excluirCodigo('${escapar(id)}')">
+
+<i class="fa-solid fa-trash"></i>
+
+</button>
+
+</div>
+
+</div>
+
+`;
+
+});
+
+container.innerHTML=html;
+
+}catch(error){
+
+console.error(error);
+
+container.innerHTML=
+'<div class="empty">Erro ao carregar códigos.</div>';
+
+}
+
+}
+
+/* =====================================================
+COPIAR DIRETO
+===================================================== */
 
 async function copiarDireto(codigo){
 
-    try{
+try{
 
-        await navigator.clipboard
-        .writeText(codigo);
+await navigator.clipboard.writeText(
+codigo
+);
 
-        alert(
-            "Código " +
-            codigo +
-            " copiado!"
-        );
+alert(
+"Código "+codigo+" copiado!"
+);
 
-    }catch(e){
+}catch(e){
 
-        prompt(
-            "Copie o código:",
-            codigo
-        );
-
-    }
+prompt(
+"Copie o código:",
+codigo
+);
 
 }
 
-/* =========================================================
-   EXCLUIR CÓDIGO
-========================================================= */
+}
+
+/* =====================================================
+EXCLUIR CÓDIGO
+===================================================== */
 
 async function excluirCodigo(codigo){
 
-    if(!adminLogado)return;
+if(!adminLogado)return;
 
-    if(
-        !confirm(
-            "Excluir o código " +
-            codigo +
-            "?"
-        )
-    )return;
+if(
+!confirm(
+"Excluir o código "+codigo+"?\n\n"+
+"Se ele estiver em uso, o aparelho do cliente será bloqueado imediatamente."
+)
+){
 
-    try{
-
-        await db
-        .ref("codigos_gerados/" + codigo)
-        .remove();
-
-        await db
-        .ref("dispositivos_autorizados/" + codigo)
-        .remove();
-
-        carregarCodigosAdmin();
-
-    }catch(error){
-
-        alert(
-            "Erro:\n" +
-            error.message
-        );
-
-    }
+return;
 
 }
 
-/* =========================================================
-   SALVAR MÚSICA
-========================================================= */
+try{
+
+/*
+PRIMEIRO remove a autorização.
+Isso dispara o listener em tempo real
+no celular do cliente.
+*/
+
+await db.ref(
+"dispositivos_autorizados/"+codigo
+).remove();
+
+/*
+Depois remove o código.
+*/
+
+await db.ref(
+"codigos_gerados/"+codigo
+).remove();
+
+carregarCodigosAdmin();
+
+alert(
+"Código removido.\n"+
+"Se estava vinculado a um aparelho, o acesso foi revogado."
+);
+
+}catch(error){
+
+alert(
+"Erro ao remover:\n"+
+error.message
+);
+
+}
+
+}
+
+/* =====================================================
+SALVAR MÚSICA
+===================================================== */
 
 async function salvarMusica(){
 
-    if(!adminLogado){
+if(!adminLogado){
 
-        alert(
-            "Faça login como administrador."
-        );
+alert(
+"Faça login como administrador."
+);
 
-        return;
-
-    }
-
-    const title =
-        document
-        .getElementById("songTitle")
-        .value
-        .trim();
-
-    const artist =
-        document
-        .getElementById("songArtist")
-        .value
-        .trim();
-
-    const cover =
-        document
-        .getElementById("songCover")
-        .value
-        .trim();
-
-    const url =
-        document
-        .getElementById("songUrl")
-        .value
-        .trim();
-
-    const category =
-        document
-        .getElementById("songCategory")
-        .value;
-
-    if(!title || !url){
-
-        alert(
-            "Preencha pelo menos o título e o link da música."
-        );
-
-        return;
-
-    }
-
-    try{
-
-        await db
-        .ref("musicas")
-        .push({
-
-            title:title,
-
-            artist:
-                artist ||
-                "Nando's Music",
-
-            cover:
-                cover ||
-                "",
-
-            url:url,
-
-            category:category,
-
-            criadoEm:Date.now(),
-
-            plays:0
-
-        });
-
-        document
-            .getElementById("songTitle")
-            .value = "";
-
-        document
-            .getElementById("songArtist")
-            .value = "";
-
-        document
-            .getElementById("songCover")
-            .value = "";
-
-        document
-            .getElementById("songUrl")
-            .value = "";
-
-        alert(
-            "✓ Música adicionada com sucesso!"
-        );
-
-    }catch(error){
-
-        alert(
-            "Erro:\n" +
-            error.message
-        );
-
-    }
+return;
 
 }
 
-/* =========================================================
-   EXCLUIR MÚSICA
-========================================================= */
+const title=
+document.getElementById(
+"songTitle"
+).value.trim();
+
+const url=
+document.getElementById(
+"songUrl"
+).value.trim();
+
+const category=
+document.getElementById(
+"songCategory"
+).value;
+
+if(!title || !url){
+
+alert(
+"Preencha o título e o link."
+);
+
+return;
+
+}
+
+try{
+
+await db.ref("musicas").push({
+
+title:title,
+
+url:url,
+
+category:category,
+
+criadoEm:Date.now()
+
+});
+
+document.getElementById(
+"songTitle"
+).value="";
+
+document.getElementById(
+"songUrl"
+).value="";
+
+alert(
+"Música adicionada com sucesso!"
+);
+
+}catch(error){
+
+alert(
+"Erro:\n"+error.message
+);
+
+}
+
+}
+
+/* =====================================================
+EXCLUIR MÚSICA
+===================================================== */
 
 async function excluirMusica(id){
 
-    if(!adminLogado)return;
+if(!adminLogado)return;
 
-    if(
-        !confirm(
-            "Excluir esta música?"
-        )
-    )return;
+if(
+!confirm("Excluir esta música?")
+){
 
-    try{
-
-        await db
-        .ref("musicas/" + id)
-        .remove();
-
-    }catch(error){
-
-        alert(
-            "Erro:\n" +
-            error.message
-        );
-
-    }
+return;
 
 }
 
-/* =========================================================
-   SALVAR FUNDO
-========================================================= */
+try{
+
+await db.ref(
+"musicas/"+id
+).remove();
+
+}catch(error){
+
+alert(
+"Erro:\n"+error.message
+);
+
+}
+
+}
+
+/* =====================================================
+SALVAR FUNDO
+===================================================== */
 
 async function salvarFundo(){
 
-    if(!adminLogado){
+if(!adminLogado){
 
-        alert(
-            "Faça login como administrador."
-        );
+alert(
+"Faça login como administrador."
+);
 
-        return;
-
-    }
-
-    const url =
-        document
-        .getElementById("backgroundUrl")
-        .value
-        .trim();
-
-    if(!url){
-
-        alert(
-            "Digite o link do vídeo."
-        );
-
-        return;
-
-    }
-
-    try{
-
-        await db
-        .ref("background_videos")
-        .push({
-
-            url:url,
-
-            criadoEm:Date.now()
-
-        });
-
-        document
-            .getElementById("backgroundUrl")
-            .value = "";
-
-        alert(
-            "✓ Vídeo adicionado!"
-        );
-
-    }catch(error){
-
-        alert(
-            "Erro:\n" +
-            error.message
-        );
-
-    }
+return;
 
 }
 
-/* =========================================================
-   EXCLUIR FUNDO
-========================================================= */
+const url=
+document.getElementById(
+"backgroundUrl"
+).value.trim();
+
+if(!url){
+
+alert(
+"Digite o link do vídeo."
+);
+
+return;
+
+}
+
+try{
+
+await db.ref(
+"background_videos"
+).push({
+
+url:url,
+
+criadoEm:Date.now()
+
+});
+
+document.getElementById(
+"backgroundUrl"
+).value="";
+
+alert(
+"Vídeo adicionado!"
+);
+
+}catch(error){
+
+alert(
+"Erro:\n"+error.message
+);
+
+}
+
+}
+
+/* =====================================================
+EXCLUIR FUNDO
+===================================================== */
 
 async function excluirFundo(id){
 
-    if(!adminLogado)return;
+if(!adminLogado)return;
 
-    if(
-        !confirm(
-            "Excluir este vídeo?"
-        )
-    )return;
+if(
+!confirm("Excluir este vídeo?")
+){
 
-    try{
-
-        await db
-        .ref("background_videos/" + id)
-        .remove();
-
-    }catch(error){
-
-        alert(
-            "Erro:\n" +
-            error.message
-        );
-
-    }
+return;
 
 }
 
-/* =========================================================
-   FIREBASE MÚSICAS
-========================================================= */
+try{
+
+await db.ref(
+"background_videos/"+id
+).remove();
+
+}catch(error){
+
+alert(
+"Erro:\n"+error.message
+);
+
+}
+
+}
+
+/* =====================================================
+VÍDEO DE TESTE
+===================================================== */
+
+const VIDEO_TESTE=
+"https://github.com/nandosarcondicionado-gif/Music-Nando-/raw/refs/heads/main/midia/videos/20260807_092150486.mp4_play_BR.mp4";
+
+function iniciarVideoTeste(){
+
+if(!backgroundPlayer)return;
+
+if(!acessoValido && !adminLogado)return;
+
+backgroundPlayer.src=
+VIDEO_TESTE;
+
+backgroundPlayer.muted=true;
+
+backgroundPlayer.loop=true;
+
+backgroundPlayer.play()
+.catch(error=>{
+
+console.warn(
+"Vídeo aguardando interação:",
+error
+);
+
+});
+
+}
+
+/* =====================================================
+VÍDEO ADMIN
+===================================================== */
+
+function iniciarVideoAdmin(){
+
+if(!adminBackgroundPlayer)return;
+
+if(!adminLogado)return;
+
+adminBackgroundPlayer.src=
+VIDEO_TESTE;
+
+adminBackgroundPlayer.muted=true;
+
+adminBackgroundPlayer.loop=true;
+
+adminBackgroundPlayer.play()
+.catch(error=>{
+
+console.warn(
+"Vídeo ADM aguardando interação:",
+error
+);
+
+});
+
+}
+
+/* =====================================================
+TOCAR MÚSICA CLIENTE
+===================================================== */
+
+function tocar(url,title){
+
+if(!acessoValido && !adminLogado){
+
+revogarAcessoLocal(
+"Acesso não autorizado."
+);
+
+return;
+
+}
+
+if(!url)return;
+
+musicPlayer.src=url;
+
+nowPlaying.innerText=title;
+
+musicPlayer.play()
+.catch(error=>{
+
+console.warn(
+"Reprodução automática bloqueada:",
+error
+);
+
+});
+
+}
+
+/* =====================================================
+TOCAR ADMIN
+===================================================== */
+
+function tocarAdmin(url,title){
+
+if(!adminLogado)return;
+
+if(!url)return;
+
+adminMusicPlayer.src=url;
+
+adminNowPlaying.innerText=title;
+
+adminMusicPlayer.play()
+.catch(error=>{
+
+console.warn(
+"Reprodução ADM bloqueada:",
+error
+);
+
+});
+
+}
+
+/* =====================================================
+PARAR PLAYER
+===================================================== */
+
+function pararPlayer(){
+
+musicPlayer.pause();
+
+musicPlayer.removeAttribute(
+"src"
+);
+
+musicPlayer.load();
+
+adminMusicPlayer.pause();
+
+adminMusicPlayer.removeAttribute(
+"src"
+);
+
+adminMusicPlayer.load();
+
+nowPlaying.innerText=
+"Nenhuma música reproduzindo";
+
+adminNowPlaying.innerText=
+"Nenhuma música reproduzindo";
+
+}
+
+/* =====================================================
+MÚSICAS FIREBASE
+===================================================== */
 
 db.ref("musicas")
 .on("value",snapshot=>{
 
-    allSongs = [];
+allSongs=[];
 
-    const dados =
-        snapshot.val() || {};
+const dados=
+snapshot.val()||{};
 
-    Object.keys(dados)
-    .forEach(id=>{
+Object.keys(dados)
+.forEach(id=>{
 
-        allSongs.push({
+allSongs.push({
 
-            id:id,
+id:id,
 
-            ...dados[id]
-
-        });
-
-    });
-
-    allSongs.sort(
-        (a,b)=>
-            (b.criadoEm || 0) -
-            (a.criadoEm || 0)
-    );
-
-    filteredSongs =
-        [...allSongs];
-
-    renderizarHome();
-
-    renderizarBiblioteca();
-
-    renderizarFavoritos();
-
-    renderizarBusca(
-        document
-        .getElementById("searchInput")
-        ?.value || ""
-    );
-
-    carregarListaAdmin();
-
-    renderizarAdminPlayer();
+...dados[id]
 
 });
 
-/* =========================================================
-   FIREBASE FUNDOS
-========================================================= */
+});
+
+renderizarMusicas(
+allSongs
+);
+
+if(adminLogado){
+
+renderizarAdminPlayer();
+
+carregarListaAdmin();
+
+}
+
+});
+
+/* =====================================================
+RENDERIZAR MÚSICAS
+===================================================== */
+
+function renderizarMusicas(lista){
+
+const container=
+document.getElementById(
+"playlistContainer"
+);
+
+if(!lista.length){
+
+container.innerHTML=
+'<div class="empty">Nenhuma música cadastrada.</div>';
+
+return;
+
+}
+
+let html="";
+
+lista.forEach(song=>{
+
+html+=`
+
+<div class="song-item">
+
+<div
+class="song-info"
+onclick="tocarPorId('${escapar(song.id)}')">
+
+<div class="song-title">
+
+${escapar(song.title)}
+
+</div>
+
+<div class="song-category">
+
+${escapar(song.category)}
+
+</div>
+
+</div>
+
+<div class="song-actions">
+
+<a
+href="${escapar(song.url)}"
+target="_blank"
+rel="noopener"
+class="icon">
+
+<i class="fa-solid fa-download"></i>
+
+</a>
+
+<i
+class="fa-solid fa-play icon"
+onclick="tocarPorId('${escapar(song.id)}')">
+
+</i>
+
+</div>
+
+</div>
+
+`;
+
+});
+
+container.innerHTML=html;
+
+}
+
+/* =====================================================
+TOCAR PELO ID
+EVITA PROBLEMAS COM TÍTULOS/URLS
+===================================================== */
+
+function tocarPorId(id){
+
+const song=
+allSongs.find(
+item=>item.id===id
+);
+
+if(!song)return;
+
+tocar(
+song.url,
+song.title
+);
+
+}
+
+/* =====================================================
+PLAYER ADMIN
+===================================================== */
+
+function renderizarAdminPlayer(){
+
+if(!adminLogado)return;
+
+const container=
+document.getElementById(
+"adminPlayerList"
+);
+
+if(!container)return;
+
+let html="";
+
+allSongs.forEach(song=>{
+
+html+=`
+
+<div class="admin-row">
+
+<span>
+${escapar(song.title)}
+</span>
+
+<button
+style="background:#a855f7"
+onclick="tocarAdminPorId('${escapar(song.id)}')">
+
+<i class="fa-solid fa-play"></i>
+
+</button>
+
+</div>
+
+`;
+
+});
+
+container.innerHTML=
+html ||
+'<div class="empty">Nenhuma música cadastrada.</div>';
+
+}
+
+/* =====================================================
+TOCAR ADMIN PELO ID
+===================================================== */
+
+function tocarAdminPorId(id){
+
+if(!adminLogado)return;
+
+const song=
+allSongs.find(
+item=>item.id===id
+);
+
+if(!song)return;
+
+tocarAdmin(
+song.url,
+song.title
+);
+
+}
+
+/* =====================================================
+LISTA ADMIN
+===================================================== */
+
+function carregarListaAdmin(){
+
+if(!adminLogado)return;
+
+const container=
+document.getElementById(
+"musicAdminList"
+);
+
+if(!container)return;
+
+let html="";
+
+allSongs.forEach(song=>{
+
+html+=`
+
+<div class="admin-row">
+
+<span>
+${escapar(song.title)}
+</span>
+
+<button
+style="background:#ef4444"
+onclick="excluirMusica('${escapar(song.id)}')">
+
+<i class="fa-solid fa-trash"></i>
+
+</button>
+
+</div>
+
+`;
+
+});
+
+container.innerHTML=
+html ||
+'<div class="empty">Nenhuma música.</div>';
+
+}
+
+/* =====================================================
+FUNDOS FIREBASE
+===================================================== */
 
 db.ref("background_videos")
 .on("value",snapshot=>{
 
-    bgVideos = [];
+bgVideos=[];
 
-    const dados =
-        snapshot.val() || {};
+const dados=
+snapshot.val()||{};
 
-    Object.keys(dados)
-    .forEach(id=>{
+Object.keys(dados)
+.forEach(id=>{
 
-        bgVideos.push({
+bgVideos.push({
 
-            id:id,
+id:id,
 
-            url:dados[id].url
-
-        });
-
-    });
-
-    renderizarFundosAdmin();
-
-    escolherFundo();
+url:dados[id].url
 
 });
 
-/* =========================================================
-   RENDER HOME
-========================================================= */
+});
 
-function renderizarHome(){
+if(!adminLogado)return;
 
-    renderizarFavoritosHorizontal();
-
-    renderizarPopulares();
-
-    renderizarRecomendadas();
-
-}
-
-/* =========================================================
-   CAPA
-========================================================= */
-
-function obterCapa(song){
-
-    return song.cover &&
-           String(song.cover).trim()
-        ?
-           song.cover
-        :
-           FALLBACK_COVER;
-
-}
-
-/* =========================================================
-   CARD HORIZONTAL
-========================================================= */
-
-function criarCard(song){
-
-    return `
-
-        <div
-            class="music-card"
-            onclick="tocarMusicaPorId('${song.id}')">
-
-            <div class="cover">
-
-                <img
-                    src="${escapar(obterCapa(song))}"
-                    alt=""
-                    onerror="this.src='${FALLBACK_COVER}'">
-
-                <button
-                    class="cover-play"
-                    onclick="
-                        event.stopPropagation();
-                        tocarMusicaPorId('${song.id}')
-                    ">
-
-                    <i class="fa-solid fa-play"></i>
-
-                </button>
-
-            </div>
-
-            <div class="music-card-title">
-                ${escapar(song.title)}
-            </div>
-
-            <div class="music-card-artist">
-                ${escapar(
-                    song.artist ||
-                    "Nando's Music"
-                )}
-            </div>
-
-        </div>
-
-    `;
-
-}
-
-/* =========================================================
-   FAVORITOS HORIZONTAL
-========================================================= */
-
-function renderizarFavoritosHorizontal(){
-
-    const container =
-        document.getElementById(
-            "favoriteHorizontal"
-        );
-
-    if(!container)return;
-
-    const lista =
-        allSongs.filter(
-            song =>
-                favoritos.includes(song.id)
-        );
-
-    if(!lista.length){
-
-        container.innerHTML =
-            '<div class="empty">Nenhuma música curtida ainda.</div>';
-
-        return;
-
-    }
-
-    container.innerHTML =
-        lista
-        .slice(0,10)
-        .map(criarCard)
-        .join("");
-
-}
-
-/* =========================================================
-   POPULARES
-========================================================= */
-
-function renderizarPopulares(){
-
-    const container =
-        document.getElementById(
-            "popularHorizontal"
-        );
-
-    if(!container)return;
-
-    const lista =
-        [...allSongs]
-        .sort(
-            (a,b)=>
-                (b.plays || 0) -
-                (a.plays || 0)
-        )
-        .slice(0,12);
-
-    if(!lista.length){
-
-        container.innerHTML =
-            '<div class="empty">Nenhuma música cadastrada.</div>';
-
-        return;
-
-    }
-
-    container.innerHTML =
-        lista
-        .map(criarCard)
-        .join("");
-
-}
-
-/* =========================================================
-   RECOMENDADAS
-========================================================= */
-
-function renderizarRecomendadas(){
-
-    const container =
-        document.getElementById(
-            "recommendedGrid"
-        );
-
-    if(!container)return;
-
-    const lista =
-        [...allSongs]
-        .slice(0,10);
-
-    if(!lista.length){
-
-        container.innerHTML =
-            '<div class="empty">Nenhuma música cadastrada.</div>';
-
-        return;
-
-    }
-
-    container.innerHTML =
-        lista
-        .map(song=>`
-
-            <div
-                class="grid-card"
-                onclick="tocarMusicaPorId('${song.id}')">
-
-                <div class="grid-cover">
-
-                    <img
-                        src="${escapar(obterCapa(song))}"
-                        alt=""
-                        onerror="
-                            this.src='${FALLBACK_COVER}'
-                        ">
-
-                </div>
-
-                <div class="grid-info">
-
-                    <div class="grid-title">
-                        ${escapar(song.title)}
-                    </div>
-
-                    <div class="grid-artist">
-                        ${escapar(
-                            song.artist ||
-                            "Nando's Music"
-                        )}
-                    </div>
-
-                </div>
-
-            </div>
-
-        `)
-        .join("");
-
-}
-
-/* =========================================================
-   LISTA DE MÚSICAS
-========================================================= */
-
-function criarSongRow(song){
-
-    const favorito =
-        favoritos.includes(song.id);
-
-    return `
-
-        <div class="song-row">
-
-            <div
-                class="song-thumb"
-                onclick="tocarMusicaPorId('${song.id}')">
-
-                <img
-                    src="${escapar(obterCapa(song))}"
-                    alt=""
-                    onerror="
-                        this.src='${FALLBACK_COVER}'
-                    ">
-
-            </div>
-
-            <div
-                class="song-details"
-                onclick="tocarMusicaPorId('${song.id}')">
-
-                <div class="song-name">
-                    ${escapar(song.title)}
-                </div>
-
-                <div class="song-artist">
-                    ${escapar(
-                        song.artist ||
-                        "Nando's Music"
-                    )}
-                </div>
-
-                <span class="song-category">
-                    ${escapar(song.category || "")}
-                </span>
-
-            </div>
-
-            <div class="song-actions">
-
-                <button
-                    class="song-action favorite ${
-                        favorito ? "active" : ""
-                    }"
-                    onclick="
-                        alternarFavorito('${song.id}')
-                    ">
-
-                    <i class="
-                        fa-${
-                            favorito
-                            ? "solid"
-                            : "regular"
-                        }
-                        fa-heart
-                    "></i>
-
-                </button>
-
-                <button
-                    class="song-action play"
-                    onclick="
-                        tocarMusicaPorId('${song.id}')
-                    ">
-
-                    <i class="fa-solid fa-play"></i>
-
-                </button>
-
-            </div>
-
-        </div>
-
-    `;
-
-}
-
-/* =========================================================
-   BIBLIOTECA
-========================================================= */
-
-function renderizarBiblioteca(){
-
-    const container =
-        document.getElementById(
-            "libraryList"
-        );
-
-    if(!container)return;
-
-    if(!allSongs.length){
-
-        container.innerHTML =
-            '<div class="empty">Nenhuma música disponível.</div>';
-
-        return;
-
-    }
-
-    container.innerHTML =
-        allSongs
-        .map(criarSongRow)
-        .join("");
-
-}
-
-/* =========================================================
-   FAVORITOS
-========================================================= */
-
-function renderizarFavoritos(){
-
-    const container =
-        document.getElementById(
-            "favoritesList"
-        );
-
-    if(!container)return;
-
-    const lista =
-        allSongs.filter(
-            song =>
-                favoritos.includes(song.id)
-        );
-
-    if(!lista.length){
-
-        container.innerHTML =
-            '<div class="empty">Você ainda não favoritou nenhuma música.</div>';
-
-        return;
-
-    }
-
-    container.innerHTML =
-        lista
-        .map(criarSongRow)
-        .join("");
-
-}
-
-/* =========================================================
-   DOWNLOADS
-========================================================= */
-
-function renderizarDownloads(){
-
-    const container =
-        document.getElementById(
-            "downloadsList"
-        );
-
-    if(!container)return;
-
-    const lista =
-        allSongs.filter(
-            song =>
-                downloads.includes(song.id)
-        );
-
-    if(!lista.length){
-
-        container.innerHTML =
-            '<div class="empty">Nenhuma música baixada.</div>';
-
-        return;
-
-    }
-
-    container.innerHTML =
-        lista
-        .map(criarSongRow)
-        .join("");
-
-}
-
-/* =========================================================
-   BUSCA
-========================================================= */
-
-function renderizarBusca(texto){
-
-    const container =
-        document.getElementById(
-            "searchResults"
-        );
-
-    if(!container)return;
-
-    texto =
-        String(texto)
-        .trim()
-        .toLowerCase();
-
-    if(!texto){
-
-        container.innerHTML =
-            '<div class="empty">Digite algo para pesquisar.</div>';
-
-        return;
-
-    }
-
-    const resultados =
-        allSongs.filter(song=>{
-
-            const textoSong =
-                [
-                    song.title,
-                    song.artist,
-                    song.category
-                ]
-                .join(" ")
-                .toLowerCase();
-
-            return textoSong.includes(texto);
-
-        });
-
-    if(!resultados.length){
-
-        container.innerHTML =
-            '<div class="empty">Nenhuma música encontrada.</div>';
-
-        return;
-
-    }
-
-    container.innerHTML =
-        resultados
-        .map(criarSongRow)
-        .join("");
-
-}
-
-/* =========================================================
-   FILTRO
-========================================================= */
-
-function filtrarCategoria(cat,btn){
-
-    document
-        .querySelectorAll(".category")
-        .forEach(el=>{
-            el.classList.remove("active");
-        });
-
-    btn.classList.add("active");
-
-    if(cat === "Todas"){
-
-        filteredSongs =
-            [...allSongs];
-
-    }else{
-
-        filteredSongs =
-            allSongs.filter(
-                song =>
-                    song.category === cat
-            );
-
-    }
-
-    const container =
-        document.getElementById(
-            "recommendedGrid"
-        );
-
-    if(!filteredSongs.length){
-
-        container.innerHTML =
-            '<div class="empty">Nenhuma música nessa categoria.</div>';
-
-        return;
-
-    }
-
-    container.innerHTML =
-        filteredSongs
-        .map(song=>`
-
-            <div
-                class="grid-card"
-                onclick="tocarMusicaPorId('${song.id}')">
-
-                <div class="grid-cover">
-
-                    <img
-                        src="${escapar(obterCapa(song))}"
-                        alt=""
-                        onerror="
-                            this.src='${FALLBACK_COVER}'
-                        ">
-
-                </div>
-
-                <div class="grid-info">
-
-                    <div class="grid-title">
-                        ${escapar(song.title)}
-                    </div>
-
-                    <div class="grid-artist">
-                        ${escapar(
-                            song.artist ||
-                            "Nando's Music"
-                        )}
-                    </div>
-
-                </div>
-
-            </div>
-
-        `)
-        .join("");
-
-}
-
-/* =========================================================
-   TOCAR POR ID
-========================================================= */
-
-function tocarMusicaPorId(id){
-
-    const index =
-        allSongs.findIndex(
-            song =>
-                song.id === id
-        );
-
-    if(index < 0)return;
-
-    currentIndex = index;
-
-    currentSong =
-        allSongs[index];
-
-    tocarAtual();
-
-}
-
-/* =========================================================
-   TOCAR ATUAL
-========================================================= */
-
-function tocarAtual(){
-
-    if(!currentSong)return;
-
-    if(!currentSong.url){
-
-        alert(
-            "Essa música não possui um link de áudio."
-        );
-
-        return;
-
-    }
-
-    audioPlayer.src =
-        currentSong.url;
-
-    audioPlayer.play()
-    .then(()=>{
-
-        atualizarPlayerInterface();
-
-    })
-    .catch(error=>{
-
-        console.warn(
-            "Erro ao reproduzir:",
-            error
-        );
-
-        atualizarPlayerInterface();
-
-    });
-
-    registrarPlay();
-
-    atualizarPlayerInterface();
-
-}
-
-/* =========================================================
-   REGISTRAR PLAY
-========================================================= */
-
-async function registrarPlay(){
-
-    if(!currentSong)return;
-
-    try{
-
-        const plays =
-            Number(
-                currentSong.plays || 0
-            ) + 1;
-
-        currentSong.plays = plays;
-
-        await db
-        .ref(
-            "musicas/" +
-            currentSong.id
-        )
-        .update({
-            plays:plays
-        });
-
-    }catch(e){
-
-        console.warn(
-            "Não foi possível registrar play.",
-            e
-        );
-
-    }
-
-}
-
-/* =========================================================
-   INTERFACE PLAYER
-========================================================= */
-
-function atualizarPlayerInterface(){
-
-    if(!currentSong)return;
-
-    const capa =
-        obterCapa(currentSong);
-
-    miniCover.src = capa;
-
-    miniTitle.innerText =
-        currentSong.title;
-
-    miniArtist.innerText =
-        currentSong.artist ||
-        "Nando's Music";
-
-    fullCover.src = capa;
-
-    fullTitle.innerText =
-        currentSong.title;
-
-    fullArtist.innerText =
-        currentSong.artist ||
-        "Nando's Music";
-
-    miniPlayer.classList.add("show");
-
-    atualizarBotoesPlay();
-
-    atualizarIconeFavorito();
-
-}
-
-/* =========================================================
-   PLAY / PAUSE
-========================================================= */
-
-function alternarPlay(){
-
-    if(!currentSong){
-
-        if(allSongs.length){
-
-            currentIndex = 0;
-
-            currentSong =
-                allSongs[0];
-
-            tocarAtual();
-
-        }
-
-        return;
-
-    }
-
-    if(audioPlayer.paused){
-
-        audioPlayer
-        .play()
-        .catch(console.warn);
-
-    }else{
-
-        audioPlayer.pause();
-
-    }
-
-}
-
-/* =========================================================
-   BOTÕES
-========================================================= */
-
-function atualizarBotoesPlay(){
-
-    const tocando =
-        !audioPlayer.paused;
-
-    miniPlay.innerHTML =
-        tocando
-        ?
-        '<i class="fa-solid fa-pause"></i>'
-        :
-        '<i class="fa-solid fa-play"></i>';
-
-    fullPlay.innerHTML =
-        tocando
-        ?
-        '<i class="fa-solid fa-pause"></i>'
-        :
-        '<i class="fa-solid fa-play"></i>';
-
-}
-
-/* =========================================================
-   PRÓXIMA
-========================================================= */
-
-function proximaMusica(){
-
-    if(!allSongs.length)return;
-
-    currentIndex++;
-
-    if(
-        currentIndex >=
-        allSongs.length
-    ){
-
-        currentIndex = 0;
-
-    }
-
-    currentSong =
-        allSongs[currentIndex];
-
-    tocarAtual();
-
-}
-
-/* =========================================================
-   ANTERIOR
-========================================================= */
-
-function musicaAnterior(){
-
-    if(!allSongs.length)return;
-
-    currentIndex--;
-
-    if(currentIndex < 0){
-
-        currentIndex =
-            allSongs.length - 1;
-
-    }
-
-    currentSong =
-        allSongs[currentIndex];
-
-    tocarAtual();
-
-}
-
-/* =========================================================
-   PLAYER COMPLETO
-========================================================= */
-
-function abrirPlayerCompleto(){
-
-    if(!currentSong)return;
-
-    document
-        .getElementById("playerModal")
-        .classList
-        .add("active");
-
-}
-
-function fecharPlayerCompleto(){
-
-    document
-        .getElementById("playerModal")
-        .classList
-        .remove("active");
-
-}
-
-/* =========================================================
-   PROGRESSO
-========================================================= */
-
-audioPlayer.addEventListener(
-    "timeupdate",
-    ()=>{
-
-        if(
-            !audioPlayer.duration ||
-            !isFinite(audioPlayer.duration)
-        )return;
-
-        const percentual =
-            (
-                audioPlayer.currentTime /
-                audioPlayer.duration
-            ) * 100;
-
-        progressRange.value =
-            percentual;
-
-        document
-            .getElementById(
-                "progressMini"
-            )
-            .style.width =
-            percentual + "%";
-
-        document
-            .getElementById(
-                "currentTime"
-            )
-            .innerText =
-            formatarTempo(
-                audioPlayer.currentTime
-            );
-
-        document
-            .getElementById(
-                "duration"
-            )
-            .innerText =
-            formatarTempo(
-                audioPlayer.duration
-            );
-
-    }
+const container=
+document.getElementById(
+"backgroundAdminList"
 );
 
-/* =========================================================
-   RANGE
-========================================================= */
+if(!container)return;
 
-progressRange.addEventListener(
-    "input",
-    ()=>{
+let html="";
 
-        if(!audioPlayer.duration)return;
+bgVideos.forEach(video=>{
 
-        audioPlayer.currentTime =
-            (
-                Number(
-                    progressRange.value
-                ) / 100
-            ) *
-            audioPlayer.duration;
+html+=`
 
-    }
+<div class="admin-row">
+
+<span>
+Vídeo ${escapar(
+video.id.substring(0,6)
+)}
+</span>
+
+<button
+style="background:#ef4444"
+onclick="excluirFundo('${escapar(video.id)}')">
+
+<i class="fa-solid fa-trash"></i>
+
+</button>
+
+</div>
+
+`;
+
+});
+
+container.innerHTML=
+html ||
+'<div class="empty">Nenhum vídeo cadastrado.</div>';
+
+});
+
+/* =====================================================
+FILTRO
+===================================================== */
+
+function filtrar(cat,btn){
+
+document.querySelectorAll(
+".filter-bar .filter-btn"
+)
+.forEach(el=>{
+
+el.classList.remove("active");
+
+});
+
+btn.classList.add("active");
+
+if(cat==="Todas"){
+
+renderizarMusicas(
+allSongs
 );
 
-/* =========================================================
-   PLAY EVENTS
-========================================================= */
+return;
 
-audioPlayer.addEventListener(
-    "play",
-    ()=>{
-        atualizarBotoesPlay();
-    }
+}
+
+renderizarMusicas(
+
+allSongs.filter(
+song=>song.category===cat
+)
+
 );
 
-audioPlayer.addEventListener(
-    "pause",
-    ()=>{
-        atualizarBotoesPlay();
-    }
-);
-
-audioPlayer.addEventListener(
-    "ended",
-    ()=>{
-        proximaMusica();
-    }
-);
-
-/* =========================================================
-   FORMATAR TEMPO
-========================================================= */
-
-function formatarTempo(segundos){
-
-    if(!isFinite(segundos))
-        return "0:00";
-
-    const min =
-        Math.floor(
-            segundos / 60
-        );
-
-    const seg =
-        Math.floor(
-            segundos % 60
-        )
-        .toString()
-        .padStart(2,"0");
-
-    return min + ":" + seg;
-
 }
 
-/* =========================================================
-   FAVORITOS
-========================================================= */
-
-function alternarFavorito(id){
-
-    const index =
-        favoritos.indexOf(id);
-
-    if(index >= 0){
-
-        favoritos.splice(
-            index,
-            1
-        );
-
-    }else{
-
-        favoritos.push(id);
-
-    }
-
-    localStorage.setItem(
-        "nando_favoritos",
-        JSON.stringify(favoritos)
-    );
-
-    renderizarHome();
-
-    renderizarFavoritos();
-
-    renderizarBiblioteca();
-
-}
-
-/* =========================================================
-   FAVORITO ATUAL
-========================================================= */
-
-function alternarFavoritoAtual(){
-
-    if(!currentSong)return;
-
-    alternarFavorito(
-        currentSong.id
-    );
-
-    atualizarIconeFavorito();
-
-}
-
-/* =========================================================
-   ÍCONE FAVORITO
-========================================================= */
-
-function atualizarIconeFavorito(){
-
-    if(!currentSong)return;
-
-    const icon =
-        document.getElementById(
-            "fullFavoriteIcon"
-        );
-
-    if(
-        favoritos.includes(
-            currentSong.id
-        )
-    ){
-
-        icon.className =
-            "fa-solid fa-heart";
-
-    }else{
-
-        icon.className =
-            "fa-regular fa-heart";
-
-    }
-
-}
-
-/* =========================================================
-   DOWNLOAD
-========================================================= */
-
-function baixarAtual(){
-
-    if(!currentSong)return;
-
-    downloads.push(
-        currentSong.id
-    );
-
-    downloads =
-        [...new Set(downloads)];
-
-    localStorage.setItem(
-        "nando_downloads",
-        JSON.stringify(downloads)
-    );
-
-    renderizarDownloads();
-
-    const link =
-        document.createElement("a");
-
-    link.href =
-        currentSong.url;
-
-    link.target =
-        "_blank";
-
-    link.rel =
-        "noopener";
-
-    link.click();
-
-}
-
-/* =========================================================
-   NAVEGAÇÃO
-========================================================= */
-
-function abrirPagina(nome){
-
-    document
-        .querySelectorAll(".page")
-        .forEach(page=>{
-            page.classList.remove("active");
-        });
-
-    document
-        .querySelectorAll(".nav-item")
-        .forEach(item=>{
-            item.classList.remove("active");
-        });
-
-    let pageId = "homePage";
-
-    let navId = "navHome";
-
-    if(nome === "search"){
-
-        pageId =
-            "searchPage";
-
-        navId =
-            "navSearch";
-
-    }
-
-    if(nome === "downloads"){
-
-        pageId =
-            "downloadsPage";
-
-        navId =
-            "navDownloads";
-
-        renderizarDownloads();
-
-    }
-
-    if(nome === "favoritos"){
-
-        pageId =
-            "favoritesPage";
-
-        navId =
-            "navFavorites";
-
-        renderizarFavoritos();
-
-    }
-
-    if(nome === "library"){
-
-        pageId =
-            "libraryPage";
-
-        navId =
-            "navLibrary";
-
-        renderizarBiblioteca();
-
-    }
-
-    document
-        .getElementById(pageId)
-        .classList
-        .add("active");
-
-    document
-        .getElementById(navId)
-        .classList
-        .add("active");
-
-    window.scrollTo({
-        top:0,
-        behavior:"smooth"
-    });
-
-}
-
-/* =========================================================
-   BUSCAR
-========================================================= */
-
-document
-    .getElementById("searchInput")
-    .addEventListener(
-        "input",
-        event=>{
-
-            renderizarBusca(
-                event.target.value
-            );
-
-        }
-    );
-
-/* =========================================================
-   IR PARA MÚSICAS
-========================================================= */
-
-function irParaMusicas(){
-
-    abrirPagina("library");
-
-}
-
-/* =========================================================
-   HISTÓRICO
-========================================================= */
-
-function abrirHistorico(){
-
-    if(!currentSong){
-
-        alert(
-            "Nenhuma música foi reproduzida ainda."
-        );
-
-        return;
-
-    }
-
-    abrirPlayerCompleto();
-
-}
-
-/* =========================================================
-   FUNDOS
-========================================================= */
-
-function escolherFundo(){
-
-    const hero =
-        document.getElementById(
-            "heroVideo"
-        );
-
-    if(!hero)return;
-
-    if(!bgVideos.length){
-
-        hero.style.display =
-            "none";
-
-        return;
-
-    }
-
-    const escolhido =
-        bgVideos[
-            Math.floor(
-                Math.random() *
-                bgVideos.length
-            )
-        ];
-
-    hero.src =
-        escolhido.url;
-
-    hero.play()
-    .catch(()=>{});
-
-}
-
-/* =========================================================
-   ADMIN PLAYER
-========================================================= */
-
-function renderizarAdminPlayer(){
-
-    const container =
-        document.getElementById(
-            "adminPlayerList"
-        );
-
-    if(!container)return;
-
-    if(!allSongs.length){
-
-        container.innerHTML =
-            '<div class="empty">Nenhuma música.</div>';
-
-        return;
-
-    }
-
-    container.innerHTML =
-        allSongs
-        .map(song=>`
-
-            <div class="admin-row">
-
-                <div style="flex:1">
-
-                    <strong>
-                        ${escapar(song.title)}
-                    </strong>
-
-                    <div class="small">
-                        ${escapar(
-                            song.artist ||
-                            "Nando's Music"
-                        )}
-                    </div>
-
-                </div>
-
-                <button
-                    style="
-                        background:#a855f7
-                    "
-                    onclick="
-                        tocarMusicaPorId('${song.id}')
-                    ">
-
-                    <i class="
-                        fa-solid
-                        fa-play
-                    "></i>
-
-                </button>
-
-            </div>
-
-        `)
-        .join("");
-
-}
-
-/* =========================================================
-   ADMIN LISTA
-========================================================= */
-
-function carregarListaAdmin(){
-
-    const container =
-        document.getElementById(
-            "musicAdminList"
-        );
-
-    if(!container)return;
-
-    if(!allSongs.length){
-
-        container.innerHTML =
-            '<div class="empty">Nenhuma música.</div>';
-
-        return;
-
-    }
-
-    container.innerHTML =
-        allSongs
-        .map(song=>`
-
-            <div class="admin-row">
-
-                <div style="flex:1">
-
-                    <strong>
-                        ${escapar(song.title)}
-                    </strong>
-
-                    <div class="small">
-                        ${escapar(
-                            song.artist ||
-                            "Nando's Music"
-                        )}
-                    </div>
-
-                </div>
-
-                <button
-                    style="
-                        background:#ef4444
-                    "
-                    onclick="
-                        excluirMusica('${song.id}')
-                    ">
-
-                    <i class="
-                        fa-solid
-                        fa-trash
-                    "></i>
-
-                </button>
-
-            </div>
-
-        `)
-        .join("");
-
-}
-
-/* =========================================================
-   ADMIN FUNDOS
-========================================================= */
-
-function renderizarFundosAdmin(){
-
-    const container =
-        document.getElementById(
-            "backgroundAdminList"
-        );
-
-    if(!container)return;
-
-    if(!bgVideos.length){
-
-        container.innerHTML =
-            '<div class="empty">Nenhum vídeo cadastrado.</div>';
-
-        return;
-
-    }
-
-    container.innerHTML =
-        bgVideos
-        .map(video=>`
-
-            <div class="admin-row">
-
-                <span>
-                    Vídeo
-                    ${escapar(
-                        video.id.substring(0,6)
-                    )}
-                </span>
-
-                <button
-                    style="
-                        background:#ef4444
-                    "
-                    onclick="
-                        excluirFundo('${video.id}')
-                    ">
-
-                    <i class="
-                        fa-solid
-                        fa-trash
-                    "></i>
-
-                </button>
-
-            </div>
-
-        `)
-        .join("");
-
-}
-
-/* =========================================================
-   ESCAPAR
-========================================================= */
+/* =====================================================
+ESCAPAR HTML
+===================================================== */
 
 function escapar(texto){
 
-    if(
-        texto === undefined ||
-        texto === null
-    ){
-
-        return "";
-
-    }
-
-    return String(texto)
-
-        .replace(
-            /&/g,
-            "&amp;"
-        )
-
-        .replace(
-            /</g,
-            "&lt;"
-        )
-
-        .replace(
-            />/g,
-            "&gt;"
-        )
-
-        .replace(
-            /"/g,
-            "&quot;"
-        )
-
-        .replace(
-            /'/g,
-            "&#039;"
-        );
-
-}
-
-/* =========================================================
-   ENTER LOGIN
-========================================================= */
-
-document
-    .getElementById("userAccessCode")
-    .addEventListener(
-        "keydown",
-        event=>{
-
-            if(
-                event.key ===
-                "Enter"
-            ){
-
-                processarAcesso();
-
-            }
-
-        }
-    );
-
-document
-    .getElementById("adminPassword")
-    .addEventListener(
-        "keydown",
-        event=>{
-
-            if(
-                event.key ===
-                "Enter"
-            ){
-
-                entrarAdmin();
-
-            }
-
-        }
-    );
-
-/* =========================================================
-   PWA
-========================================================= */
-
-let deferredPrompt = null;
-
-const installContainer =
-    document.getElementById(
-        "installContainer"
-    );
-
-const installButton =
-    document.getElementById(
-        "installButton"
-    );
-
-window.addEventListener(
-    "beforeinstallprompt",
-    event=>{
-
-        event.preventDefault();
-
-        deferredPrompt =
-            event;
-
-        if(
-            localStorage.getItem(
-                "nando_autorizado"
-            ) === "true"
-        ){
-
-            installContainer.style.display =
-                "block";
-
-        }
-
-    }
-);
-
-installButton.addEventListener(
-    "click",
-    async()=>{
-
-        if(!deferredPrompt){
-
-            alert(
-                "Abra o menu do navegador e procure por 'Instalar aplicativo' ou 'Adicionar à tela inicial'."
-            );
-
-            return;
-
-        }
-
-        deferredPrompt.prompt();
-
-        await deferredPrompt.userChoice;
-
-        deferredPrompt = null;
-
-        installContainer.style.display =
-            "none";
-
-    }
-);
-
-window.addEventListener(
-    "appinstalled",
-    ()=>{
-
-        deferredPrompt = null;
-
-        installContainer.style.display =
-            "none";
-
-    }
-);
-
-/* =========================================================
-   INICIAR APLICATIVO
-========================================================= */
-
-function iniciarAplicativo(){
-
-    escolherFundo();
-
-    if(
-        deferredPrompt
-    ){
-
-        installContainer.style.display =
-            "block";
-
-    }
-
-}
-
-/* =========================================================
-   INICIALIZAÇÃO
-========================================================= */
-
-window.addEventListener(
-    "load",
-    ()=>{
-
-        verificarAutorizacao();
-
-    }
-);
-
-/* =========================================================
-   SERVICE WORKER
-========================================================= */
-
 if(
-    "serviceWorker" in navigator
+texto===undefined ||
+texto===null
 ){
 
-    window.addEventListener(
-        "load",
-        ()=>{
+return "";
 
-            navigator
-                .serviceWorker
-                .register(
-                    "./service-worker.js"
-                )
-                .then(reg=>{
+}
 
-                    console.log(
-                        "PWA ativo:",
-                        reg.scope
-                    );
+return String(texto)
 
-                })
-                .catch(error=>{
+.replace(/&/g,"&amp;")
 
-                    console.warn(
-                        "Service Worker:",
-                        error
-                    );
+.replace(/</g,"&lt;")
 
-                });
+.replace(/>/g,"&gt;")
 
-        }
-    );
+.replace(/"/g,"&quot;")
+
+.replace(/'/g,"&#039;");
+
+}
+
+/* =====================================================
+ENTER CLIENTE
+===================================================== */
+
+document.getElementById(
+"userAccessCode"
+)
+.addEventListener(
+"keydown",
+e=>{
+
+if(e.key==="Enter"){
+
+processarAcesso();
+
+}
+
+});
+
+/* =====================================================
+ENTER ADMIN
+===================================================== */
+
+document.getElementById(
+"adminPassword"
+)
+.addEventListener(
+"keydown",
+e=>{
+
+if(e.key==="Enter"){
+
+entrarAdmin();
+
+}
+
+});
+
+/* =====================================================
+PWA
+===================================================== */
+
+let deferredPrompt=null;
+
+const installContainer=
+document.getElementById(
+"installContainer"
+);
+
+const installButton=
+document.getElementById(
+"installButton"
+);
+
+window.addEventListener(
+"beforeinstallprompt",
+event=>{
+
+event.preventDefault();
+
+deferredPrompt=event;
+
+if(
+acessoValido ||
+adminLogado
+){
+
+mostrarBotaoInstalar();
+
+}
+
+});
+
+function mostrarBotaoInstalar(){
+
+if(
+deferredPrompt &&
+installContainer &&
+(acessoValido || adminLogado)
+){
+
+installContainer.style.display=
+"block";
+
+}
+
+}
+
+if(installButton){
+
+installButton.addEventListener(
+"click",
+async()=>{
+
+if(!deferredPrompt){
+
+alert(
+"Abra o menu do navegador e procure por 'Instalar aplicativo' ou 'Adicionar à tela inicial'."
+);
+
+return;
+
+}
+
+deferredPrompt.prompt();
+
+const resultado=
+await deferredPrompt.userChoice;
+
+console.log(
+"Resultado da instalação:",
+resultado.outcome
+);
+
+deferredPrompt=null;
+
+installContainer.style.display=
+"none";
+
+});
+
+}
+
+window.addEventListener(
+"appinstalled",
+()=>{
+
+deferredPrompt=null;
+
+if(installContainer){
+
+installContainer.style.display=
+"none";
+
+}
+
+});
+
+/* =====================================================
+INICIALIZAÇÃO
+===================================================== */
+
+window.addEventListener(
+"load",
+async()=>{
+
+/*
+IMPORTANTE:
+não usamos nando_autorizado
+como autorização.
+
+O Firebase é quem decide.
+*/
+
+acessoValido=false;
+
+adminLogado=false;
+
+/*
+Não mostrar menu ADM no carregamento.
+*/
+
+document.getElementById(
+"adminMenuButton"
+).style.display="none";
+
+document.getElementById(
+"adminMenu"
+).classList.remove("active");
+
+/*
+Sempre começa verificando no Firebase.
+*/
+
+verificarAutorizacao();
+
+});
+
+/* =====================================================
+SERVICE WORKER
+===================================================== */
+
+if(
+"serviceWorker" in navigator
+){
+
+window.addEventListener(
+"load",
+()=>{
+
+navigator.serviceWorker
+.register(
+"./service-worker.js"
+)
+.then(reg=>{
+
+console.log(
+"PWA ativo:",
+reg.scope
+);
+
+})
+.catch(err=>{
+
+console.warn(
+"Service Worker:",
+err
+);
+
+});
+
+});
 
 }
 
