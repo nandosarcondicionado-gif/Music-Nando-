@@ -1,13 +1,18 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
 
-<meta name="theme-color" content="#08080f">
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+
+<meta name="theme-color" content="#10101a">
+
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Nando's Music">
+
 <meta name="mobile-web-app-capable" content="yes">
 
 <title>Nando's Music</title>
@@ -28,23 +33,30 @@ rel="stylesheet">
 
 /* =========================================================
 NANDO'S MUSIC
-INTERFACE STREAMING
+ESTILO STREAMING
 ========================================================= */
 
 :root{
+
 --purple:#8b5cf6;
---purple2:#6366f1;
---violet:#a855f7;
---blue:#4f46e5;
---bg:#07070b;
---bg2:#0c0c13;
---card:#15151f;
+--purple2:#7c3aed;
+--blue:#6366f1;
+--pink:#a855f7;
+
+--bg:#08080d;
+--bg2:#10101a;
+--card:#151520;
 --card2:#1c1c29;
---text:#ffffff;
---muted:#9ca3af;
+
+--white:#fff;
+--text:#f5f5f7;
+--muted:#9b9ba8;
+
+--green:#22c55e;
+--red:#ef4444;
+
 --border:rgba(255,255,255,.08);
---success:#22c55e;
---danger:#ef4444;
+
 }
 
 *{
@@ -57,125 +69,148 @@ font-family:Poppins,sans-serif;
 
 html,
 body{
+
 width:100%;
 min-height:100%;
+
 background:
 radial-gradient(
 circle at 50% -15%,
-rgba(99,102,241,.22),
-transparent 35%
+rgba(99,102,241,.28),
+transparent 38%
 ),
-linear-gradient(
-180deg,
-#10101a 0%,
-#08080d 38%,
-#07070b 100%
-);
+var(--bg);
+
 color:var(--text);
+
 }
 
 body{
+
 min-height:100vh;
 overflow-x:hidden;
-padding-bottom:92px;
+padding-bottom:86px;
+
 }
 
 button,
 input,
 select{
+
 font:inherit;
+
 }
 
 button{
+
 cursor:pointer;
+
 }
 
 .hidden{
+
 display:none!important;
+
 }
 
 /* =========================================================
 HEADER
 ========================================================= */
 
-header{
+.top-header{
+
 height:62px;
+
 position:sticky;
 top:0;
-z-index:1000;
+
+z-index:100;
 
 display:flex;
 align-items:center;
 justify-content:space-between;
 
-padding:0 16px;
+padding:0 17px;
 
-background:rgba(7,7,11,.88);
+background:
+rgba(8,8,13,.88);
+
 backdrop-filter:blur(20px);
 -webkit-backdrop-filter:blur(20px);
 
-border-bottom:1px solid var(--border);
+border-bottom:1px solid rgba(255,255,255,.05);
+
 }
 
 .logo{
+
 display:flex;
 align-items:center;
-gap:9px;
+gap:10px;
 
 font-size:1.08rem;
 font-weight:800;
+
 }
 
-.logo i{
-font-size:1.15rem;
-color:var(--purple);
+.logo-icon{
+
+width:34px;
+height:34px;
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+border-radius:10px;
+
+background:
+linear-gradient(
+135deg,
+var(--purple),
+var(--blue)
+);
+
+box-shadow:
+0 7px 25px rgba(124,58,237,.28);
+
 }
 
 .logo span{
+
 background:
 linear-gradient(
 135deg,
 #c4b5fd,
-#818cf8,
-#60a5fa
+#818cf8
 );
 
 -webkit-background-clip:text;
 -webkit-text-fill-color:transparent;
+
 }
 
-.header-actions{
-display:flex;
-align-items:center;
-gap:8px;
-}
+.header-button{
 
-.round-button{
-width:38px;
-height:38px;
+width:40px;
+height:40px;
 
 border:0;
 border-radius:50%;
 
-background:#1b1b27;
-color:#fff;
-
-display:grid;
-place-items:center;
-}
-
-.round-button:active{
-transform:scale(.94);
-}
-
-/*
-IMPORTANTE:
-O botão de menu administrativo começa escondido.
-Ele só aparece depois de autenticar o ADM.
-*/
-
-#menuButton{
 display:none;
+align-items:center;
+justify-content:center;
+
+background:#1b1b27;
+color:white;
+
+}
+
+.header-button.visible{
+
+display:flex;
+
 }
 
 /* =========================================================
@@ -183,88 +218,169 @@ STATUS
 ========================================================= */
 
 .connection-status{
-text-align:center;
 
-font-size:.63rem;
+height:24px;
 
-padding:4px 8px;
+display:flex;
+align-items:center;
+justify-content:center;
 
-background:#09090f;
+font-size:.62rem;
 
-border-bottom:1px solid rgba(255,255,255,.04);
+background:#0b0b11;
 
 color:#94a3b8;
+
 }
 
 /* =========================================================
-INSTALAÇÃO
+CONTEÚDO
 ========================================================= */
 
-#installContainer{
-display:none;
+.main{
 
-padding:8px 14px;
-
-text-align:center;
-
-background:#12121b;
-
-border-bottom:1px solid var(--border);
-}
-
-#installButton{
-border:0;
-
-border-radius:20px;
-
-padding:9px 17px;
-
-background:
-linear-gradient(
-135deg,
-var(--purple),
-var(--purple2)
-);
-
-color:white;
-
-font-size:.75rem;
-font-weight:700;
-}
-
-/* =========================================================
-MAIN
-========================================================= */
-
-.app-main{
-max-width:1100px;
+max-width:1000px;
 margin:auto;
 
-padding:
-0 16px
-30px;
+padding-bottom:35px;
+
 }
 
 /* =========================================================
 HOME
 ========================================================= */
 
-.hero{
-padding:
-20px
-0
-8px;
+.home{
+
+padding:20px 16px 5px;
+
 }
 
-.hero h1{
+.home-title{
+
 font-size:1.55rem;
-line-height:1.2;
+font-weight:800;
+
 margin-bottom:5px;
+
 }
 
-.hero p{
-font-size:.74rem;
-color:#a1a1b2;
+.home-subtitle{
+
+font-size:.76rem;
+color:var(--muted);
+
+margin-bottom:18px;
+
+}
+
+/* =========================================================
+BANNER
+========================================================= */
+
+.banner{
+
+position:relative;
+
+min-height:185px;
+
+overflow:hidden;
+
+border-radius:20px;
+
+padding:23px;
+
+background:
+linear-gradient(
+135deg,
+#33206b,
+#222052 45%,
+#11162c
+);
+
+border:1px solid rgba(255,255,255,.08);
+
+box-shadow:
+0 18px 50px rgba(0,0,0,.35);
+
+}
+
+.banner::after{
+
+content:"";
+
+position:absolute;
+
+width:220px;
+height:220px;
+
+right:-70px;
+top:-80px;
+
+border-radius:50%;
+
+background:
+radial-gradient(
+circle,
+rgba(139,92,246,.65),
+transparent 65%
+);
+
+filter:blur(10px);
+
+}
+
+.banner-content{
+
+position:relative;
+z-index:2;
+
+}
+
+.banner-small{
+
+font-size:.64rem;
+letter-spacing:2px;
+
+color:#c4b5fd;
+
+font-weight:700;
+
+}
+
+.banner h1{
+
+font-size:1.55rem;
+line-height:1.15;
+
+margin:7px 0;
+
+max-width:360px;
+
+}
+
+.banner p{
+
+font-size:.72rem;
+color:#d7d7e2;
+
+max-width:450px;
+
+}
+
+.banner-icon{
+
+position:absolute;
+
+right:20px;
+bottom:15px;
+
+font-size:5.5rem;
+
+color:rgba(255,255,255,.08);
+
+transform:rotate(-12deg);
+
 }
 
 /* =========================================================
@@ -272,100 +388,103 @@ BUSCA
 ========================================================= */
 
 .search-box{
-position:relative;
 
-margin:
-12px
-0
-13px;
+display:flex;
+align-items:center;
+gap:10px;
+
+margin:18px 0;
+
+padding:12px 15px;
+
+border-radius:14px;
+
+background:#161620;
+
+border:1px solid rgba(255,255,255,.06);
+
 }
 
 .search-box i{
-position:absolute;
 
-left:14px;
-top:13px;
+color:#aaa;
 
-color:#777788;
 }
 
 .search-box input{
-width:100%;
-
-height:43px;
-
-padding:
-0
-14px
-0
-40px;
 
 margin:0;
+padding:0;
 
 border:0;
+outline:0;
 
-border-radius:12px;
+background:transparent;
 
-background:#ffffff;
+font-size:.8rem;
 
-color:#111;
+}
 
-outline:none;
+.search-box input:focus{
 
-font-size:.78rem;
+box-shadow:none;
+
 }
 
 /* =========================================================
 CATEGORIAS
 ========================================================= */
 
-.category-bar{
+.category-scroll{
+
 display:flex;
 
 gap:8px;
 
 overflow-x:auto;
 
-padding:
-2px
-0
-12px;
+padding:0 0 4px;
 
 scrollbar-width:none;
+
 }
 
-.category-bar::-webkit-scrollbar{
+.category-scroll::-webkit-scrollbar{
+
 display:none;
+
 }
 
-.category-button{
-white-space:nowrap;
+.category{
 
 border:0;
 
-background:#1b1b27;
+white-space:nowrap;
 
-color:#d7d7df;
-
-padding:
-8px
-14px;
+padding:8px 15px;
 
 border-radius:20px;
 
-font-size:.71rem;
+background:#1b1b26;
+
+color:#d7d7df;
+
+font-size:.7rem;
 font-weight:600;
+
 }
 
-.category-button.active{
+.category.active{
+
 background:
 linear-gradient(
 135deg,
 var(--purple),
-var(--purple2)
+var(--blue)
 );
 
 color:white;
+
 }
 
 /* =========================================================
@@ -373,396 +492,610 @@ SEÇÕES
 ========================================================= */
 
 .section{
-margin-top:10px;
+
+padding:20px 16px 0;
+
 }
 
 .section-header{
+
 display:flex;
 align-items:center;
 justify-content:space-between;
 
-margin:
-18px
-0
-10px;
+margin-bottom:12px;
+
 }
 
 .section-header h2{
+
 font-size:1rem;
+
 }
 
 .section-header span{
-font-size:.66rem;
-color:#858594;
-}
 
-/* =========================================================
-CARDS
-========================================================= */
+font-size:.65rem;
+color:var(--muted);
 
-.cards{
-display:flex;
-
-gap:13px;
-
-overflow-x:auto;
-
-scrollbar-width:none;
-
-padding-bottom:4px;
-}
-
-.cards::-webkit-scrollbar{
-display:none;
-}
-
-.music-card{
-width:142px;
-min-width:142px;
-
-cursor:pointer;
-}
-
-.music-cover{
-width:142px;
-height:142px;
-
-border-radius:10px;
-
-overflow:hidden;
-
-display:grid;
-place-items:center;
-
-background:
-linear-gradient(
-135deg,
-#312e81,
-#7c3aed,
-#4338ca
-);
-
-box-shadow:
-0 8px 25px rgba(0,0,0,.45);
-}
-
-.music-cover img{
-width:100%;
-height:100%;
-
-object-fit:cover;
-}
-
-.music-cover i{
-font-size:2rem;
-color:rgba(255,255,255,.7);
-}
-
-.music-card-title{
-font-size:.74rem;
-font-weight:700;
-
-white-space:nowrap;
-overflow:hidden;
-text-overflow:ellipsis;
-
-margin-top:7px;
-}
-
-.music-card-sub{
-font-size:.62rem;
-color:#858594;
-
-white-space:nowrap;
-overflow:hidden;
-text-overflow:ellipsis;
 }
 
 /* =========================================================
 LISTA DE MÚSICAS
 ========================================================= */
 
-.music-list{
-display:grid;
-gap:6px;
+.song-list{
+
+display:flex;
+flex-direction:column;
+
+gap:7px;
+
 }
 
 .song{
-display:flex;
 
+display:flex;
 align-items:center;
 
-gap:11px;
+gap:12px;
 
-padding:8px;
+padding:9px;
 
-border-radius:10px;
+border-radius:12px;
+
+background:
+rgba(255,255,255,.025);
 
 transition:.15s;
+
 }
 
 .song:active{
-background:#15151f;
+
+transform:scale(.985);
+
+background:#191925;
+
 }
 
 .song-cover{
-width:50px;
-height:50px;
 
-min-width:50px;
+width:52px;
+height:52px;
 
-border-radius:8px;
+flex-shrink:0;
 
-overflow:hidden;
+display:flex;
+align-items:center;
+justify-content:center;
 
-display:grid;
-place-items:center;
+border-radius:9px;
 
 background:
 linear-gradient(
 135deg,
-#4f46e5,
-#9333ea
+var(--purple),
+var(--blue)
 );
-}
 
-.song-cover img{
-width:100%;
-height:100%;
+box-shadow:
+0 7px 20px rgba(99,102,241,.16);
 
-object-fit:cover;
-}
+font-size:1.15rem;
 
-.song-cover i{
-color:#fff;
 }
 
 .song-info{
-min-width:0;
-flex:1;
 
-cursor:pointer;
+flex:1;
+min-width:0;
+
 }
 
 .song-title{
-font-size:.78rem;
+
+font-size:.79rem;
 font-weight:700;
 
 white-space:nowrap;
 overflow:hidden;
 text-overflow:ellipsis;
+
 }
 
 .song-category{
+
 font-size:.62rem;
+color:#a78bfa;
 
-color:#91919e;
+margin-top:3px;
 
-margin-top:2px;
 }
 
 .song-play{
-width:36px;
-height:36px;
+
+width:37px;
+height:37px;
+
+flex-shrink:0;
 
 border:0;
+border-radius:50%;
 
-background:none;
+background:#fff;
+color:#111;
 
-color:#b0b0bd;
-
-display:grid;
-place-items:center;
-}
-
-.song-play:active{
-color:white;
-transform:scale(.9);
-}
-
-/* =========================================================
-VAZIO
-========================================================= */
-
-.empty{
-text-align:center;
-
-padding:30px 15px;
+display:flex;
+align-items:center;
+justify-content:center;
 
 font-size:.75rem;
 
-color:#66697a;
+}
+
+.song-download{
+
+width:35px;
+height:35px;
+
+border:0;
+
+background:transparent;
+
+color:#888;
+
+display:flex;
+align-items:center;
+justify-content:center;
+
 }
 
 /* =========================================================
-MINI PLAYER
+PLAYER MINI
 ========================================================= */
 
-.now-playing-bar{
+.mini-player{
+
 position:fixed;
 
 left:8px;
 right:8px;
+bottom:66px;
 
-bottom:74px;
+z-index:700;
 
-height:58px;
-
-z-index:850;
+height:62px;
 
 display:none;
-
 align-items:center;
 
-padding:
-7px
-9px;
+padding:7px 9px;
 
-border-radius:10px;
+border-radius:13px;
 
 background:
-linear-gradient(
-135deg,
-#191725,
-#151523
-);
+rgba(30,30,42,.96);
 
-border:1px solid var(--border);
+border:1px solid rgba(255,255,255,.08);
 
 box-shadow:
-0 10px 35px rgba(0,0,0,.65);
+0 15px 45px rgba(0,0,0,.55);
+
+backdrop-filter:blur(18px);
+-webkit-backdrop-filter:blur(18px);
+
 }
 
-.now-playing-bar.active{
+.mini-player.show{
+
 display:flex;
+
 }
 
-.now-cover{
-width:43px;
-height:43px;
+.mini-cover{
 
-min-width:43px;
+width:47px;
+height:47px;
 
-border-radius:7px;
+border-radius:8px;
 
-display:grid;
-place-items:center;
-
-overflow:hidden;
+display:flex;
+align-items:center;
+justify-content:center;
 
 background:
 linear-gradient(
 135deg,
-#4f46e5,
-#9333ea
+var(--purple),
+var(--blue)
 );
+
+flex-shrink:0;
+
 }
 
-.now-cover img{
-width:100%;
-height:100%;
-object-fit:cover;
-}
+.mini-info{
 
-.now-info{
 flex:1;
-
 min-width:0;
 
-margin-left:9px;
+padding:0 10px;
+
 }
 
-.now-title{
+.mini-title{
+
 font-size:.72rem;
 font-weight:700;
 
 white-space:nowrap;
 overflow:hidden;
 text-overflow:ellipsis;
+
 }
 
-.now-category{
+.mini-category{
+
 font-size:.58rem;
-
 color:#aaa;
+
+margin-top:2px;
+
 }
 
-.now-control{
-width:35px;
-height:35px;
+.mini-controls{
+
+display:flex;
+align-items:center;
+
+gap:7px;
+
+}
+
+.mini-button{
+
+width:36px;
+height:36px;
 
 border:0;
-
-background:none;
+background:transparent;
 
 color:white;
 
-display:grid;
-place-items:center;
+display:flex;
+align-items:center;
+justify-content:center;
+
+}
+
+.mini-play{
+
+width:37px;
+height:37px;
+
+border-radius:50%;
+
+background:white;
+color:#111;
+
 }
 
 /* =========================================================
-NAVEGAÇÃO INFERIOR
+PLAYER COMPLETO
 ========================================================= */
 
-.bottom-navigation{
+.full-player{
+
+position:fixed;
+
+inset:0;
+
+z-index:3000;
+
+display:none;
+flex-direction:column;
+
+background:
+linear-gradient(
+180deg,
+#202040 0%,
+#11111c 45%,
+#08080d 100%
+);
+
+}
+
+.full-player.active{
+
+display:flex;
+
+}
+
+.player-top{
+
+height:70px;
+
+display:flex;
+align-items:center;
+justify-content:space-between;
+
+padding:0 20px;
+
+}
+
+.player-top button{
+
+width:40px;
+height:40px;
+
+border:0;
+border-radius:50%;
+
+background:rgba(255,255,255,.08);
+
+color:white;
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+}
+
+.player-heading{
+
+font-size:.7rem;
+font-weight:600;
+
+}
+
+.full-player-body{
+
+flex:1;
+
+overflow-y:auto;
+
+padding:20px 24px 30px;
+
+}
+
+.big-cover{
+
+width:min(82vw,390px);
+aspect-ratio:1;
+
+margin:10px auto 30px;
+
+border-radius:20px;
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+background:
+linear-gradient(
+135deg,
+#8b5cf6,
+#4f46e5,
+#312e81
+);
+
+box-shadow:
+0 25px 70px rgba(0,0,0,.45);
+
+font-size:5rem;
+
+}
+
+.full-title{
+
+font-size:1.25rem;
+font-weight:800;
+
+white-space:nowrap;
+overflow:hidden;
+text-overflow:ellipsis;
+
+}
+
+.full-category{
+
+font-size:.7rem;
+color:#b5a5ef;
+
+margin-top:4px;
+
+}
+
+.progress-area{
+
+margin-top:25px;
+
+}
+
+.progress{
+
+width:100%;
+height:4px;
+
+appearance:none;
+
+background:#494954;
+
+border-radius:10px;
+
+cursor:pointer;
+
+}
+
+.progress::-webkit-slider-thumb{
+
+appearance:none;
+
+width:13px;
+height:13px;
+
+border-radius:50%;
+
+background:white;
+
+}
+
+.time-row{
+
+display:flex;
+justify-content:space-between;
+
+font-size:.58rem;
+
+color:#9a9aa7;
+
+margin-top:6px;
+
+}
+
+.player-controls{
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+gap:28px;
+
+margin:20px 0 25px;
+
+}
+
+.player-control{
+
+border:0;
+background:transparent;
+
+color:white;
+
+font-size:1.2rem;
+
+}
+
+.player-main-button{
+
+width:62px;
+height:62px;
+
+border:0;
+border-radius:50%;
+
+background:white;
+color:#111;
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+font-size:1.25rem;
+
+}
+
+.lyrics-box{
+
+margin-top:10px;
+
+padding:18px;
+
+border-radius:16px;
+
+background:rgba(255,255,255,.045);
+
+border:1px solid rgba(255,255,255,.06);
+
+}
+
+.lyrics-title{
+
+font-size:.85rem;
+font-weight:800;
+
+margin-bottom:12px;
+
+}
+
+.lyrics{
+
+white-space:pre-wrap;
+
+font-size:.78rem;
+line-height:1.9;
+
+color:#d1d1db;
+
+}
+
+/* =========================================================
+NAV BOTTOM
+========================================================= */
+
+.bottom-nav{
+
 position:fixed;
 
 left:0;
 right:0;
 bottom:0;
 
-height:74px;
+height:65px;
 
-z-index:800;
+z-index:600;
 
 display:flex;
-
 align-items:center;
-
 justify-content:space-around;
 
 background:
-rgba(10,10,15,.97);
+rgba(10,10,16,.96);
+
+border-top:1px solid rgba(255,255,255,.07);
 
 backdrop-filter:blur(18px);
 -webkit-backdrop-filter:blur(18px);
 
-border-top:1px solid var(--border);
 }
 
-.nav-button{
+.nav-item{
+
 border:0;
+background:transparent;
 
-background:none;
-
-color:#858592;
-
-font-size:.58rem;
+color:#888;
 
 display:flex;
-
 flex-direction:column;
-
 align-items:center;
-
 justify-content:center;
 
 gap:4px;
 
-min-width:70px;
+font-size:.58rem;
+
+min-width:65px;
+
 }
 
-.nav-button i{
-font-size:1rem;
+.nav-item i{
+
+font-size:1.05rem;
+
 }
 
-.nav-button.active{
+.nav-item.active{
+
 color:white;
+
 }
 
-.nav-button.active i{
-color:var(--purple);
+.nav-item.active i{
+
+color:#9b7cff;
+
 }
 
 /* =========================================================
@@ -770,11 +1103,12 @@ MODAIS
 ========================================================= */
 
 .modal{
+
 position:fixed;
 
 inset:0;
 
-z-index:3000;
+z-index:5000;
 
 display:none;
 
@@ -783,169 +1117,136 @@ justify-content:center;
 
 padding:16px;
 
-background:
-rgba(0,0,0,.94);
+background:rgba(0,0,0,.93);
 
-backdrop-filter:blur(18px);
--webkit-backdrop-filter:blur(18px);
+backdrop-filter:blur(14px);
+-webkit-backdrop-filter:blur(14px);
+
 }
 
 .modal.active{
+
 display:flex;
+
 }
 
-.modal-panel{
+.modal-content{
+
 width:100%;
-max-width:480px;
+max-width:470px;
 
-max-height:94vh;
+max-height:92vh;
 
-overflow:auto;
+overflow-y:auto;
 
-padding:22px;
+padding:24px;
 
 border-radius:22px;
 
-background:#11111b;
+background:#12121c;
 
-border:1px solid var(--border);
+border:1px solid rgba(255,255,255,.08);
 
 box-shadow:
-0 25px 80px rgba(0,0,0,.7);
+0 25px 80px rgba(0,0,0,.65);
+
 }
 
-.modal-header{
-display:flex;
+.lock{
 
-align-items:center;
-justify-content:space-between;
-
-gap:10px;
-
-margin-bottom:15px;
-}
-
-.modal-header h2{
-font-size:1.1rem;
-}
-
-.close-button{
-width:38px;
-height:38px;
-
-border:0;
-
-border-radius:10px;
-
-background:#242432;
-
-color:white;
-
-font-size:1.25rem;
-}
-
-/* =========================================================
-TELA DE BLOQUEIO
-========================================================= */
-
-.lock-screen{
 text-align:center;
+
 }
 
 .lock-icon{
-width:76px;
-height:76px;
 
-margin:
-0
-auto
-14px;
+width:75px;
+height:75px;
 
-border-radius:22px;
+margin:0 auto 17px;
 
-display:grid;
-place-items:center;
+border-radius:23px;
+
+display:flex;
+align-items:center;
+justify-content:center;
 
 background:
 linear-gradient(
 135deg,
 var(--purple),
-var(--purple2)
+var(--blue)
 );
 
 box-shadow:
-0 12px 40px rgba(99,102,241,.35);
+0 15px 45px rgba(99,102,241,.3);
 
 font-size:1.8rem;
+
 }
 
-.lock-screen h2{
-font-size:1.3rem;
+.lock h2{
+
+font-size:1.35rem;
+
 }
 
-.lock-screen p{
-font-size:.72rem;
+.lock p{
 
-color:var(--muted);
+font-size:.74rem;
+color:#999aaa;
 
-margin:
-7px
-0
-18px;
+margin:8px 0 20px;
+
+line-height:1.6;
+
 }
 
 .auth-input{
-width:100%;
-
-height:48px;
 
 text-align:center;
 
-font-size:1.05rem;
+font-size:1.1rem;
 
 letter-spacing:2px;
 
 text-transform:uppercase;
-}
 
-/* =========================================================
-FORMULÁRIOS
-========================================================= */
+}
 
 input,
 select{
+
 width:100%;
 
-padding:
-11px
-12px;
+padding:12px;
 
-margin:
-6px
-0
-10px;
+margin:6px 0 10px;
 
 border-radius:10px;
 
-border:1px solid var(--border);
+border:1px solid rgba(255,255,255,.09);
 
-background:#08080e;
+outline:none;
+
+background:#09090f;
 
 color:white;
 
-outline:none;
 }
 
 input:focus,
 select:focus{
-border-color:var(--purple);
+
+border-color:#8b5cf6;
 
 box-shadow:
-0 0 0 3px
-rgba(139,92,246,.1);
+0 0 0 3px rgba(139,92,246,.12);
+
 }
 
 .btn{
+
 width:100%;
 
 padding:12px;
@@ -960,272 +1261,400 @@ background:
 linear-gradient(
 135deg,
 var(--purple),
-var(--purple2)
+var(--blue)
 );
 
 color:white;
 
 font-weight:700;
+
 }
 
 .btn-secondary{
-background:#303040;
+
+background:#30303d;
+
 }
 
 .btn-danger{
+
 background:#dc2626;
+
 }
 
 .btn-success{
+
 background:#16a34a;
+
 }
 
-.small{
-font-size:.68rem;
-color:#8f8f9d;
+.close{
+
+width:38px;
+height:38px;
+
+border:0;
+border-radius:10px;
+
+background:#22222f;
+
+color:white;
+
+font-size:1.25rem;
+
 }
 
 .message{
+
 display:none;
 
 padding:10px;
 
 margin-top:10px;
 
-border-radius:9px;
+border-radius:10px;
 
 font-size:.72rem;
+
 }
 
 .message.error{
+
 display:block;
 
 background:rgba(239,68,68,.12);
 
 color:#f87171;
+
 }
 
 .message.success{
+
 display:block;
 
 background:rgba(34,197,94,.12);
 
 color:#4ade80;
+
+}
+
+.small{
+
+font-size:.7rem;
+color:#8f8f9d;
+
+}
+
+.loading{
+
+text-align:center;
+
+padding:35px;
+
+font-size:.75rem;
+
+color:#8c8c98;
+
+}
+
+.empty{
+
+text-align:center;
+
+padding:25px;
+
+font-size:.75rem;
+
+color:#666673;
+
 }
 
 /* =========================================================
-PLAYER GRANDE
+MENU ADM
 ========================================================= */
 
-.player-cover-big{
-width:100%;
+.side-menu{
 
-height:280px;
+position:fixed;
+inset:0;
 
-border-radius:16px;
+z-index:4500;
 
-overflow:hidden;
+display:none;
 
-display:grid;
-place-items:center;
+background:rgba(0,0,0,.65);
 
-background:
-linear-gradient(
-135deg,
-#312e81,
-#7c3aed,
-#4338ca
-);
+backdrop-filter:blur(8px);
 
-margin:
-10px
-0
-15px;
 }
 
-.player-cover-big img{
-width:100%;
-height:100%;
-object-fit:cover;
+.side-menu.active{
+
+display:block;
+
 }
 
-.player-cover-big i{
-font-size:4rem;
-color:rgba(255,255,255,.7);
+.menu-panel{
+
+position:absolute;
+
+right:0;
+top:0;
+bottom:0;
+
+width:min(340px,88%);
+
+padding:20px;
+
+background:#12121c;
+
+border-left:1px solid var(--border);
+
 }
 
-.player-controls{
+.menu-header{
+
 display:flex;
-
 align-items:center;
-justify-content:center;
+justify-content:space-between;
 
-gap:22px;
+padding-bottom:20px;
 
-margin:
-15px
-0;
+border-bottom:1px solid var(--border);
+
 }
 
-.player-control{
-width:45px;
-height:45px;
+.menu-item{
 
-border:0;
+width:100%;
 
-border-radius:50%;
+display:flex;
+align-items:center;
 
-background:#242432;
+gap:12px;
+
+margin-top:10px;
+
+padding:14px;
+
+border:1px solid var(--border);
+
+border-radius:13px;
+
+background:#1a1a26;
 
 color:white;
 
-display:grid;
-place-items:center;
+text-align:left;
+
 }
 
-.player-control.main{
-width:55px;
-height:55px;
+.menu-item i{
 
-background:
-linear-gradient(
-135deg,
-var(--purple),
-var(--purple2)
-);
-}
+width:22px;
 
-#bigAudio{
-width:100%;
+color:#a78bfa;
+
 }
 
 /* =========================================================
 ADMIN
 ========================================================= */
 
+.admin-content{
+
+max-width:800px;
+
+}
+
 .admin-tabs{
+
 display:flex;
 
 gap:6px;
 
 overflow-x:auto;
 
-margin:
-14px
-0;
+margin:18px 0;
 
 scrollbar-width:none;
+
 }
 
 .admin-tabs::-webkit-scrollbar{
+
 display:none;
+
 }
 
 .admin-tab{
+
+border:1px solid rgba(255,255,255,.07);
+
+background:#1a1a26;
+
+color:#ddd;
+
+padding:8px 13px;
+
+border-radius:20px;
+
 white-space:nowrap;
 
-border:0;
-
-border-radius:18px;
-
-padding:
-8px
-12px;
-
-background:#20202c;
-
-color:#bbb;
-
 font-size:.7rem;
+
 }
 
 .admin-tab.active{
+
 background:
 linear-gradient(
 135deg,
 var(--purple),
-var(--purple2)
+var(--blue)
 );
 
 color:white;
+
 }
 
 .admin-section{
+
 display:none;
+
 }
 
 .admin-section.active{
+
 display:block;
+
 }
 
 .admin-row{
-display:flex;
 
+display:flex;
 align-items:center;
 justify-content:space-between;
 
-gap:8px;
+gap:10px;
 
-padding:10px;
+padding:11px;
+
+margin-top:8px;
+
+border-radius:11px;
 
 background:#09090f;
 
-border:1px solid var(--border);
+border:1px solid rgba(255,255,255,.06);
 
-border-radius:10px;
+font-size:.74rem;
 
-margin-top:7px;
-
-font-size:.72rem;
 }
 
 .admin-row button{
+
 border:0;
 
 border-radius:7px;
 
-padding:
-7px
-9px;
+padding:7px 10px;
 
 color:white;
+
 }
 
 .code-box{
+
+margin-top:15px;
+
+padding:18px;
+
 text-align:center;
 
-padding:16px;
+border:2px solid var(--purple);
 
-margin-top:12px;
-
-border:1px solid var(--purple);
-
-border-radius:13px;
+border-radius:15px;
 
 background:#08080f;
+
 }
 
 .generated-code{
-font-size:1.7rem;
+
+font-size:1.8rem;
 
 font-weight:800;
 
 letter-spacing:3px;
 
-margin:
-7px
-0
-10px;
+margin:8px 0 15px;
+
+}
+
+.status{
+
+display:inline-block;
+
+font-size:.6rem;
+
+padding:4px 8px;
+
+border-radius:10px;
+
+margin-top:4px;
+
+}
+
+.status.available{
+
+background:rgba(34,197,94,.14);
+
+color:#4ade80;
+
+}
+
+.status.used{
+
+background:rgba(239,68,68,.14);
+
+color:#f87171;
+
+}
+
+.admin-video{
+
+position:relative;
+
+height:230px;
+
+overflow:hidden;
+
+border-radius:16px;
+
+background:#000;
+
+margin-top:12px;
+
+}
+
+.admin-video video{
+
+width:100%;
+height:100%;
+
+object-fit:cover;
+
 }
 
 hr{
+
 border:0;
 
 border-top:1px solid var(--border);
 
-margin:
-18px
-0;
+margin:20px 0;
+
 }
 
 /* =========================================================
@@ -1234,23 +1663,33 @@ RESPONSIVO
 
 @media(min-width:700px){
 
-.app-main{
-padding-left:25px;
-padding-right:25px;
+.main{
+
+padding-bottom:50px;
+
 }
 
-.music-card{
-width:170px;
-min-width:170px;
+.bottom-nav{
+
+left:50%;
+right:auto;
+
+width:500px;
+
+transform:translateX(-50%);
+
+border:1px solid rgba(255,255,255,.07);
+
+border-radius:18px 18px 0 0;
+
 }
 
-.music-cover{
-width:170px;
-height:170px;
-}
+.mini-player{
 
-.player-cover-big{
-height:390px;
+left:calc(50% - 490px);
+
+right:calc(50% - 490px);
+
 }
 
 }
@@ -1262,58 +1701,44 @@ ACESSIBILIDADE
 button:focus-visible,
 input:focus-visible,
 select:focus-visible{
+
 outline:2px solid #a78bfa;
 
 outline-offset:2px;
+
 }
 
 </style>
+
 </head>
 
 <body>
 
-<!-- ======================================================
+<!-- =======================================================
 HEADER
-====================================================== -->
+======================================================= -->
 
-<header>
+<header class="top-header">
 
 <div class="logo">
 
+<div class="logo-icon">
 <i class="fa-solid fa-headphones"></i>
+</div>
 
 <span>Nando's Music</span>
 
 </div>
 
-<div class="header-actions">
-
-<button
-class="round-button"
-onclick="abrirBusca()"
-aria-label="Buscar">
-
-<i class="fa-solid fa-magnifying-glass"></i>
-
-</button>
-
-<!--
-IMPORTANTE:
-Este botão fica invisível para clientes.
-Somente aparece quando adminLogado=true.
--->
-
 <button
 id="menuButton"
-class="round-button"
+class="header-button"
 onclick="abrirMenu()"
-aria-label="Menu">
+aria-label="Menu administrativo">
 
 <i class="fa-solid fa-bars"></i>
 
 </button>
-
-</div>
 
 </header>
 
@@ -1321,48 +1746,53 @@ aria-label="Menu">
 id="connectionStatus"
 class="connection-status">
 
-Conectando ao servidor...
+● Conectando ao servidor...
 
 </div>
 
-<!-- ======================================================
-INSTALAÇÃO PWA
-====================================================== -->
-
-<div id="installContainer">
-
-<button
-id="installButton">
-
-<i class="fa-solid fa-download"></i>
-
-Instalar Nando's Music
-
-</button>
-
-</div>
-
-<!-- ======================================================
-APLICATIVO
-====================================================== -->
+<!-- =======================================================
+APLICAÇÃO
+======================================================= -->
 
 <main
 id="appContent"
-class="app-main hidden">
+class="main hidden">
 
-<section class="hero">
+<section class="home">
+
+<h1 class="home-title">
+Olá 👋
+</h1>
+
+<p class="home-subtitle">
+Escolha uma música e aproveite.
+</p>
+
+<div class="banner">
+
+<div class="banner-content">
+
+<div class="banner-small">
+NANDO'S MUSIC
+</div>
 
 <h1>
-Boa noite 👋
+Sua música.<br>
+Do seu jeito.
 </h1>
 
 <p>
-Encontre suas músicas e aproveite o Nando's Music.
+Uma experiência de música simples,
+rápida e feita para você.
 </p>
 
-</section>
+</div>
 
-<!-- BUSCA -->
+<div class="banner-icon">
+<i class="fa-solid fa-music"></i>
+</div>
+
+</div>
 
 <div class="search-box">
 
@@ -1370,50 +1800,106 @@ Encontre suas músicas e aproveite o Nando's Music.
 
 <input
 id="searchInput"
+type="text"
 placeholder="O que você quer ouvir?"
-oninput="buscarMusicas(this.value)">
-
-</div>
-
-<!-- CATEGORIAS -->
-
-<div
-id="categoryBar"
-class="category-bar">
-</div>
-
-<!-- FEITO PARA VOCÊ -->
-
-<section class="section">
-
-<div class="section-header">
-
-<h2>
-Feito para você
-</h2>
-
-<span>
-Descubra
-</span>
+autocomplete="off">
 
 </div>
 
 <div
-id="featuredMusic"
-class="cards">
+id="categoryScroll"
+class="category-scroll">
+
+<button
+class="category active"
+data-category="Todas">
+
+Todas
+
+</button>
+
+<button
+class="category"
+data-category="Sertanejo">
+
+Sertanejo
+
+</button>
+
+<button
+class="category"
+data-category="Funk">
+
+Funk
+
+</button>
+
+<button
+class="category"
+data-category="Forró">
+
+Forró
+
+</button>
+
+<button
+class="category"
+data-category="Pagode">
+
+Pagode
+
+</button>
+
+<button
+class="category"
+data-category="Eletrônica">
+
+Eletrônica
+
+</button>
+
+<button
+class="category"
+data-category="Trap">
+
+Trap
+
+</button>
+
+<button
+class="category"
+data-category="Pop">
+
+Pop
+
+</button>
+
+<button
+class="category"
+data-category="Rock">
+
+Rock
+
+</button>
+
+<button
+class="category"
+data-category="Engraçado">
+
+Engraçados
+
+</button>
 
 </div>
 
 </section>
 
-<!-- MÚSICAS -->
-
 <section class="section">
 
 <div class="section-header">
 
 <h2>
-Suas músicas
+Músicas
 </h2>
 
 <span id="musicCounter">
@@ -1424,9 +1910,9 @@ Suas músicas
 
 <div
 id="playlistContainer"
-class="music-list">
+class="song-list">
 
-<div class="empty">
+<div class="loading">
 Carregando músicas...
 </div>
 
@@ -1436,206 +1922,189 @@ Carregando músicas...
 
 </main>
 
-<!-- ======================================================
+<!-- =======================================================
 MINI PLAYER
-====================================================== -->
+======================================================= -->
 
 <div
-id="nowPlayingBar"
-class="now-playing-bar">
+id="miniPlayer"
+class="mini-player">
 
 <div
-id="nowCover"
-class="now-cover">
+id="miniOpen"
+class="mini-cover">
 
 <i class="fa-solid fa-music"></i>
 
 </div>
 
-<div class="now-info">
+<div
+id="miniInfo"
+class="mini-info">
 
 <div
-id="nowPlaying"
-class="now-title">
+id="miniTitle"
+class="mini-title">
 
-Nenhuma música reproduzindo
+Nenhuma música
 
 </div>
 
 <div
-id="nowCategory"
-class="now-category">
+id="miniCategory"
+class="mini-category">
+
+Nando's Music
 
 </div>
 
 </div>
+
+<div class="mini-controls">
 
 <button
-class="now-control"
-onclick="anteriorMusica()">
+id="miniPrev"
+class="mini-button"
+title="Anterior">
 
 <i class="fa-solid fa-backward-step"></i>
 
 </button>
 
 <button
-class="now-control"
-onclick="togglePlay()">
+id="miniPlay"
+class="mini-button mini-play"
+title="Play">
 
-<i
-id="playIcon"
-class="fa-solid fa-play">
-</i>
+<i class="fa-solid fa-play"></i>
 
 </button>
 
 <button
-class="now-control"
-onclick="proximaMusica()">
+id="miniNext"
+class="mini-button"
+title="Próxima">
 
 <i class="fa-solid fa-forward-step"></i>
 
 </button>
 
-<button
-class="now-control"
-onclick="abrirPlayer()">
-
-<i class="fa-solid fa-up-right-and-down-left-from-center"></i>
-
-</button>
+</div>
 
 </div>
 
-<!-- ======================================================
-PLAYER DE ÁUDIO
-====================================================== -->
+<!-- =======================================================
+AUDIO
+======================================================= -->
 
 <audio
 id="musicPlayer"
 preload="metadata">
+
 </audio>
 
-<!-- ======================================================
-VÍDEO DE FUNDO
-====================================================== -->
-
-<video
-id="backgroundPlayer"
-muted
-loop
-playsinline
-style="display:none">
-</video>
-
-<!-- ======================================================
-NAVEGAÇÃO
-====================================================== -->
-
-<nav class="bottom-navigation">
-
-<button
-class="nav-button active"
-onclick="irInicio(this)">
-
-<i class="fa-solid fa-house"></i>
-
-Início
-
-</button>
-
-<button
-class="nav-button"
-onclick="abrirBuscaNav(this)">
-
-<i class="fa-solid fa-magnifying-glass"></i>
-
-Buscar
-
-</button>
-
-<button
-class="nav-button"
-onclick="abrirBiblioteca(this)">
-
-<i class="fa-solid fa-layer-group"></i>
-
-Biblioteca
-
-</button>
-
-</nav>
-
-<!-- ======================================================
+<!-- =======================================================
 PLAYER COMPLETO
-====================================================== -->
+======================================================= -->
 
 <div
-id="playerModal"
-class="modal">
+id="fullPlayer"
+class="full-player">
 
-<div class="modal-panel">
+<div class="player-top">
 
-<div class="modal-header">
+<button
+id="closeFullPlayer">
 
-<div>
+<i class="fa-solid fa-chevron-down"></i>
 
-<div class="small">
+</button>
+
+<div class="player-heading">
 TOCANDO AGORA
 </div>
 
-<h2 id="bigTitle">
-Nando's Music
-</h2>
-
-</div>
-
 <button
-class="close-button"
-onclick="fecharPlayer()">
+id="openLyricsButton">
 
-×
+<i class="fa-solid fa-align-left"></i>
+
 </button>
 
 </div>
 
+<div class="full-player-body">
+
 <div
 id="bigCover"
-class="player-cover-big">
+class="big-cover">
 
 <i class="fa-solid fa-music"></i>
 
 </div>
 
-<audio
-id="bigAudio"
-controls>
-</audio>
+<div
+id="fullTitle"
+class="full-title">
+
+Nenhuma música
+
+</div>
+
+<div
+id="fullCategory"
+class="full-category">
+
+Nando's Music
+
+</div>
+
+<div class="progress-area">
+
+<input
+id="progress"
+class="progress"
+type="range"
+min="0"
+max="100"
+value="0"
+step="0.1">
+
+<div class="time-row">
+
+<span id="currentTime">
+0:00
+</span>
+
+<span id="duration">
+0:00
+</span>
+
+</div>
+
+</div>
 
 <div class="player-controls">
 
 <button
-class="player-control"
-onclick="anteriorMusica()">
+id="fullPrev"
+class="player-control">
 
 <i class="fa-solid fa-backward-step"></i>
 
 </button>
 
 <button
-class="player-control main"
-onclick="togglePlay()">
+id="fullPlay"
+class="player-main-button">
 
-<i
-id="bigPlayIcon"
-class="fa-solid fa-play">
-</i>
+<i class="fa-solid fa-play"></i>
 
 </button>
 
 <button
-class="player-control"
-onclick="proximaMusica()">
+id="fullNext"
+class="player-control">
 
 <i class="fa-solid fa-forward-step"></i>
 
@@ -1643,40 +2112,48 @@ onclick="proximaMusica()">
 
 </div>
 
+<div class="lyrics-box">
+
+<div class="lyrics-title">
+
+<i class="fa-solid fa-align-left"></i>
+Letra
+
+</div>
+
 <div
-id="bigCategory"
-class="small"
-style="text-align:center">
-</div>
+id="lyrics"
+class="lyrics">
+
+A letra desta música ainda não foi cadastrada.
 
 </div>
 
 </div>
 
-<!-- ======================================================
-MENU ADMINISTRADOR
-NÃO EXISTE BOTÃO PARA CLIENTE
-====================================================== -->
+</div>
+
+</div>
+
+<!-- =======================================================
+MENU ADMINISTRATIVO
+SEM BOTÃO VISÍVEL PARA CLIENTE
+======================================================= -->
 
 <div
 id="sideMenu"
-class="modal">
+class="side-menu">
 
-<div class="modal-panel">
+<div class="menu-panel">
 
-<div class="modal-header">
+<div class="menu-header">
 
 <div>
 
-<h2>
-<i
-class="fa-solid fa-sliders"
-style="color:#a78bfa">
-</i>
-
+<strong>
+<i class="fa-solid fa-sliders"></i>
 Configurações
-
-</h2>
+</strong>
 
 <div class="small">
 Área administrativa
@@ -1685,31 +2162,52 @@ Configurações
 </div>
 
 <button
-class="close-button"
+class="close"
 onclick="fecharMenu()">
 
 ×
+
 </button>
 
 </div>
 
 <button
-class="btn"
+class="menu-item"
 onclick="abrirAdminPainel()">
 
 <i class="fa-solid fa-user-shield"></i>
 
+<div>
+
+<strong>
 Painel administrativo
+</strong>
+
+<div class="small">
+Gerenciar músicas, vídeos e códigos
+</div>
+
+</div>
 
 </button>
 
 <button
-class="btn btn-danger"
+class="menu-item"
 onclick="sairAdministrador()">
 
 <i class="fa-solid fa-right-from-bracket"></i>
 
+<div>
+
+<strong>
 Sair do administrador
+</strong>
+
+<div class="small">
+Voltar para o acesso normal
+</div>
+
+</div>
 
 </button>
 
@@ -1717,17 +2215,61 @@ Sair do administrador
 
 </div>
 
-<!-- ======================================================
+<!-- =======================================================
+NAVEGAÇÃO
+======================================================= -->
+
+<nav class="bottom-nav">
+
+<button
+class="nav-item active"
+id="navHome">
+
+<i class="fa-solid fa-house"></i>
+
+<span>
+Início
+</span>
+
+</button>
+
+<button
+class="nav-item"
+id="navSearch">
+
+<i class="fa-solid fa-magnifying-glass"></i>
+
+<span>
+Buscar
+</span>
+
+</button>
+
+<button
+class="nav-item"
+id="navLibrary">
+
+<i class="fa-solid fa-layer-group"></i>
+
+<span>
+Músicas
+</span>
+
+</button>
+
+</nav>
+
+<!-- =======================================================
 BLOQUEIO
-====================================================== -->
+======================================================= -->
 
 <div
 id="authModal"
 class="modal active">
 
-<div class="modal-panel">
+<div class="modal-content">
 
-<div class="lock-screen">
+<div class="lock">
 
 <div class="lock-icon">
 
@@ -1740,8 +2282,10 @@ Acesso restrito
 </h2>
 
 <p>
+
 Digite o código de acesso fornecido pelo administrador
 para entrar no Nando's Music.
+
 </p>
 
 </div>
@@ -1755,11 +2299,10 @@ autocomplete="off"
 spellcheck="false">
 
 <button
-class="btn"
-onclick="processarAcesso()">
+id="accessButton"
+class="btn">
 
 <i class="fa-solid fa-right-to-bracket"></i>
-
 Entrar
 
 </button>
@@ -1767,23 +2310,24 @@ Entrar
 <div
 id="authMessage"
 class="message">
-</div>
 
 </div>
 
 </div>
 
-<!-- ======================================================
+</div>
+
+<!-- =======================================================
 LOGIN ADMIN
-====================================================== -->
+======================================================= -->
 
 <div
 id="adminLoginModal"
 class="modal">
 
-<div class="modal-panel">
+<div class="modal-content">
 
-<div class="lock-screen">
+<div class="lock">
 
 <div class="lock-icon">
 
@@ -1804,8 +2348,9 @@ Acesso administrativo
 <input
 type="email"
 id="adminEmail"
-value="nandosarcondicionado@gmail.com"
-autocomplete="username">
+placeholder="E-mail do administrador"
+autocomplete="username"
+value="nandosarcondicionado@gmail.com">
 
 <input
 type="password"
@@ -1814,11 +2359,10 @@ placeholder="Senha do administrador"
 autocomplete="current-password">
 
 <button
-class="btn"
-onclick="entrarAdmin()">
+id="adminLoginButton"
+class="btn">
 
 <i class="fa-solid fa-shield-halved"></i>
-
 Entrar
 
 </button>
@@ -1834,33 +2378,36 @@ Voltar
 <div
 id="adminLoginMessage"
 class="message">
-</div>
 
 </div>
 
 </div>
 
-<!-- ======================================================
+</div>
+
+<!-- =======================================================
 PAINEL ADMIN
-====================================================== -->
+======================================================= -->
 
 <div
 id="adminModal"
 class="modal">
 
-<div class="modal-panel">
+<div class="modal-content admin-content">
 
-<div class="modal-header">
+<div style="
+display:flex;
+justify-content:space-between;
+align-items:center;">
 
 <div>
 
 <h2>
-<i
-class="fa-solid fa-sliders"
-style="color:#a78bfa">
-</i>
+<i class="fa-solid fa-sliders"
+style="color:#a78bfa"></i>
 
 Configurações
+
 </h2>
 
 <div class="small">
@@ -1870,10 +2417,11 @@ Administrador conectado
 </div>
 
 <button
-class="close-button"
+class="close"
 onclick="fecharAdminPainel()">
 
 ×
+
 </button>
 
 </div>
@@ -1882,7 +2430,15 @@ onclick="fecharAdminPainel()">
 
 <button
 class="admin-tab active"
-onclick="abaAdmin('musicas',this)">
+data-tab="player">
+
+Player
+
+</button>
+
+<button
+class="admin-tab"
+data-tab="musicas">
 
 Músicas
 
@@ -1890,7 +2446,7 @@ Músicas
 
 <button
 class="admin-tab"
-onclick="abaAdmin('fundos',this)">
+data-tab="fundos">
 
 Fundos
 
@@ -1898,7 +2454,7 @@ Fundos
 
 <button
 class="admin-tab"
-onclick="abaAdmin('codigos',this)">
+data-tab="codigos">
 
 Códigos
 
@@ -1906,11 +2462,61 @@ Códigos
 
 </div>
 
-<!-- MÚSICAS -->
+<!-- PLAYER -->
+
+<div
+id="aba-player"
+class="admin-section active">
+
+<h3>
+Player
+</h3>
+
+<p class="small">
+Teste as músicas e vídeos cadastrados.
+</p>
+
+<div class="admin-video">
+
+<video
+id="adminBackgroundPlayer"
+playsinline
+muted
+loop
+preload="auto">
+</video>
+
+</div>
+
+<audio
+id="adminMusicPlayer"
+controls
+style="width:100%;margin-top:10px;">
+
+</audio>
+
+<div
+id="adminNowPlaying"
+class="small"
+style="text-align:center;margin-top:8px;">
+
+Nenhuma música reproduzindo
+
+</div>
+
+<div
+id="adminPlayerList"
+style="margin-top:10px">
+
+</div>
+
+</div>
+
+<!-- MUSICAS -->
 
 <div
 id="aba-musicas"
-class="admin-section active">
+class="admin-section">
 
 <h3>
 Adicionar música
@@ -1938,6 +2544,23 @@ placeholder="Link direto .mp3 ou .mp4">
 
 </select>
 
+<textarea
+id="songLyrics"
+placeholder="Letra da música (opcional)"
+style="
+width:100%;
+height:130px;
+resize:vertical;
+margin:6px 0 10px;
+padding:12px;
+border-radius:10px;
+border:1px solid rgba(255,255,255,.09);
+background:#09090f;
+color:white;
+outline:none;
+font-family:Poppins,sans-serif;
+"></textarea>
+
 <button
 class="btn"
 onclick="salvarMusica()">
@@ -1949,7 +2572,9 @@ Adicionar música
 </button>
 
 <div
-id="musicAdminList">
+id="musicAdminList"
+style="margin-top:15px">
+
 </div>
 
 </div>
@@ -1983,12 +2608,14 @@ Adicionar vídeo
 </button>
 
 <div
-id="backgroundAdminList">
-</div>
+id="backgroundAdminList"
+style="margin-top:15px">
 
 </div>
 
-<!-- CÓDIGOS -->
+</div>
+
+<!-- CODIGOS -->
 
 <div
 id="aba-codigos"
@@ -1999,7 +2626,7 @@ Códigos para clientes
 </h3>
 
 <p class="small">
-Gere um código único para liberar o aplicativo.
+Gere códigos únicos para liberar o aplicativo.
 </p>
 
 <button
@@ -2024,6 +2651,7 @@ NOVO CÓDIGO
 <div
 id="generatedCode"
 class="generated-code">
+
 </div>
 
 <button
@@ -2036,12 +2664,21 @@ Copiar código
 
 </button>
 
+<div
+id="copyMessage"
+class="small"
+style="margin-top:8px">
+
 </div>
 
-<div
-id="codesAdminList"
-style="margin-top:15px">
+</div>
 
+<h4 style="margin-top:22px">
+Códigos existentes
+</h4>
+
+<div id="codesAdminList">
+Carregando...
 </div>
 
 </div>
@@ -2070,8 +2707,7 @@ FIREBASE
 
 const firebaseConfig={
 
-apiKey:
-"AIzaSyDnId6VY94Fw9lhW_i5iZEP0nnxVEjNoqo",
+apiKey:"AIzaSyDnId6VY94Fw9lhW_i5iZEP0nnxVEjNoqo",
 
 authDomain:
 "nandomusic-c77a3.firebaseapp.com",
@@ -2103,7 +2739,6 @@ firebase.initializeApp(firebaseConfig);
 }
 
 const auth=firebase.auth();
-
 const db=firebase.database();
 
 /* =========================================================
@@ -2123,25 +2758,23 @@ VARIÁVEIS
 ========================================================= */
 
 let allSongs=[];
-
-let filteredSongs=[];
-
 let bgVideos=[];
 
 let adminLogado=false;
-
 let currentCode=null;
 
-let currentIndex=-1;
+let currentSongIndex=-1;
+let currentSong=null;
+
+let currentCategory="Todas";
+let searchText="";
 
 /* =========================================================
 DEVICE ID
 ========================================================= */
 
 let deviceId=
-localStorage.getItem(
-"nando_device_id"
-);
+localStorage.getItem("nando_device_id");
 
 if(!deviceId){
 
@@ -2163,52 +2796,35 @@ deviceId
 ELEMENTOS
 ========================================================= */
 
-const audio=
-document.getElementById(
-"musicPlayer"
-);
+const appContent=
+document.getElementById("appContent");
 
-const bigAudio=
-document.getElementById(
-"bigAudio"
-);
+const authModal=
+document.getElementById("authModal");
+
+const musicPlayer=
+document.getElementById("musicPlayer");
+
+const miniPlayer=
+document.getElementById("miniPlayer");
+
+const fullPlayer=
+document.getElementById("fullPlayer");
+
+const backgroundPlayer=
+document.getElementById("adminBackgroundPlayer");
 
 /* =========================================================
-UTILITÁRIOS
+MENSAGEM
 ========================================================= */
 
-function escapar(texto){
+function mostrarMensagem(id,text,tipo){
 
-if(
-texto===undefined ||
-texto===null
-){
-
-return "";
-
-}
-
-return String(texto)
-.replace(/&/g,"&amp;")
-.replace(/</g,"&lt;")
-.replace(/>/g,"&gt;")
-.replace(/"/g,"&quot;")
-.replace(/'/g,"&#039;");
-
-}
-
-function mostrarMensagem(
-id,
-texto,
-tipo
-){
-
-const el=
-document.getElementById(id);
+const el=document.getElementById(id);
 
 if(!el)return;
 
-el.innerText=texto;
+el.innerText=text;
 
 el.className=
 "message "+tipo;
@@ -2216,60 +2832,49 @@ el.className=
 }
 
 /* =========================================================
-MOSTRAR / BLOQUEAR
+MOSTRAR APP
 ========================================================= */
 
 function mostrarApp(){
 
-document
-.getElementById("authModal")
-.classList.remove("active");
+authModal.classList.remove("active");
 
-document
-.getElementById("appContent")
-.classList.remove("hidden");
+appContent.classList.remove("hidden");
 
 }
 
-function bloquearAplicativo(
-mensagem
-){
+/* =========================================================
+BLOQUEAR
+========================================================= */
+
+function bloquearAplicativo(mensagem){
 
 currentCode=null;
 
-localStorage.removeItem(
-"nando_autorizado"
-);
+localStorage.removeItem("nando_autorizado");
+localStorage.removeItem("nando_codigo");
 
-localStorage.removeItem(
-"nando_codigo"
-);
+musicPlayer.pause();
 
-audio.pause();
+musicPlayer.removeAttribute("src");
 
-audio.removeAttribute("src");
+musicPlayer.load();
 
-audio.load();
+miniPlayer.classList.remove("show");
 
-document
-.getElementById("appContent")
-.classList.add("hidden");
+fullPlayer.classList.remove("active");
 
-/*
-Nunca mostra ADM para cliente.
-*/
+document.getElementById(
+"menuButton"
+).classList.remove("visible");
 
-document
-.getElementById("menuButton")
-.style.display="none";
+appContent.classList.add("hidden");
 
-document
-.getElementById("authModal")
-.classList.add("active");
+authModal.classList.add("active");
 
 mostrarMensagem(
 "authMessage",
-mensagem ||
+mensagem||
 "Seu acesso foi bloqueado.",
 "error"
 );
@@ -2277,11 +2882,10 @@ mensagem ||
 }
 
 /* =========================================================
-CONEXÃO
+CONEXÃO FIREBASE
 ========================================================= */
 
-db.ref(".info/connected")
-.on(
+db.ref(".info/connected").on(
 "value",
 snap=>{
 
@@ -2292,19 +2896,16 @@ document.getElementById(
 
 if(snap.val()===true){
 
-status.innerText=
-"● Conectado";
+status.innerText="● Conectado";
 
-status.style.color=
-"#4ade80";
+status.style.color="#4ade80";
 
 }else{
 
 status.innerText=
 "● Sem conexão com o servidor";
 
-status.style.color=
-"#f87171";
+status.style.color="#f87171";
 
 }
 
@@ -2322,9 +2923,7 @@ document.getElementById(
 );
 
 const valor=
-input.value
-.trim()
-.toUpperCase();
+input.value.trim().toUpperCase();
 
 if(!valor){
 
@@ -2339,43 +2938,34 @@ return;
 }
 
 /*
-=========================================================
-SENHA SECRETA DO ADMIN
-=========================================================
-
-Não existe botão ADM.
-
-O administrador digita:
-
-NANDOADM
-
-no mesmo campo utilizado
-pelo cliente.
-
-=========================================================
+SEM BOTÃO ADM.
+O código secreto é digitado no
+mesmo campo utilizado pelo cliente.
 */
 
 if(valor===CHAVE_SECRETA_ADM){
 
 input.value="";
 
-document
-.getElementById("authModal")
-.classList.remove("active");
+authModal.classList.remove("active");
 
-document
-.getElementById("adminLoginModal")
-.classList.add("active");
+document.getElementById(
+"adminLoginModal"
+).classList.add("active");
 
-document
-.getElementById("adminPassword")
-.value="";
+document.getElementById(
+"adminPassword"
+).value="";
+
+document.getElementById(
+"adminLoginMessage"
+).className="message";
 
 setTimeout(()=>{
 
-document
-.getElementById("adminPassword")
-.focus();
+document.getElementById(
+"adminPassword"
+).focus();
 
 },150);
 
@@ -2388,16 +2978,12 @@ await validarCodigoUsuario(valor);
 }
 
 /* =========================================================
-VALIDAR CÓDIGO
+VALIDAR CLIENTE
 ========================================================= */
 
-async function validarCodigoUsuario(
-codigo
-){
+async function validarCodigoUsuario(codigo){
 
-if(
-!/^ND-[A-Z0-9]{6}$/.test(codigo)
-){
+if(!/^ND-[A-Z0-9]{6}$/.test(codigo)){
 
 mostrarMensagem(
 "authMessage",
@@ -2444,10 +3030,6 @@ throw new Error(
 
 }
 
-/*
-Vincula ao aparelho.
-*/
-
 await db.ref(
 "codigos_gerados/"+codigo
 ).update({
@@ -2459,10 +3041,6 @@ deviceId:deviceId,
 ultimoAcesso:Date.now()
 
 });
-
-/*
-Autorização.
-*/
 
 await db.ref(
 "dispositivos_autorizados/"+codigo
@@ -2488,19 +3066,19 @@ localStorage.setItem(
 codigo
 );
 
-document
-.getElementById("userAccessCode")
-.value="";
+document.getElementById(
+"userAccessCode"
+).value="";
+
+document.getElementById(
+"authMessage"
+).className="message";
 
 mostrarApp();
-
-mostrarBotaoInstalar();
 
 iniciarMonitoramentoAutorizacao(
 codigo
 );
-
-iniciarVideo();
 
 }catch(error){
 
@@ -2508,7 +3086,7 @@ console.error(error);
 
 mostrarMensagem(
 "authMessage",
-error.message ||
+error.message||
 "Não foi possível validar o código.",
 "error"
 );
@@ -2521,9 +3099,7 @@ error.message ||
 MONITORAMENTO
 ========================================================= */
 
-function iniciarMonitoramentoAutorizacao(
-codigo
-){
+function iniciarMonitoramentoAutorizacao(codigo){
 
 if(!codigo)return;
 
@@ -2603,12 +3179,12 @@ VERIFICAR ACESSO INICIAL
 
 async function verificarAcessoInicial(){
 
-const codigoSalvo=
+const codigo=
 localStorage.getItem(
 "nando_codigo"
 );
 
-if(!codigoSalvo){
+if(!codigo){
 
 bloquearAplicativo(
 "Digite o código fornecido pelo administrador."
@@ -2622,7 +3198,7 @@ try{
 
 const snap=
 await db.ref(
-"codigos_gerados/"+codigoSalvo
+"codigos_gerados/"+codigo
 ).once("value");
 
 if(!snap.exists()){
@@ -2652,11 +3228,11 @@ return;
 
 const authSnap=
 await db.ref(
-"dispositivos_autorizados/"+codigoSalvo
+"dispositivos_autorizados/"+codigo
 ).once("value");
 
 if(
-!authSnap.exists() ||
+!authSnap.exists()||
 authSnap.val().deviceId!==deviceId
 ){
 
@@ -2668,7 +3244,7 @@ return;
 
 }
 
-currentCode=codigoSalvo;
+currentCode=codigo;
 
 localStorage.setItem(
 "nando_autorizado",
@@ -2677,13 +3253,9 @@ localStorage.setItem(
 
 mostrarApp();
 
-mostrarBotaoInstalar();
-
 iniciarMonitoramentoAutorizacao(
-codigoSalvo
+codigo
 );
-
-iniciarVideo();
 
 }catch(error){
 
@@ -2713,14 +3285,11 @@ document.getElementById(
 "adminPassword"
 ).value;
 
-if(
-email.toLowerCase() !==
-ADMIN_EMAIL.toLowerCase()
-){
+if(!email||!senha){
 
 mostrarMensagem(
 "adminLoginMessage",
-"E-mail não autorizado.",
+"Digite o e-mail e a senha.",
 "error"
 );
 
@@ -2728,11 +3297,14 @@ return;
 
 }
 
-if(!senha){
+if(
+email.toLowerCase()!==
+ADMIN_EMAIL.toLowerCase()
+){
 
 mostrarMensagem(
 "adminLoginMessage",
-"Digite a senha.",
+"E-mail não autorizado.",
 "error"
 );
 
@@ -2755,15 +3327,21 @@ senha
 
 adminLogado=true;
 
-document
-.getElementById("adminLoginModal")
-.classList.remove("active");
+document.getElementById(
+"adminLoginModal"
+).classList.remove("active");
 
 mostrarApp();
 
 ativarMenuAdmin();
 
-mostrarBotaoInstalar();
+carregarCodigosAdmin();
+
+renderizarAdminPlayer();
+
+renderizarFundosAdmin();
+
+iniciarVideoAdmin();
 
 }catch(error){
 
@@ -2773,8 +3351,7 @@ let mensagem=
 "E-mail ou senha incorretos.";
 
 if(
-error.code===
-"auth/too-many-requests"
+error.code==="auth/too-many-requests"
 ){
 
 mensagem=
@@ -2793,14 +3370,23 @@ mensagem,
 }
 
 /* =========================================================
-AUTH STATE
+AUTH
 ========================================================= */
 
 auth.onAuthStateChanged(
 user=>{
 
+if(!user){
+
+adminLogado=false;
+
+desativarMenuAdmin();
+
+return;
+
+}
+
 if(
-user &&
 user.email &&
 user.email.toLowerCase()===
 ADMIN_EMAIL.toLowerCase()
@@ -2809,14 +3395,6 @@ ADMIN_EMAIL.toLowerCase()
 adminLogado=true;
 
 ativarMenuAdmin();
-
-}else{
-
-adminLogado=false;
-
-document
-.getElementById("menuButton")
-.style.display="none";
 
 }
 
@@ -2828,9 +3406,17 @@ MENU ADM
 
 function ativarMenuAdmin(){
 
-document
-.getElementById("menuButton")
-.style.display="grid";
+document.getElementById(
+"menuButton"
+).classList.add("visible");
+
+}
+
+function desativarMenuAdmin(){
+
+document.getElementById(
+"menuButton"
+).classList.remove("visible");
 
 }
 
@@ -2838,22 +3424,36 @@ function abrirMenu(){
 
 if(!adminLogado)return;
 
-document
-.getElementById("sideMenu")
-.classList.add("active");
+document.getElementById(
+"sideMenu"
+).classList.add("active");
 
 }
 
 function fecharMenu(){
 
-document
-.getElementById("sideMenu")
-.classList.remove("active");
+document.getElementById(
+"sideMenu"
+).classList.remove("active");
 
 }
 
+document.getElementById(
+"sideMenu"
+).addEventListener(
+"click",
+e=>{
+
+if(e.target.id==="sideMenu"){
+
+fecharMenu();
+
+}
+
+});
+
 /* =========================================================
-PAINEL ADM
+PAINEL
 ========================================================= */
 
 function abrirAdminPainel(){
@@ -2862,40 +3462,44 @@ if(!adminLogado)return;
 
 fecharMenu();
 
-document
-.getElementById("adminModal")
-.classList.add("active");
-
-carregarListaAdmin();
+document.getElementById(
+"adminModal"
+).classList.add("active");
 
 carregarCodigosAdmin();
 
+carregarListaAdmin();
+
+renderizarAdminPlayer();
+
 renderizarFundosAdmin();
+
+iniciarVideoAdmin();
 
 }
 
 function fecharAdminPainel(){
 
-document
-.getElementById("adminModal")
-.classList.remove("active");
+document.getElementById(
+"adminModal"
+).classList.remove("active");
 
 }
 
 function fecharLoginAdmin(){
 
-document
-.getElementById("adminLoginModal")
-.classList.remove("active");
+document.getElementById(
+"adminLoginModal"
+).classList.remove("active");
 
-document
-.getElementById("authModal")
-.classList.add("active");
+document.getElementById(
+"authModal"
+).classList.add("active");
 
 }
 
 /* =========================================================
-SAIR ADM
+SAIR ADMIN
 ========================================================= */
 
 async function sairAdministrador(){
@@ -2904,17 +3508,15 @@ try{
 
 await auth.signOut();
 
-}catch(error){
+}catch(e){
 
-console.warn(error);
+console.warn(e);
 
 }
 
 adminLogado=false;
 
-document
-.getElementById("menuButton")
-.style.display="none";
+desativarMenuAdmin();
 
 fecharMenu();
 
@@ -2931,60 +3533,51 @@ bloquearAplicativo(
 }
 
 /* =========================================================
-ABAS ADM
+ABAS ADMIN
 ========================================================= */
 
-function abaAdmin(
-nome,
-btn
-){
+document.querySelectorAll(
+".admin-tab"
+).forEach(btn=>{
 
-document
-.querySelectorAll(".admin-section")
-.forEach(
-el=>{
-el.classList.remove("active");
-}
+btn.addEventListener(
+"click",
+()=>{
+
+document.querySelectorAll(
+".admin-tab"
+).forEach(x=>
+x.classList.remove("active")
 );
 
-const aba=
-document.getElementById(
-"aba-"+nome
+document.querySelectorAll(
+".admin-section"
+).forEach(x=>
+x.classList.remove("active")
 );
-
-if(aba){
-
-aba.classList.add("active");
-
-}
-
-document
-.querySelectorAll(".admin-tab")
-.forEach(
-el=>{
-el.classList.remove("active");
-}
-);
-
-if(btn){
 
 btn.classList.add("active");
 
-}
+const nome=btn.dataset.tab;
 
-if(nome==="codigos"){
+document.getElementById(
+"aba-"+nome
+).classList.add("active");
 
+if(nome==="codigos")
 carregarCodigosAdmin();
 
+if(nome==="player"){
+renderizarAdminPlayer();
+iniciarVideoAdmin();
 }
 
-if(nome==="fundos"){
-
+if(nome==="fundos")
 renderizarFundosAdmin();
 
-}
+});
 
-}
+});
 
 /* =========================================================
 GERAR CÓDIGO
@@ -3007,11 +3600,7 @@ const chars=
 
 let codigo="ND-";
 
-for(
-let i=0;
-i<6;
-i++
-){
+for(let i=0;i<6;i++){
 
 codigo+=chars.charAt(
 Math.floor(
@@ -3035,13 +3624,18 @@ criadoEm:Date.now()
 
 });
 
-document
-.getElementById("generatedCode")
-.innerText=codigo;
+document.getElementById(
+"generatedCode"
+).innerText=codigo;
 
-document
-.getElementById("generatedCodeBox")
-.style.display="block";
+document.getElementById(
+"generatedCodeBox"
+).style.display="block";
+
+document.getElementById(
+"copyMessage"
+).innerText=
+"✓ Código salvo com sucesso.";
 
 carregarCodigosAdmin();
 
@@ -3065,9 +3659,9 @@ COPIAR
 async function copiarCodigo(){
 
 const codigo=
-document
-.getElementById("generatedCode")
-.innerText;
+document.getElementById(
+"generatedCode"
+).innerText;
 
 if(!codigo)return;
 
@@ -3077,11 +3671,12 @@ await navigator.clipboard.writeText(
 codigo
 );
 
-alert(
-"Código copiado!"
-);
+document.getElementById(
+"copyMessage"
+).innerText=
+"✓ Código copiado!";
 
-}catch(error){
+}catch(e){
 
 prompt(
 "Copie o código:",
@@ -3092,21 +3687,17 @@ codigo
 
 }
 
-async function copiarDireto(
-codigo
-){
+async function copiarDireto(codigo){
 
 try{
 
-await navigator.clipboard.writeText(
-codigo
-);
+await navigator.clipboard.writeText(codigo);
 
 alert(
 "Código "+codigo+" copiado!"
 );
 
-}catch(error){
+}catch(e){
 
 prompt(
 "Copie o código:",
@@ -3132,7 +3723,8 @@ if(!container)return;
 
 if(!adminLogado){
 
-container.innerHTML="";
+container.innerHTML=
+'<div class="empty">Administrador não conectado.</div>';
 
 return;
 
@@ -3145,8 +3737,7 @@ await db.ref(
 "codigos_gerados"
 ).once("value");
 
-const dados=
-snap.val()||{};
+const dados=snap.val()||{};
 
 const ids=
 Object.keys(dados).reverse();
@@ -3162,14 +3753,11 @@ return;
 
 let html="";
 
-ids.forEach(
-id=>{
+ids.forEach(id=>{
 
-const item=
-dados[id]||{};
+const item=dados[id]||{};
 
-const usado=
-item.usado===true;
+const usado=item.usado===true;
 
 html+=`
 
@@ -3177,27 +3765,34 @@ html+=`
 
 <div>
 
-<strong>
-${escapar(id)}
-</strong>
+<strong>${escapar(id)}</strong>
 
 <br>
 
-<span class="small">
+<span class="status ${
+usado?"used":"available"
+}">
 
-${usado?
-"USADO":
-"DISPONÍVEL"}
-
-${item.deviceId?
-" · "+escapar(item.deviceId):
-""}
+${usado?"USADO":"DISPONÍVEL"}
 
 </span>
 
+${
+usado&&item.deviceId
+?
+`
+<div class="small">
+Aparelho: ${escapar(item.deviceId)}
+</div>
+`
+:""
+}
+
 </div>
 
-<div>
+<div style="
+display:flex;
+gap:5px;">
 
 <button
 style="background:#334155"
@@ -3240,24 +3835,14 @@ container.innerHTML=
 EXCLUIR CÓDIGO
 ========================================================= */
 
-async function excluirCodigo(
-codigo
-){
+async function excluirCodigo(codigo){
 
 if(!adminLogado)return;
 
-if(
-!confirm(
-"Excluir o código "+
-codigo+
-"?\n\n"+
-"Se estiver sendo usado, o aparelho perderá o acesso imediatamente."
-)
-){
-
-return;
-
-}
+if(!confirm(
+"Excluir o código "+codigo+"?\n\n"+
+"Se estiver sendo usado, o aparelho perderá o acesso."
+))return;
 
 try{
 
@@ -3301,21 +3886,26 @@ return;
 }
 
 const title=
-document
-.getElementById("songTitle")
-.value.trim();
+document.getElementById(
+"songTitle"
+).value.trim();
 
 const url=
-document
-.getElementById("songUrl")
-.value.trim();
+document.getElementById(
+"songUrl"
+).value.trim();
 
 const category=
-document
-.getElementById("songCategory")
-.value;
+document.getElementById(
+"songCategory"
+).value;
 
-if(!title || !url){
+const lyrics=
+document.getElementById(
+"songLyrics"
+).value.trim();
+
+if(!title||!url){
 
 alert(
 "Preencha o título e o link."
@@ -3335,17 +3925,23 @@ url:url,
 
 category:category,
 
+lyrics:lyrics,
+
 criadoEm:Date.now()
 
 });
 
-document
-.getElementById("songTitle")
-.value="";
+document.getElementById(
+"songTitle"
+).value="";
 
-document
-.getElementById("songUrl")
-.value="";
+document.getElementById(
+"songUrl"
+).value="";
+
+document.getElementById(
+"songLyrics"
+).value="";
 
 alert(
 "Música adicionada com sucesso!"
@@ -3356,8 +3952,7 @@ alert(
 console.error(error);
 
 alert(
-"Erro:\n"+
-error.message
+"Erro:\n"+error.message
 );
 
 }
@@ -3368,21 +3963,13 @@ error.message
 EXCLUIR MÚSICA
 ========================================================= */
 
-async function excluirMusica(
-id
-){
+async function excluirMusica(id){
 
 if(!adminLogado)return;
 
-if(
-!confirm(
+if(!confirm(
 "Excluir esta música?"
-)
-){
-
-return;
-
-}
+))return;
 
 try{
 
@@ -3392,11 +3979,8 @@ await db.ref(
 
 }catch(error){
 
-console.error(error);
-
 alert(
-"Erro:\n"+
-error.message
+"Erro:\n"+error.message
 );
 
 }
@@ -3409,20 +3993,12 @@ SALVAR FUNDO
 
 async function salvarFundo(){
 
-if(!adminLogado){
-
-alert(
-"Faça login como administrador."
-);
-
-return;
-
-}
+if(!adminLogado)return;
 
 const url=
-document
-.getElementById("backgroundUrl")
-.value.trim();
+document.getElementById(
+"backgroundUrl"
+).value.trim();
 
 if(!url){
 
@@ -3446,9 +4022,9 @@ criadoEm:Date.now()
 
 });
 
-document
-.getElementById("backgroundUrl")
-.value="";
+document.getElementById(
+"backgroundUrl"
+).value="";
 
 alert(
 "Vídeo adicionado com sucesso!"
@@ -3456,11 +4032,8 @@ alert(
 
 }catch(error){
 
-console.error(error);
-
 alert(
-"Erro:\n"+
-error.message
+"Erro:\n"+error.message
 );
 
 }
@@ -3471,21 +4044,13 @@ error.message
 EXCLUIR FUNDO
 ========================================================= */
 
-async function excluirFundo(
-id
-){
+async function excluirFundo(id){
 
 if(!adminLogado)return;
 
-if(
-!confirm(
+if(!confirm(
 "Excluir este vídeo?"
-)
-){
-
-return;
-
-}
+))return;
 
 try{
 
@@ -3495,11 +4060,8 @@ await db.ref(
 
 }catch(error){
 
-console.error(error);
-
 alert(
-"Erro:\n"+
-error.message
+"Erro:\n"+error.message
 );
 
 }
@@ -3514,13 +4076,11 @@ db.ref("musicas").on(
 "value",
 snapshot=>{
 
-const dados=
-snapshot.val()||{};
-
 allSongs=[];
 
-Object.keys(dados).forEach(
-id=>{
+const dados=snapshot.val()||{};
+
+Object.keys(dados).forEach(id=>{
 
 allSongs.push({
 
@@ -3532,229 +4092,91 @@ id:id,
 
 });
 
-filteredSongs=[
-...allSongs
-];
+renderizarMusicas();
 
-renderizarHome();
+renderizarAdminPlayer();
 
 carregarListaAdmin();
 
 });
 
 /* =========================================================
-CATEGORIAS
+RENDER MÚSICAS
 ========================================================= */
 
-const categorias=[
+function renderizarMusicas(){
 
-"Todas",
-"Sertanejo",
-"Funk",
-"Forró",
-"Pagode",
-"Eletrônica",
-"Trap",
-"Pop",
-"Rock",
-"Engraçado"
-
-];
-
-/* =========================================================
-RENDER CATEGORIAS
-========================================================= */
-
-function renderizarCategorias(
-ativa="Todas"
-){
-
-const bar=
-document.getElementById(
-"categoryBar"
-);
-
-bar.innerHTML="";
-
-categorias.forEach(
-categoria=>{
-
-const button=
-document.createElement(
-"button"
-);
-
-button.className=
-"category-button"+
-(
-categoria===ativa?
-" active":
-""
-);
-
-button.innerText=
-categoria;
-
-button.onclick=
-()=>filtrarCategoria(
-categoria,
-button
-);
-
-bar.appendChild(
-button
-);
-
-});
-
-}
-
-/* =========================================================
-CAPA
-========================================================= */
-
-function criarCapa(
-song,
-classe=""
-){
-
-if(song.cover){
-
-return `
-
-<div class="${classe}">
-
-<img
-src="${escapar(song.cover)}"
-alt="">
-
-</div>
-
-`;
-
-}
-
-return `
-
-<div class="${classe}">
-
-<i class="fa-solid fa-music"></i>
-
-</div>
-
-`;
-
-}
-
-/* =========================================================
-HOME
-========================================================= */
-
-function renderizarHome(){
-
-renderizarCategorias(
-document.querySelector(
-".category-button.active"
-)?.innerText ||
-"Todas"
-);
-
-const counter=
-document.getElementById(
-"musicCounter"
-);
-
-counter.innerText=
-filteredSongs.length+
-(
-filteredSongs.length===1?
-" música":
-" músicas"
-);
-
-/* DESTAQUES */
-
-const featured=
-document.getElementById(
-"featuredMusic"
-);
-
-if(!filteredSongs.length){
-
-featured.innerHTML=
-'<div class="empty">Nenhuma música cadastrada.</div>';
-
-}else{
-
-featured.innerHTML=
-filteredSongs
-.slice(0,10)
-.map(
-(song,index)=>`
-
-<div
-class="music-card"
-onclick="tocarMusica(${index})">
-
-${criarCapa(
-song,
-"music-cover"
-)}
-
-<div class="music-card-title">
-
-${escapar(song.title)}
-
-</div>
-
-<div class="music-card-sub">
-
-${escapar(
-song.category ||
-"Nando's Music"
-)}
-
-</div>
-
-</div>
-
-`
-)
-.join("");
-
-}
-
-/* LISTA */
-
-const playlist=
+const container=
 document.getElementById(
 "playlistContainer"
 );
 
-if(!filteredSongs.length){
+let lista=[...allSongs];
 
-playlist.innerHTML=
-'<div class="empty">Nenhuma música cadastrada.</div>';
+if(currentCategory!=="Todas"){
+
+lista=
+lista.filter(
+song=>
+song.category===currentCategory
+);
+
+}
+
+if(searchText){
+
+const termo=
+searchText.toLowerCase();
+
+lista=
+lista.filter(song=>
+String(song.title||"")
+.toLowerCase()
+.includes(termo)
+);
+
+}
+
+document.getElementById(
+"musicCounter"
+).innerText=
+lista.length+
+(lista.length===1?
+" música":
+" músicas");
+
+if(!lista.length){
+
+container.innerHTML=
+'<div class="empty">Nenhuma música encontrada.</div>';
 
 return;
 
 }
 
-playlist.innerHTML=
-filteredSongs
-.map(
-(song,index)=>`
+container.innerHTML="";
 
-<div class="song">
+lista.forEach(song=>{
 
-${criarCapa(
-song,
-"song-cover"
-)}
+const index=
+allSongs.findIndex(
+x=>x.id===song.id
+);
 
-<div
-class="song-info"
-onclick="tocarMusica(${index})">
+const row=
+document.createElement("div");
+
+row.className="song";
+
+row.innerHTML=`
+
+<div class="song-cover">
+
+<i class="fa-solid fa-music"></i>
+
+</div>
+
+<div class="song-info">
 
 <div class="song-title">
 
@@ -3764,119 +4186,72 @@ ${escapar(song.title)}
 
 <div class="song-category">
 
-${escapar(
-song.category ||
-"Nando's Music"
-)}
+${escapar(song.category||"Música")}
 
 </div>
 
 </div>
 
 <button
+class="song-download"
+title="Abrir arquivo">
+
+<i class="fa-solid fa-download"></i>
+
+</button>
+
+<button
 class="song-play"
-onclick="tocarMusica(${index})">
+title="Reproduzir">
 
 <i class="fa-solid fa-play"></i>
 
 </button>
 
-</div>
+`;
 
-`
-)
-.join("");
-
-}
-
-/* =========================================================
-FILTRAR
-========================================================= */
-
-function filtrarCategoria(
-categoria,
-botao
-){
-
-document
-.querySelectorAll(
-".category-button"
-)
-.forEach(
-el=>{
-el.classList.remove("active");
-}
+row.querySelector(
+".song-info"
+).addEventListener(
+"click",
+()=>tocarPorIndice(index)
 );
 
-if(botao){
-
-botao.classList.add(
-"active"
+row.querySelector(
+".song-cover"
+).addEventListener(
+"click",
+()=>tocarPorIndice(index)
 );
 
-}
+row.querySelector(
+".song-play"
+).addEventListener(
+"click",
+()=>tocarPorIndice(index)
+);
 
-if(categoria==="Todas"){
+row.querySelector(
+".song-download"
+).addEventListener(
+"click",
+()=>{
 
-filteredSongs=[
-...allSongs
-];
+if(song.url){
 
-}else{
-
-filteredSongs=
-allSongs.filter(
-song=>
-song.category===
-categoria
+window.open(
+song.url,
+"_blank",
+"noopener"
 );
 
 }
 
-renderizarHome();
+});
 
-}
+container.appendChild(row);
 
-/* =========================================================
-BUSCA
-========================================================= */
-
-function buscarMusicas(
-texto
-){
-
-const busca=
-texto
-.trim()
-.toLowerCase();
-
-if(!busca){
-
-filteredSongs=[
-...allSongs
-];
-
-}else{
-
-filteredSongs=
-allSongs.filter(
-song=>
-
-(song.title||"")
-.toLowerCase()
-.includes(busca)
-
-||
-
-(song.category||"")
-.toLowerCase()
-.includes(busca)
-
-);
-
-}
-
-renderizarHome();
+});
 
 }
 
@@ -3884,130 +4259,66 @@ renderizarHome();
 TOCAR
 ========================================================= */
 
-function tocarMusica(
-index
-){
+function tocarPorIndice(index){
+
+if(index<0||index>=allSongs.length)return;
+
+currentSongIndex=index;
 
 const song=
-filteredSongs[index];
+allSongs[index];
 
-if(!song || !song.url){
+currentSong=song;
 
-alert(
-"Esta música não possui um link válido."
+musicPlayer.src=song.url;
+
+musicPlayer.currentTime=0;
+
+musicPlayer.play().catch(
+e=>console.warn(e)
 );
 
-return;
-
-}
-
-currentIndex=index;
-
-audio.src=
-song.url;
-
-audio.load();
-
-audio.play()
-.catch(
-error=>{
-
-console.warn(
-"Reprodução:",
-error
-);
-
-});
-
-document
-.getElementById("nowPlaying")
-.innerText=
-song.title;
-
-document
-.getElementById("nowCategory")
-.innerText=
-song.category ||
-"Nando's Music";
-
-document
-.getElementById("nowPlayingBar")
-.classList.add("active");
-
-document
-.getElementById("playIcon")
-.className=
-"fa-solid fa-pause";
-
-document
-.getElementById("bigPlayIcon")
-.className=
-"fa-solid fa-pause";
-
-document
-.getElementById("bigTitle")
-.innerText=
-song.title;
-
-document
-.getElementById("bigCategory")
-.innerText=
-song.category ||
-"Nando's Music";
-
-atualizarCapaPlayer(
-song
-);
+atualizarPlayer(song);
 
 }
 
 /* =========================================================
-CAPA PLAYER
+ATUALIZAR PLAYER
 ========================================================= */
 
-function atualizarCapaPlayer(
-song
-){
+function atualizarPlayer(song){
 
-const now=
+if(!song)return;
+
 document.getElementById(
-"nowCover"
-);
+"miniTitle"
+).innerText=
+song.title||"Sem título";
 
-const big=
 document.getElementById(
-"bigCover"
-);
+"miniCategory"
+).innerText=
+song.category||"Nando's Music";
 
-if(song.cover){
+document.getElementById(
+"fullTitle"
+).innerText=
+song.title||"Sem título";
 
-now.innerHTML=
-`
+document.getElementById(
+"fullCategory"
+).innerText=
+song.category||"Nando's Music";
 
-<img
-src="${escapar(song.cover)}"
-alt="">
+document.getElementById(
+"lyrics"
+).innerText=
+song.lyrics||
+"A letra desta música ainda não foi cadastrada.";
 
-`;
+miniPlayer.classList.add("show");
 
-big.innerHTML=
-`
-
-<img
-src="${escapar(song.cover)}"
-alt="">
-
-`;
-
-}else{
-
-now.innerHTML=
-'<i class="fa-solid fa-music"></i>';
-
-big.innerHTML=
-'<i class="fa-solid fa-music"></i>';
-
-}
+atualizarIconesPlayer();
 
 }
 
@@ -4015,13 +4326,13 @@ big.innerHTML=
 PLAY / PAUSE
 ========================================================= */
 
-function togglePlay(){
+function alternarPlayer(){
 
-if(!audio.src){
+if(!currentSong){
 
-if(filteredSongs.length){
+if(allSongs.length){
 
-tocarMusica(0);
+tocarPorIndice(0);
 
 }
 
@@ -4029,18 +4340,42 @@ return;
 
 }
 
-if(audio.paused){
+if(musicPlayer.paused){
 
-audio.play()
-.catch(
-console.warn
+musicPlayer.play().catch(
+e=>console.warn(e)
 );
 
 }else{
 
-audio.pause();
+musicPlayer.pause();
 
 }
+
+}
+
+function atualizarIconesPlayer(){
+
+const tocando=
+!musicPlayer.paused;
+
+document.getElementById(
+"miniPlay"
+).innerHTML=
+tocando
+?
+'<i class="fa-solid fa-pause"></i>'
+:
+'<i class="fa-solid fa-play"></i>';
+
+document.getElementById(
+"fullPlay"
+).innerHTML=
+tocando
+?
+'<i class="fa-solid fa-pause"></i>'
+:
+'<i class="fa-solid fa-play"></i>';
 
 }
 
@@ -4050,22 +4385,17 @@ PRÓXIMA
 
 function proximaMusica(){
 
-if(!filteredSongs.length)return;
+if(!allSongs.length)return;
 
-currentIndex++;
+let index=currentSongIndex+1;
 
-if(
-currentIndex>=
-filteredSongs.length
-){
+if(index>=allSongs.length){
 
-currentIndex=0;
+index=0;
 
 }
 
-tocarMusica(
-currentIndex
-);
+tocarPorIndice(index);
 
 }
 
@@ -4073,24 +4403,19 @@ currentIndex
 ANTERIOR
 ========================================================= */
 
-function anteriorMusica(){
+function musicaAnterior(){
 
-if(!filteredSongs.length)return;
+if(!allSongs.length)return;
 
-currentIndex--;
+let index=currentSongIndex-1;
 
-if(
-currentIndex<0
-){
+if(index<0){
 
-currentIndex=
-filteredSongs.length-1;
+index=allSongs.length-1;
 
 }
 
-tocarMusica(
-currentIndex
-);
+tocarPorIndice(index);
 
 }
 
@@ -4098,107 +4423,260 @@ currentIndex
 EVENTOS PLAYER
 ========================================================= */
 
-audio.addEventListener(
+musicPlayer.addEventListener(
 "play",
-()=>{
+atualizarIconesPlayer
+);
 
-document
-.getElementById("playIcon")
-.className=
-"fa-solid fa-pause";
-
-document
-.getElementById("bigPlayIcon")
-.className=
-"fa-solid fa-pause";
-
-});
-
-audio.addEventListener(
+musicPlayer.addEventListener(
 "pause",
+atualizarIconesPlayer
+);
+
+musicPlayer.addEventListener(
+"timeupdate",
 ()=>{
 
-document
-.getElementById("playIcon")
-.className=
-"fa-solid fa-play";
+if(!musicPlayer.duration)return;
 
-document
-.getElementById("bigPlayIcon")
-.className=
-"fa-solid fa-play";
+const porcentagem=
+(musicPlayer.currentTime/
+musicPlayer.duration)*100;
+
+document.getElementById(
+"progress"
+).value=
+porcentagem||0;
+
+document.getElementById(
+"currentTime"
+).innerText=
+formatarTempo(
+musicPlayer.currentTime
+);
 
 });
 
-audio.addEventListener(
-"ended",
+musicPlayer.addEventListener(
+"loadedmetadata",
 ()=>{
+
+document.getElementById(
+"duration"
+).innerText=
+formatarTempo(
+musicPlayer.duration
+);
+
+});
+
+musicPlayer.addEventListener(
+"ended",
+proximaMusica
+);
+
+/* =========================================================
+PROGRESSO
+========================================================= */
+
+document.getElementById(
+"progress"
+).addEventListener(
+"input",
+e=>{
+
+if(!musicPlayer.duration)return;
+
+musicPlayer.currentTime=
+(parseFloat(e.target.value)/100)*
+musicPlayer.duration;
+
+});
+
+/* =========================================================
+BOTÕES MINI
+========================================================= */
+
+document.getElementById(
+"miniPlay"
+).addEventListener(
+"click",
+e=>{
+
+e.stopPropagation();
+
+alternarPlayer();
+
+});
+
+document.getElementById(
+"miniNext"
+).addEventListener(
+"click",
+e=>{
+
+e.stopPropagation();
 
 proximaMusica();
 
 });
 
-/* =========================================================
-PLAYER GRANDE
-========================================================= */
+document.getElementById(
+"miniPrev"
+).addEventListener(
+"click",
+e=>{
 
-function abrirPlayer(){
+e.stopPropagation();
 
-if(!audio.src)return;
-
-document
-.getElementById("playerModal")
-.classList.add("active");
-
-bigAudio.src=
-audio.src;
-
-bigAudio.currentTime=
-audio.currentTime;
-
-bigAudio.play()
-.catch(
-()=>{}
-);
-
-}
-
-function fecharPlayer(){
-
-document
-.getElementById("playerModal")
-.classList.remove("active");
-
-}
-
-/*
-Sincronização do player grande.
-*/
-
-bigAudio.addEventListener(
-"play",
-()=>{
-
-if(audio.paused){
-
-audio.play()
-.catch(
-()=>{}
-);
-
-}
+musicaAnterior();
 
 });
 
-bigAudio.addEventListener(
-"pause",
-()=>{
+document.getElementById(
+"miniOpen"
+).addEventListener(
+"click",
+abrirPlayerCompleto
+);
 
-if(!audio.paused){
+document.getElementById(
+"miniInfo"
+).addEventListener(
+"click",
+abrirPlayerCompleto
+);
 
-audio.pause();
+/* =========================================================
+PLAYER COMPLETO
+========================================================= */
+
+function abrirPlayerCompleto(){
+
+if(!currentSong)return;
+
+fullPlayer.classList.add("active");
+
+document.body.style.overflow="hidden";
+
+atualizarPlayer(currentSong);
 
 }
+
+function fecharPlayerCompleto(){
+
+fullPlayer.classList.remove("active");
+
+document.body.style.overflow="";
+
+}
+
+document.getElementById(
+"closeFullPlayer"
+).addEventListener(
+"click",
+fecharPlayerCompleto
+);
+
+document.getElementById(
+"fullPlay"
+).addEventListener(
+"click",
+alternarPlayer
+);
+
+document.getElementById(
+"fullNext"
+).addEventListener(
+"click",
+proximaMusica
+);
+
+document.getElementById(
+"fullPrev"
+).addEventListener(
+"click",
+musicaAnterior
+);
+
+document.getElementById(
+"openLyricsButton"
+).addEventListener(
+"click",
+()=>{
+
+document.querySelector(
+".lyrics-box"
+).scrollIntoView({
+behavior:"smooth"
+});
+
+});
+
+/* =========================================================
+TEMPO
+========================================================= */
+
+function formatarTempo(segundos){
+
+if(!isFinite(segundos))return"0:00";
+
+const minutos=
+Math.floor(segundos/60);
+
+const segundosRestantes=
+Math.floor(segundos%60);
+
+return minutos+
+":"+
+String(segundosRestantes)
+.padStart(2,"0");
+
+}
+
+/* =========================================================
+BUSCA
+========================================================= */
+
+document.getElementById(
+"searchInput"
+).addEventListener(
+"input",
+e=>{
+
+searchText=
+e.target.value.trim();
+
+renderizarMusicas();
+
+});
+
+/* =========================================================
+CATEGORIAS
+========================================================= */
+
+document.querySelectorAll(
+".category"
+).forEach(button=>{
+
+button.addEventListener(
+"click",
+()=>{
+
+document.querySelectorAll(
+".category"
+).forEach(
+x=>x.classList.remove("active")
+);
+
+button.classList.add("active");
+
+currentCategory=
+button.dataset.category;
+
+renderizarMusicas();
+
+});
 
 });
 
@@ -4206,47 +4684,24 @@ audio.pause();
 NAVEGAÇÃO
 ========================================================= */
 
-function ativarNav(
-button
-){
-
-document
-.querySelectorAll(
-".nav-button"
-)
-.forEach(
-el=>{
-el.classList.remove("active");
-}
-);
-
-if(button){
-
-button.classList.add(
-"active"
-);
-
-}
-
-}
-
-function irInicio(
-button
-){
-
-ativarNav(button);
+document.getElementById(
+"navHome"
+).addEventListener(
+"click",
+()=>{
 
 window.scrollTo({
-
 top:0,
-
 behavior:"smooth"
+});
 
 });
 
-}
-
-function abrirBusca(){
+document.getElementById(
+"navSearch"
+).addEventListener(
+"click",
+()=>{
 
 const input=
 document.getElementById(
@@ -4256,136 +4711,107 @@ document.getElementById(
 input.focus();
 
 window.scrollTo({
-
-top:0,
-
+top:100,
 behavior:"smooth"
+});
 
 });
 
-}
+document.getElementById(
+"navLibrary"
+).addEventListener(
+"click",
+()=>{
 
-function abrirBuscaNav(
-button
-){
-
-ativarNav(button);
-
-abrirBusca();
-
-}
-
-function abrirBiblioteca(
-button
-){
-
-ativarNav(button);
-
-document
-.getElementById(
+document.getElementById(
 "playlistContainer"
-)
-.scrollIntoView({
+).scrollIntoView({
 behavior:"smooth"
 });
 
-}
+});
 
 /* =========================================================
-VÍDEO
+ADMIN PLAYER
 ========================================================= */
 
-db.ref(
-"background_videos"
-).on(
-"value",
-snapshot=>{
+function tocarAdmin(url,title){
 
-const dados=
-snapshot.val()||{};
-
-bgVideos=[];
-
-Object.keys(dados)
-.forEach(
-id=>{
-
-bgVideos.push({
-
-id:id,
-
-url:dados[id].url
-
-});
-
-});
-
-renderizarFundosAdmin();
-
-if(currentCode){
-
-iniciarVideo();
-
-}
-
-});
-
-function iniciarVideo(){
+if(!adminLogado)return;
 
 const player=
 document.getElementById(
-"backgroundPlayer"
+"adminMusicPlayer"
 );
-
-if(!player)return;
-
-let url=
-VIDEO_TESTE;
-
-if(bgVideos.length){
-
-const escolhido=
-bgVideos[
-Math.floor(
-Math.random()*
-bgVideos.length
-)
-];
-
-if(
-escolhido &&
-escolhido.url
-){
-
-url=
-escolhido.url;
-
-}
-
-}
 
 player.src=url;
 
-player.muted=true;
+document.getElementById(
+"adminNowPlaying"
+).innerText=title;
 
-player.loop=true;
-
-player.play()
-.catch(
-error=>{
-
-console.warn(
-"Vídeo:",
-error
+player.play().catch(
+e=>console.warn(e)
 );
+
+}
+
+function renderizarAdminPlayer(){
+
+const container=
+document.getElementById(
+"adminPlayerList"
+);
+
+if(!container)return;
+
+if(!allSongs.length){
+
+container.innerHTML=
+'<div class="empty">Nenhuma música cadastrada.</div>';
+
+return;
+
+}
+
+container.innerHTML="";
+
+allSongs.forEach(song=>{
+
+const row=
+document.createElement("div");
+
+row.className="admin-row";
+
+row.innerHTML=`
+
+<span>
+${escapar(song.title)}
+</span>
+
+<button
+style="background:#8b5cf6">
+
+<i class="fa-solid fa-play"></i>
+
+</button>
+
+`;
+
+row.querySelector("button")
+.addEventListener(
+"click",
+()=>tocarAdmin(
+song.url,
+song.title
+)
+);
+
+container.appendChild(row);
 
 });
 
 }
-
-/* =========================================================
-LISTA ADM
-========================================================= */
 
 function carregarListaAdmin(){
 
@@ -4405,40 +4831,73 @@ return;
 
 }
 
-let html="";
+container.innerHTML="";
 
-allSongs.forEach(
-song=>{
+allSongs.forEach(song=>{
 
-html+=`
+const row=
+document.createElement("div");
 
-<div class="admin-row">
+row.className="admin-row";
+
+row.innerHTML=`
 
 <span>
 ${escapar(song.title)}
 </span>
 
 <button
-style="background:#ef4444"
-onclick="excluirMusica('${escapar(song.id)}')">
+style="background:#ef4444">
 
 <i class="fa-solid fa-trash"></i>
 
 </button>
 
-</div>
-
 `;
 
-});
+row.querySelector("button")
+.addEventListener(
+"click",
+()=>excluirMusica(song.id)
+);
 
-container.innerHTML=
-html;
+container.appendChild(row);
+
+});
 
 }
 
 /* =========================================================
-FUNDOS ADM
+FUNDOS
+========================================================= */
+
+db.ref("background_videos").on(
+"value",
+snapshot=>{
+
+bgVideos=[];
+
+const dados=
+snapshot.val()||{};
+
+Object.keys(dados).forEach(id=>{
+
+bgVideos.push({
+
+id:id,
+
+url:dados[id].url
+
+});
+
+});
+
+renderizarFundosAdmin();
+
+});
+
+/* =========================================================
+FUNDOS ADMIN
 ========================================================= */
 
 function renderizarFundosAdmin(){
@@ -4459,54 +4918,124 @@ return;
 
 }
 
-let html="";
+container.innerHTML="";
 
-bgVideos.forEach(
-video=>{
+bgVideos.forEach(video=>{
 
-html+=`
+const row=
+document.createElement("div");
 
-<div class="admin-row">
+row.className="admin-row";
+
+row.innerHTML=`
 
 <span>
-
-Vídeo
-${escapar(
+Vídeo ${escapar(
 video.id.substring(0,6)
 )}
-
 </span>
 
 <button
-style="background:#ef4444"
-onclick="excluirFundo('${escapar(video.id)}')">
+style="background:#ef4444">
 
 <i class="fa-solid fa-trash"></i>
 
 </button>
 
-</div>
-
 `;
 
-});
+row.querySelector("button")
+.addEventListener(
+"click",
+()=>excluirFundo(video.id)
+);
 
-container.innerHTML=
-html;
+container.appendChild(row);
+
+});
 
 }
 
 /* =========================================================
-ENTER
+VÍDEO ADMIN
 ========================================================= */
 
-document
-.getElementById("userAccessCode")
-.addEventListener(
-"keydown",
-event=>{
+function iniciarVideoAdmin(){
 
-if(event.key==="Enter"){
+const video=
+document.getElementById(
+"adminBackgroundPlayer"
+);
+
+if(!video)return;
+
+let url=VIDEO_TESTE;
+
+if(bgVideos.length){
+
+const escolhido=
+bgVideos[
+Math.floor(
+Math.random()*bgVideos.length
+)
+];
+
+if(escolhido&&escolhido.url){
+
+url=escolhido.url;
+
+}
+
+}
+
+video.src=url;
+
+video.muted=true;
+
+video.loop=true;
+
+video.play().catch(
+e=>console.warn(e)
+);
+
+}
+
+/* =========================================================
+ESCAPAR HTML
+========================================================= */
+
+function escapar(texto){
+
+if(
+texto===undefined||
+texto===null
+){
+
+return"";
+
+}
+
+return String(texto)
+
+.replace(/&/g,"&amp;")
+.replace(/</g,"&lt;")
+.replace(/>/g,"&gt;")
+.replace(/"/g,"&quot;")
+.replace(/'/g,"&#039;");
+
+}
+
+/* =========================================================
+ENTER CLIENTE
+========================================================= */
+
+document.getElementById(
+"userAccessCode"
+).addEventListener(
+"keydown",
+e=>{
+
+if(e.key==="Enter"){
 
 processarAcesso();
 
@@ -4514,13 +5043,17 @@ processarAcesso();
 
 });
 
-document
-.getElementById("adminPassword")
-.addEventListener(
-"keydown",
-event=>{
+/* =========================================================
+ENTER ADMIN
+========================================================= */
 
-if(event.key==="Enter"){
+document.getElementById(
+"adminPassword"
+).addEventListener(
+"keydown",
+e=>{
+
+if(e.key==="Enter"){
 
 entrarAdmin();
 
@@ -4532,97 +5065,30 @@ entrarAdmin();
 PWA
 ========================================================= */
 
-let deferredPrompt=null;
+if("serviceWorker" in navigator){
 
 window.addEventListener(
-"beforeinstallprompt",
-event=>{
-
-event.preventDefault();
-
-deferredPrompt=event;
-
-if(
-currentCode ||
-adminLogado
-){
-
-mostrarBotaoInstalar();
-
-}
-
-});
-
-function mostrarBotaoInstalar(){
-
-if(
-deferredPrompt
-){
-
-document
-.getElementById(
-"installContainer"
-)
-.style.display=
-"block";
-
-}
-
-}
-
-document
-.getElementById(
-"installButton"
-)
-.addEventListener(
-"click",
-async()=>{
-
-if(!deferredPrompt){
-
-alert(
-"Abra o menu do navegador e procure por 'Instalar aplicativo' ou 'Adicionar à tela inicial'."
-);
-
-return;
-
-}
-
-deferredPrompt.prompt();
-
-const resultado=
-await deferredPrompt.userChoice;
-
-console.log(
-"Instalação:",
-resultado.outcome
-);
-
-deferredPrompt=null;
-
-document
-.getElementById(
-"installContainer"
-)
-.style.display=
-"none";
-
-});
-
-window.addEventListener(
-"appinstalled",
+"load",
 ()=>{
 
-deferredPrompt=null;
-
-document
-.getElementById(
-"installContainer"
+navigator.serviceWorker
+.register("./service-worker.js")
+.then(
+reg=>console.log(
+"PWA ativo:",
+reg.scope
 )
-.style.display=
-"none";
+)
+.catch(
+err=>console.warn(
+"Service Worker:",
+err
+)
+);
 
 });
+
+}
 
 /* =========================================================
 INICIALIZAÇÃO
@@ -4632,57 +5098,34 @@ window.addEventListener(
 "load",
 async()=>{
 
-document
-.getElementById(
-"appContent"
-)
-.classList.add("hidden");
+appContent.classList.add("hidden");
 
 await verificarAcessoInicial();
 
 });
 
 /* =========================================================
-SERVICE WORKER
+TECLA ESC FECHA PLAYER
 ========================================================= */
 
+document.addEventListener(
+"keydown",
+e=>{
+
 if(
-"serviceWorker"
-in navigator
+e.key==="Escape" &&
+fullPlayer.classList.contains("active")
 ){
 
-window.addEventListener(
-"load",
-()=>{
-
-navigator.serviceWorker
-.register(
-"./service-worker.js"
-)
-.then(
-registration=>{
-
-console.log(
-"Nando's Music PWA ativo:",
-registration.scope
-);
+fecharPlayerCompleto();
 
 }
-)
-.catch(
-error=>{
-
-console.warn(
-"Service Worker:",
-error
-);
-
-}
-);
 
 });
 
-}
+/* =========================================================
+FIM
+========================================================= */
 
 </script>
 
