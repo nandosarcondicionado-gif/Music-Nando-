@@ -1,11 +1,5 @@
 /* =========================================================
-   NANDO'S MUSIC
-   PLAYER + VÍDEO DE FUNDO
-========================================================= */
-
-
-/* =========================================================
-   VARIÁVEIS DO PLAYER
+VARIÁVEIS DO PLAYER
 ========================================================= */
 
 let allSongs=[];
@@ -13,18 +7,8 @@ let currentSongIndex=-1;
 let currentCategory="Todas";
 let shuffleMode=false;
 
-
 /* =========================================================
-   VARIÁVEIS DO VÍDEO DE FUNDO
-========================================================= */
-
-let allBackgroundVideos=[];
-let currentBackgroundIndex=-1;
-let backgroundVideosLoaded=false;
-
-
-/* =========================================================
-   ELEMENTOS
+ELEMENTOS
 ========================================================= */
 
 const musicPlayer=
@@ -39,19 +23,8 @@ document.getElementById("fullPlayer");
 const lyricsModal=
 document.getElementById("lyricsModal");
 
-const backgroundVideo=
-document.getElementById(
-"musicBackgroundVideo"
-);
-
-const backgroundOverlay=
-document.getElementById(
-"musicBackgroundOverlay"
-);
-
-
 /* =========================================================
-   CARREGAR MÚSICAS
+CARREGAR MÚSICAS
 ========================================================= */
 
 db.ref("musicas").on(
@@ -80,444 +53,17 @@ filtrarListaAtual()
 );
 
 if(typeof renderizarAdminPlayer==="function"){
-
 renderizarAdminPlayer();
-
 }
 
 if(typeof carregarListaAdmin==="function"){
-
 carregarListaAdmin();
-
 }
 
 });
 
-
 /* =========================================================
-   CARREGAR VÍDEOS DE FUNDO
-========================================================= */
-
-function carregarVideosDeFundo(){
-
-if(!backgroundVideo){
-
-console.warn(
-"Nando's Music: elemento de vídeo de fundo não encontrado."
-);
-
-return;
-
-}
-
-db.ref("fundos").on(
-"value",
-snapshot=>{
-
-allBackgroundVideos=[];
-
-const dados=
-snapshot.val()||{};
-
-Object.keys(dados).forEach(id=>{
-
-const fundo=
-dados[id]||{};
-
-/*
-   Aceita a estrutura normal:
-   { url: "https://..." }
-
-   Também aceita:
-   { videoUrl: "https://..." }
-*/
-
-const url=
-fundo.url||
-fundo.videoUrl||
-fundo.src||
-"";
-
-if(!url)return;
-
-allBackgroundVideos.push({
-id:id,
-url:url,
-...fundo
-});
-
-});
-
-backgroundVideosLoaded=true;
-
-console.log(
-"Nando's Music: vídeos de fundo carregados:",
-allBackgroundVideos.length
-);
-
-/*
-   Se já houver música tocando,
-   garante que o vídeo seja iniciado.
-*/
-
-if(
-!musicPlayer.paused &&
-musicPlayer.src
-){
-
-iniciarVideoDeFundo();
-
-}
-
-},
-error=>{
-
-console.error(
-"Erro ao carregar vídeos de fundo:",
-error
-);
-
-backgroundVideosLoaded=false;
-
-}
-);
-
-}
-
-
-/* =========================================================
-   ESCOLHER VÍDEO ALEATÓRIO
-========================================================= */
-
-function escolherVideoAleatorio(){
-
-if(!allBackgroundVideos.length){
-
-return null;
-
-}
-
-let index=
-Math.floor(
-Math.random()*
-allBackgroundVideos.length
-);
-
-/*
-   Evita repetir o mesmo vídeo quando
-   existem dois ou mais vídeos.
-*/
-
-if(allBackgroundVideos.length>1){
-
-let tentativas=0;
-
-while(
-index===currentBackgroundIndex &&
-tentativas<20
-){
-
-index=
-Math.floor(
-Math.random()*
-allBackgroundVideos.length
-);
-
-tentativas++;
-
-}
-
-}
-
-currentBackgroundIndex=index;
-
-return allBackgroundVideos[index];
-
-}
-
-
-/* =========================================================
-   INICIAR VÍDEO DE FUNDO
-========================================================= */
-
-function iniciarVideoDeFundo(){
-
-if(!backgroundVideo){
-
-return;
-
-}
-
-if(!allBackgroundVideos.length){
-
-backgroundVideo.classList.remove(
-"playing"
-);
-
-if(backgroundOverlay){
-
-backgroundOverlay.classList.remove(
-"active"
-);
-
-}
-
-return;
-
-}
-
-const video=
-escolherVideoAleatorio();
-
-if(!video||!video.url){
-
-return;
-
-}
-
-/*
-   Mostra o vídeo.
-*/
-
-backgroundVideo.classList.add(
-"playing"
-);
-
-if(backgroundOverlay){
-
-backgroundOverlay.classList.add(
-"active"
-);
-
-}
-
-/*
-   Evita manter o vídeo anterior.
-*/
-
-try{
-
-backgroundVideo.pause();
-
-}catch(error){
-
-console.warn(error);
-
-}
-
-backgroundVideo.src=
-video.url;
-
-backgroundVideo.load();
-
-/*
-   O vídeo precisa ser MUTED para
-   autoplay funcionar nos celulares.
-*/
-
-backgroundVideo.muted=true;
-
-const promessa=
-backgroundVideo.play();
-
-if(promessa&&typeof promessa.catch==="function"){
-
-promessa.catch(error=>{
-
-console.warn(
-"Nando's Music: reprodução automática do vídeo aguardando interação.",
-error
-);
-
-});
-
-}
-
-}
-
-
-/* =========================================================
-   TROCAR VÍDEO
-========================================================= */
-
-function trocarVideoDeFundo(){
-
-if(!backgroundVideo){
-
-return;
-
-}
-
-if(!allBackgroundVideos.length){
-
-return;
-
-}
-
-const video=
-escolherVideoAleatorio();
-
-if(!video||!video.url){
-
-return;
-
-}
-
-try{
-
-backgroundVideo.pause();
-
-}catch(error){
-
-console.warn(error);
-
-}
-
-backgroundVideo.src=
-video.url;
-
-backgroundVideo.load();
-
-backgroundVideo.muted=true;
-
-backgroundVideo.classList.add(
-"playing"
-);
-
-if(backgroundOverlay){
-
-backgroundOverlay.classList.add(
-"active"
-);
-
-}
-
-const promessa=
-backgroundVideo.play();
-
-if(promessa&&typeof promessa.catch==="function"){
-
-promessa.catch(error=>{
-
-console.warn(
-"Nando's Music: não foi possível iniciar o próximo vídeo.",
-error
-);
-
-});
-
-}
-
-}
-
-
-/* =========================================================
-   PARAR VÍDEO DE FUNDO
-========================================================= */
-
-function pararVideoDeFundo(){
-
-if(!backgroundVideo){
-
-return;
-
-}
-
-try{
-
-backgroundVideo.pause();
-
-}catch(error){
-
-console.warn(error);
-
-}
-
-backgroundVideo.classList.remove(
-"playing"
-);
-
-if(backgroundOverlay){
-
-backgroundOverlay.classList.remove(
-"active"
-);
-
-}
-
-}
-
-
-/* =========================================================
-   EVENTO: VÍDEO TERMINOU
-========================================================= */
-
-if(backgroundVideo){
-
-backgroundVideo.addEventListener(
-"ended",
-()=>{
-
-/*
-   Se ainda existe música tocando,
-   escolhe outro vídeo.
-*/
-
-if(
-!musicPlayer.paused &&
-!musicPlayer.ended
-){
-
-trocarVideoDeFundo();
-
-}
-
-});
-
-}
-
-
-/* =========================================================
-   EVENTO: VÍDEO COM ERRO
-========================================================= */
-
-if(backgroundVideo){
-
-backgroundVideo.addEventListener(
-"error",
-()=>{
-
-console.warn(
-"Nando's Music: erro ao reproduzir vídeo de fundo."
-);
-
-/*
-   Tenta outro vídeo automaticamente.
-*/
-
-if(
-!musicPlayer.paused &&
-allBackgroundVideos.length>1
-){
-
-trocarVideoDeFundo();
-
-}
-
-});
-
-}
-
-
-/* =========================================================
-   INICIALIZAR VÍDEOS
-========================================================= */
-
-carregarVideosDeFundo();
-
-
-/* =========================================================
-   ESCAPAR HTML
+ESCAPAR HTML
 ========================================================= */
 
 function escapar(texto){
@@ -540,9 +86,8 @@ return String(texto)
 
 }
 
-
 /* =========================================================
-   LISTA ATUAL
+LISTA ATUAL
 ========================================================= */
 
 function filtrarListaAtual(){
@@ -584,9 +129,8 @@ return lista;
 
 }
 
-
 /* =========================================================
-   RENDER MÚSICAS
+RENDER MÚSICAS
 ========================================================= */
 
 function renderizarMusicas(lista){
@@ -690,9 +234,8 @@ container.appendChild(item);
 
 }
 
-
 /* =========================================================
-   TOCAR MÚSICA
+TOCAR
 ========================================================= */
 
 function tocar(song){
@@ -749,38 +292,10 @@ song.lyrics||
 
 miniPlayer.classList.add("visible");
 
-
-/*
-   Limpa o vídeo anterior.
-   O novo vídeo será escolhido quando
-   a música realmente começar.
-*/
-
-if(backgroundVideo){
-
-try{
-
-backgroundVideo.pause();
-
-}catch(error){
-
-console.warn(error);
-
-}
-
-}
-
-
-/*
-   Inicia música.
-*/
-
 musicPlayer.play()
 .then(()=>{
 
 atualizarBotoesPlayer();
-
-iniciarVideoDeFundo();
 
 })
 .catch(error=>{
@@ -796,9 +311,8 @@ atualizarBotoesPlayer();
 
 }
 
-
 /* =========================================================
-   PLAYER
+PLAYER
 ========================================================= */
 
 function togglePlay(){
@@ -818,11 +332,6 @@ return;
 if(musicPlayer.paused){
 
 musicPlayer.play()
-.then(()=>{
-
-iniciarVideoDeFundo();
-
-})
 .catch(console.warn);
 
 }else{
@@ -834,11 +343,6 @@ musicPlayer.pause();
 atualizarBotoesPlayer();
 
 }
-
-
-/* =========================================================
-   ATUALIZAR BOTÕES
-========================================================= */
 
 function atualizarBotoesPlayer(){
 
@@ -880,9 +384,8 @@ tocando
 
 }
 
-
 /* =========================================================
-   EVENTO AUDIO - PLAY
+EVENTOS AUDIO
 ========================================================= */
 
 musicPlayer.addEventListener(
@@ -893,14 +396,7 @@ miniPlayer.classList.add("visible");
 
 atualizarBotoesPlayer();
 
-iniciarVideoDeFundo();
-
 });
-
-
-/* =========================================================
-   EVENTO AUDIO - PAUSE
-========================================================= */
 
 musicPlayer.addEventListener(
 "pause",
@@ -908,14 +404,7 @@ musicPlayer.addEventListener(
 
 atualizarBotoesPlayer();
 
-pararVideoDeFundo();
-
 });
-
-
-/* =========================================================
-   EVENTO AUDIO - TIMEUPDATE
-========================================================= */
 
 musicPlayer.addEventListener(
 "timeupdate",
@@ -953,22 +442,9 @@ musicPlayer.duration
 
 });
 
-
-/* =========================================================
-   EVENTO AUDIO - ENDED
-========================================================= */
-
 musicPlayer.addEventListener(
 "ended",
 ()=>{
-
-/*
-   A música terminou.
-   O próximo comando tocará a próxima música
-   e automaticamente escolherá um novo vídeo.
-*/
-
-pararVideoDeFundo();
 
 if(shuffleMode){
 
@@ -982,9 +458,8 @@ avancar();
 
 });
 
-
 /* =========================================================
-   TEMPO
+TEMPO
 ========================================================= */
 
 function formatarTempo(segundos){
@@ -1003,9 +478,8 @@ return minutos+":"+segundosRestantes;
 
 }
 
-
 /* =========================================================
-   BARRA DE PROGRESSO
+BARRA DE PROGRESSO
 ========================================================= */
 
 document.getElementById(
@@ -1028,9 +502,8 @@ pos*musicPlayer.duration;
 
 });
 
-
 /* =========================================================
-   CONTROLES
+CONTROLES
 ========================================================= */
 
 function retroceder(){
@@ -1044,7 +517,6 @@ musicPlayer.currentTime-10
 );
 
 }
-
 
 function avancar(){
 
@@ -1071,7 +543,6 @@ tocar(allSongs[index]);
 
 }
 
-
 function voltarMusica(){
 
 if(!allSongs.length)return;
@@ -1097,7 +568,6 @@ tocar(allSongs[index]);
 
 }
 
-
 function ativarAleatorio(){
 
 shuffleMode=!shuffleMode;
@@ -1119,7 +589,6 @@ shuffleMode
 }
 
 }
-
 
 function tocarAleatoria(){
 
@@ -1147,9 +616,8 @@ tocar(allSongs[index]);
 
 }
 
-
 /* =========================================================
-   PLAYER COMPLETO
+PLAYER COMPLETO
 ========================================================= */
 
 function abrirPlayerCompleto(){
@@ -1172,7 +640,6 @@ document.body.classList.add("no-scroll");
 
 }
 
-
 function fecharPlayerCompleto(){
 
 fullPlayer.classList.remove("active");
@@ -1181,9 +648,8 @@ document.body.classList.remove("no-scroll");
 
 }
 
-
 /* =========================================================
-   LETRAS
+LETRAS
 ========================================================= */
 
 function abrirLetras(){
@@ -1200,7 +666,6 @@ document.body.classList.add("no-scroll");
 
 }
 
-
 function fecharLetras(){
 
 lyricsModal.classList.remove("active");
@@ -1209,9 +674,8 @@ document.body.classList.remove("no-scroll");
 
 }
 
-
 /* =========================================================
-   BUSCA
+BUSCA
 ========================================================= */
 
 const searchInput=
@@ -1256,7 +720,6 @@ document.getElementById(
 }
 
 });
-
 
 function mostrarResultados(lista){
 
@@ -1324,7 +787,6 @@ container.appendChild(div);
 
 }
 
-
 function limparBusca(){
 
 searchInput.value="";
@@ -1343,9 +805,8 @@ filtrarListaAtual()
 
 }
 
-
 /* =========================================================
-   FILTROS
+FILTROS
 ========================================================= */
 
 document.querySelectorAll(
@@ -1375,9 +836,8 @@ filtrarListaAtual()
 
 });
 
-
 /* =========================================================
-   NAVEGAÇÃO
+NAVEGAÇÃO
 ========================================================= */
 
 function definirNav(index){
@@ -1394,7 +854,6 @@ i===index
 
 }
 
-
 function irInicio(){
 
 definirNav(0);
@@ -1405,7 +864,6 @@ behavior:"smooth"
 });
 
 }
-
 
 function abrirBusca(){
 
@@ -1419,7 +877,6 @@ behavior:"smooth"
 });
 
 }
-
 
 function irMusicas(){
 
