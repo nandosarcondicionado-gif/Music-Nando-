@@ -28,6 +28,31 @@ rel="stylesheet">
 
 <body>
 
+<!-- =====================================================
+     VÍDEO DE FUNDO DO NANDO'S MUSIC
+===================================================== -->
+
+<div id="backgroundVideoLayer" class="background-video-layer">
+
+<video
+id="clientBackgroundVideo"
+class="client-background-video"
+playsinline
+muted
+loop
+preload="auto">
+</video>
+
+<div class="background-video-overlay"></div>
+
+</div>
+
+<!-- =====================================================
+     CONTEÚDO PRINCIPAL
+===================================================== -->
+
+<div id="mainInterface">
+
 <header>
 
 <div class="logo">
@@ -109,7 +134,7 @@ autocomplete="off">
 id="clearSearch"
 class="clear-search"
 type="button"
-onclick="limparBusca">
+onclick="limparBusca()">
 
 <i class="fa-solid fa-xmark"></i>
 
@@ -297,6 +322,8 @@ Nando's Music
 <i class="fa-solid fa-align-left"></i>
 Letra
 </button>
+
+</div>
 
 </div>
 
