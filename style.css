@@ -1280,3 +1280,132 @@ transition:none;
 }
 
 }
+
+/* =========================================================
+   VÍDEO DE FUNDO - NANDO'S MUSIC
+========================================================= */
+
+.music-background-video{
+position:fixed;
+inset:0;
+width:100%;
+height:100%;
+object-fit:cover;
+z-index:0;
+pointer-events:none;
+display:none;
+background:#05070d;
+}
+
+/* Vídeo aparece somente quando estiver reproduzindo */
+.music-background-video.playing{
+display:block;
+}
+
+/* Camada escura para manter textos e botões legíveis */
+.music-background-overlay{
+position:fixed;
+inset:0;
+z-index:0;
+pointer-events:none;
+display:none;
+background:
+linear-gradient(
+180deg,
+rgba(7,9,16,.78),
+rgba(7,9,16,.70) 45%,
+rgba(7,9,16,.88)
+);
+}
+
+/* Ativa a camada junto com o vídeo */
+.music-background-overlay.active{
+display:block;
+}
+
+/*
+   Garante que a interface fique acima do vídeo.
+   Os elementos que já possuem z-index continuam
+   funcionando normalmente.
+*/
+body > header,
+body > .connection-status,
+body > #installContainer,
+body > main,
+body > .mini-player,
+body > .full-player,
+body > .lyrics-modal,
+body > .bottom-nav,
+body > .side-menu,
+body > .modal{
+position:relative;
+z-index:1;
+}
+
+/*
+   Elementos que possuem position:fixed/sticky
+   continuam acima do vídeo.
+*/
+header{
+z-index:500;
+}
+
+.mini-player{
+z-index:900;
+}
+
+.bottom-nav{
+z-index:800;
+}
+
+.full-player{
+z-index:3000;
+}
+
+.lyrics-modal{
+z-index:3500;
+}
+
+.side-menu{
+z-index:4500;
+}
+
+.modal{
+z-index:5000;
+}
+
+/*
+   O player completo recebe uma transparência leve
+   para permitir que o vídeo continue aparecendo
+   no fundo quando desejado.
+*/
+.full-player{
+background:
+linear-gradient(
+180deg,
+rgba(17,21,42,.78),
+rgba(8,10,18,.92) 75%
+);
+}
+
+/*
+   Em telas pequenas o vídeo ocupa toda a tela.
+*/
+@media(max-width:600px){
+
+.music-background-video{
+object-position:center center;
+}
+
+}
+
+/*
+   Respeita aparelhos que preferem menos movimento.
+*/
+@media(prefers-reduced-motion:reduce){
+
+.music-background-video{
+transition:none!important;
+}
+
+}
