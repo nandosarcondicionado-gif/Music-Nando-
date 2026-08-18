@@ -1,7 +1,7 @@
 /* =========================================================
    NANDO'S MUSIC
    APP.JS
-   ACESSO + VÍDEO DE FUNDO + DOWNLOAD + PWA
+   ACESSO + VÍDEO DE FUNDO + PWA
 ========================================================= */
 
 const CHAVE_ADM = "NANDOADM";
@@ -17,7 +17,6 @@ let deferredPrompt = null;
 let backgroundVideos = [];
 let currentBackgroundVideo = "";
 let backgroundVideoInitialized = false;
-let backgroundVideoEventsInitialized = false;
 
 /* =========================================================
    DEVICE ID
@@ -30,14 +29,15 @@ if (!deviceId) {
     deviceId =
         "DEV-" +
         Math.random()
-            .toString(36)
-            .substring(2, 10)
-            .toUpperCase();
+        .toString(36)
+        .substring(2, 10)
+        .toUpperCase();
 
     localStorage.setItem(
         "nando_device_id",
         deviceId
     );
+
 }
 
 /* =========================================================
@@ -56,18 +56,61 @@ const backgroundVideo =
     );
 
 /* =========================================================
+   CONTROLE DE ROLAGEM
+========================================================= */
+
+function bloquearRolagem() {
+
+    document.documentElement.classList.add(
+        "no-scroll"
+    );
+
+    document.body.classList.add(
+        "no-scroll"
+    );
+
+}
+
+function liberarRolagem() {
+
+    document.documentElement.classList.remove(
+        "no-scroll"
+    );
+
+    document.body.classList.remove(
+        "no-scroll"
+    );
+
+}
+
+/* =========================================================
    MOSTRAR APP
 ========================================================= */
 
 function mostrarApp() {
 
-    if (authModal) {
-        authModal.classList.remove("active");
-    }
+    /*
+       Fecha completamente a tela de bloqueio.
+    */
 
-    if (appContent) {
-        appContent.classList.remove("hidden");
-    }
+    authModal.classList.remove(
+        "active"
+    );
+
+    /*
+       Mostra o aplicativo.
+    */
+
+    appContent.classList.remove(
+        "hidden"
+    );
+
+    /*
+       Libera a rolagem somente depois
+       que o acesso foi autorizado.
+    */
+
+    liberarRolagem();
 
 }
 
@@ -77,24 +120,56 @@ function mostrarApp() {
 
 function bloquearAplicativo(mensagem) {
 
+    /*
+       BLOQUEIA A TELA IMEDIATAMENTE.
+    */
+
+    bloquearRolagem();
+
     currentCode = null;
 
-    localStorage.removeItem("nando_autorizado");
-    localStorage.removeItem("nando_codigo");
+    localStorage.removeItem(
+        "nando_autorizado"
+    );
 
-    authorizationListenersStarted = false;
+    localStorage.removeItem(
+        "nando_codigo"
+    );
+
+    try {
+
+        if (
+            authorizationListenersStarted
+        ) {
+
+            authorizationListenersStarted =
+                false;
+
+        }
+
+    } catch (e) {
+
+        console.warn(e);
+
+    }
 
     const musicPlayer =
-        document.getElementById("musicPlayer");
+        document.getElementById(
+            "musicPlayer"
+        );
 
     const miniPlayer =
-        document.getElementById("miniPlayer");
+        document.getElementById(
+            "miniPlayer"
+        );
 
     if (musicPlayer) {
 
         musicPlayer.pause();
 
-        musicPlayer.removeAttribute("src");
+        musicPlayer.removeAttribute(
+            "src"
+        );
 
         musicPlayer.load();
 
@@ -104,15 +179,15 @@ function bloquearAplicativo(mensagem) {
 
     if (miniPlayer) {
 
-        miniPlayer.classList.remove("visible");
+        miniPlayer.classList.remove(
+            "visible"
+        );
 
     }
 
-    if (appContent) {
-
-        appContent.classList.add("hidden");
-
-    }
+    appContent.classList.add(
+        "hidden"
+    );
 
     if (
         typeof adminLogado === "undefined" ||
@@ -120,7 +195,9 @@ function bloquearAplicativo(mensagem) {
     ) {
 
         const menuButton =
-            document.getElementById("menuButton");
+            document.getElementById(
+                "menuButton"
+            );
 
         if (menuButton) {
 
@@ -132,22 +209,20 @@ function bloquearAplicativo(mensagem) {
 
     }
 
-    if (authModal) {
+    /*
+       Mostra a tela de bloqueio.
+    */
 
-        authModal.classList.add("active");
+    authModal.classList.add(
+        "active"
+    );
 
-    }
-
-    if (typeof mostrarMensagem === "function") {
-
-        mostrarMensagem(
-            "authMessage",
-            mensagem ||
-                "Seu acesso foi bloqueado.",
-            "error"
-        );
-
-    }
+    mostrarMensagem(
+        "authMessage",
+        mensagem ||
+        "Seu acesso foi bloqueado.",
+        "error"
+    );
 
 }
 
@@ -162,12 +237,10 @@ async function processarAcesso() {
             "userAccessCode"
         );
 
-    if (!input) return;
-
     const valor =
         input.value
-            .trim()
-            .toUpperCase();
+        .trim()
+        .toUpperCase();
 
     if (!valor) {
 
@@ -190,20 +263,15 @@ async function processarAcesso() {
 
         input.value = "";
 
-        if (authModal) {
-            authModal.classList.remove("active");
-        }
+        authModal.classList.remove(
+            "active"
+        );
 
-        const adminModal =
-            document.getElementById(
-                "adminLoginModal"
-            );
-
-        if (adminModal) {
-
-            adminModal.classList.add("active");
-
-        }
+        document.getElementById(
+            "adminLoginModal"
+        ).classList.add(
+            "active"
+        );
 
         mostrarMensagem(
             "adminLoginMessage",
@@ -211,28 +279,25 @@ async function processarAcesso() {
             ""
         );
 
-        const password =
+        document.getElementById(
+            "adminPassword"
+        ).value = "";
+
+        setTimeout(() => {
+
             document.getElementById(
                 "adminPassword"
-            );
+            ).focus();
 
-        if (password) {
-
-            password.value = "";
-
-            setTimeout(() => {
-
-                password.focus();
-
-            }, 150);
-
-        }
+        }, 150);
 
         return;
 
     }
 
-    await validarCodigoUsuario(valor);
+    await validarCodigoUsuario(
+        valor
+    );
 
 }
 
@@ -240,7 +305,9 @@ async function processarAcesso() {
    VALIDAR CÓDIGO CLIENTE
 ========================================================= */
 
-async function validarCodigoUsuario(codigo) {
+async function validarCodigoUsuario(
+    codigo
+) {
 
     if (
         !/^ND-[A-Z0-9]{6}$/.test(codigo)
@@ -271,7 +338,9 @@ async function validarCodigoUsuario(codigo) {
             );
 
         const snap =
-            await ref.once("value");
+            await ref.once(
+                "value"
+            );
 
         const dados =
             snap.val();
@@ -315,7 +384,8 @@ async function validarCodigoUsuario(codigo) {
 
         });
 
-        currentCode = codigo;
+        currentCode =
+            codigo;
 
         localStorage.setItem(
             "nando_autorizado",
@@ -327,14 +397,9 @@ async function validarCodigoUsuario(codigo) {
             codigo
         );
 
-        const accessInput =
-            document.getElementById(
-                "userAccessCode"
-            );
-
-        if (accessInput) {
-            accessInput.value = "";
-        }
+        document.getElementById(
+            "userAccessCode"
+        ).value = "";
 
         mostrarMensagem(
             "authMessage",
@@ -359,11 +424,22 @@ async function validarCodigoUsuario(codigo) {
             error
         );
 
+        let mensagem =
+            "Não foi possível validar o código.";
+
+        if (
+            error &&
+            error.message
+        ) {
+
+            mensagem =
+                error.message;
+
+        }
+
         mostrarMensagem(
             "authMessage",
-            error && error.message
-                ? error.message
-                : "Não foi possível validar o código.",
+            mensagem,
             "error"
         );
 
@@ -381,9 +457,11 @@ function iniciarMonitoramentoAutorizacao(
 
     if (!codigo) return;
 
-    currentCode = codigo;
+    currentCode =
+        codigo;
 
-    authorizationListenersStarted = true;
+    authorizationListenersStarted =
+        true;
 
     const autorizacaoRef =
         db.ref(
@@ -398,6 +476,7 @@ function iniciarMonitoramentoAutorizacao(
         );
 
     autorizacaoRef.off();
+
     codigoRef.off();
 
     autorizacaoRef.on(
@@ -478,6 +557,13 @@ function iniciarMonitoramentoAutorizacao(
 
 async function verificarAcessoInicial() {
 
+    /*
+       Enquanto verifica o acesso,
+       a tela continua totalmente bloqueada.
+    */
+
+    bloquearRolagem();
+
     const codigoSalvo =
         localStorage.getItem(
             "nando_codigo"
@@ -499,7 +585,9 @@ async function verificarAcessoInicial() {
             await db.ref(
                 "codigos_gerados/" +
                 codigoSalvo
-            ).once("value");
+            ).once(
+                "value"
+            );
 
         if (!snap.exists()) {
 
@@ -531,7 +619,9 @@ async function verificarAcessoInicial() {
             await db.ref(
                 "dispositivos_autorizados/" +
                 codigoSalvo
-            ).once("value");
+            ).once(
+                "value"
+            );
 
         if (!authSnap.exists()) {
 
@@ -592,7 +682,7 @@ async function verificarAcessoInicial() {
 }
 
 /* =========================================================
-   CARREGAR VÍDEOS DO ADM
+   VÍDEO DE FUNDO
 ========================================================= */
 
 async function carregarVideosDeFundo() {
@@ -600,8 +690,11 @@ async function carregarVideosDeFundo() {
     try {
 
         const snapshot =
-            await db.ref("fundos")
-                .once("value");
+            await db.ref(
+                "fundos"
+            ).once(
+                "value"
+            );
 
         const dados =
             snapshot.val();
@@ -630,7 +723,8 @@ async function carregarVideosDeFundo() {
                     typeof item === "string"
                 ) {
 
-                    url = item;
+                    url =
+                        item;
 
                 } else if (
                     item &&
@@ -662,10 +756,14 @@ async function carregarVideosDeFundo() {
         );
 
         backgroundVideos =
-            [...new Set(backgroundVideos)];
+            [
+                ...new Set(
+                    backgroundVideos
+                )
+            ];
 
         console.log(
-            "Nando's Music: vídeos encontrados:",
+            "Nando's Music: vídeos de fundo encontrados:",
             backgroundVideos.length
         );
 
@@ -705,25 +803,29 @@ function escolherVideoAleatorio() {
 
     }
 
-    const disponiveis =
+    let disponiveis =
         backgroundVideos.filter(
             url =>
                 url !==
                 currentBackgroundVideo
         );
 
-    const lista =
-        disponiveis.length
-            ? disponiveis
-            : backgroundVideos;
+    if (
+        disponiveis.length === 0
+    ) {
+
+        disponiveis =
+            backgroundVideos.slice();
+
+    }
 
     const indice =
         Math.floor(
             Math.random() *
-            lista.length
+            disponiveis.length
         );
 
-    return lista[indice];
+    return disponiveis[indice];
 
 }
 
@@ -770,15 +872,14 @@ async function reproduzirNovoVideoDeFundo(
     backgroundVideo.src =
         novoVideo;
 
-    backgroundVideo.muted = true;
-    backgroundVideo.autoplay = false;
-    backgroundVideo.playsInline = true;
-    backgroundVideo.loop = false;
+    backgroundVideo.muted =
+        true;
 
-    /*
-       O evento ENDED é registrado somente uma vez.
-       Quando terminar, outro vídeo será escolhido.
-    */
+    backgroundVideo.playsInline =
+        true;
+
+    backgroundVideo.loop =
+        false;
 
     if (
         !backgroundVideoInitialized
@@ -786,34 +887,23 @@ async function reproduzirNovoVideoDeFundo(
 
         backgroundVideo.addEventListener(
             "ended",
-            async () => {
-
-                const musicPlayer =
-                    document.getElementById(
-                        "musicPlayer"
-                    );
+            () => {
 
                 /*
-                   Só troca o vídeo automaticamente
-                   se houver música tocando.
+                   Se o vídeo terminou,
+                   escolhe automaticamente
+                   outro vídeo cadastrado.
                 */
 
-                if (
-                    musicPlayer &&
-                    !musicPlayer.paused &&
-                    !musicPlayer.ended
-                ) {
-
-                    await reproduzirNovoVideoDeFundo(
-                        true
-                    );
-
-                }
+                reproduzirNovoVideoDeFundo(
+                    true
+                );
 
             }
         );
 
-        backgroundVideoInitialized = true;
+        backgroundVideoInitialized =
+            true;
 
     }
 
@@ -830,7 +920,7 @@ async function reproduzirNovoVideoDeFundo(
     } catch (error) {
 
         console.warn(
-            "Vídeo aguardando reprodução:",
+            "Autoplay do vídeo aguardando interação:",
             error
         );
 
@@ -847,7 +937,7 @@ async function iniciarVideoCliente() {
     if (!backgroundVideo) {
 
         console.warn(
-            "Elemento clientBackgroundVideo não encontrado."
+            "Elemento de vídeo de fundo não encontrado."
         );
 
         return;
@@ -870,27 +960,20 @@ async function iniciarVideoCliente() {
     backgroundVideo.style.display =
         "block";
 
-    /*
-       Não inicia vídeo sozinho se não houver
-       música tocando.
-    */
-
-    const musicPlayer =
-        document.getElementById(
-            "musicPlayer"
-        );
-
     if (
-        musicPlayer &&
-        !musicPlayer.paused &&
-        !musicPlayer.ended
+        backgroundVideo.src &&
+        !backgroundVideo.paused
     ) {
 
-        await reproduzirNovoVideoDeFundo(
-            true
-        );
+        return;
 
     }
+
+    /*
+       Não inicia vídeo antes da música.
+       O vídeo será iniciado pelo evento
+       de play da música.
+    */
 
 }
 
@@ -915,8 +998,6 @@ function pararVideoDeFundo() {
         backgroundVideo.style.display =
             "none";
 
-        currentBackgroundVideo = "";
-
     } catch (error) {
 
         console.warn(
@@ -929,7 +1010,7 @@ function pararVideoDeFundo() {
 }
 
 /* =========================================================
-   SINCRONIZAR VÍDEO COM MÚSICA
+   SINCRONIZAR VÍDEO COM A MÚSICA
 ========================================================= */
 
 function sincronizarVideoComMusica() {
@@ -949,74 +1030,76 @@ function sincronizarVideoComMusica() {
     }
 
     /*
-       Impede que os eventos sejam registrados
-       várias vezes.
+       EVITA DUPLICAR EVENTOS
+       caso a função seja chamada mais de uma vez.
     */
 
-    if (backgroundVideoEventsInitialized) {
+    if (
+        musicPlayer.dataset.videoSyncReady ===
+        "true"
+    ) {
 
         return;
 
     }
 
-    backgroundVideoEventsInitialized = true;
+    musicPlayer.dataset.videoSyncReady =
+        "true";
 
-    /* -------------------------------------------------------
+    /*
        MÚSICA COMEÇOU
-    ------------------------------------------------------- */
+    */
 
     musicPlayer.addEventListener(
         "play",
         async () => {
 
+            if (
+                backgroundVideos.length === 0
+            ) {
+
+                await carregarVideosDeFundo();
+
+            }
+
+            if (
+                backgroundVideos.length === 0
+            ) {
+
+                return;
+
+            }
+
+            /*
+               Se não existe vídeo carregado,
+               escolhe um aleatoriamente.
+            */
+
+            if (
+                !backgroundVideo.src
+            ) {
+
+                await reproduzirNovoVideoDeFundo(
+                    true
+                );
+
+                return;
+
+            }
+
+            /*
+               Se existe vídeo carregado,
+               apenas continua.
+            */
+
             try {
-
-                if (
-                    backgroundVideos.length === 0
-                ) {
-
-                    await carregarVideosDeFundo();
-
-                }
-
-                if (
-                    backgroundVideos.length === 0
-                ) {
-
-                    return;
-
-                }
-
-                /*
-                   Se não existe vídeo,
-                   ou se o vídeo terminou,
-                   escolhe um novo.
-                */
-
-                if (
-                    !backgroundVideo.src ||
-                    backgroundVideo.ended
-                ) {
-
-                    await reproduzirNovoVideoDeFundo(
-                        true
-                    );
-
-                    return;
-
-                }
-
-                /*
-                   Se existe vídeo pausado,
-                   continua o vídeo atual.
-                */
 
                 await backgroundVideo.play();
 
             } catch (error) {
 
                 console.warn(
-                    "Erro ao sincronizar vídeo com música:",
+                    "Não foi possível iniciar o vídeo:",
                     error
                 );
 
@@ -1025,9 +1108,9 @@ function sincronizarVideoComMusica() {
         }
     );
 
-    /* -------------------------------------------------------
+    /*
        MÚSICA PAUSOU
-    ------------------------------------------------------- */
+    */
 
     musicPlayer.addEventListener(
         "pause",
@@ -1045,89 +1128,24 @@ function sincronizarVideoComMusica() {
         }
     );
 
-    /* -------------------------------------------------------
+    /*
        MÚSICA TERMINOU
-    ------------------------------------------------------- */
+    */
 
     musicPlayer.addEventListener(
         "ended",
         () => {
 
-            if (backgroundVideo) {
+            if (
+                backgroundVideo &&
+                !backgroundVideo.paused
+            ) {
 
                 backgroundVideo.pause();
 
             }
 
         }
-    );
-
-}
-
-/* =========================================================
-   DOWNLOAD DA MÚSICA
-========================================================= */
-
-async function baixarMusica(url, nomeArquivo) {
-
-    if (!url) {
-
-        alert(
-            "Arquivo da música não encontrado."
-        );
-
-        return;
-
-    }
-
-    /*
-       Primeiro tenta baixar diretamente.
-       Isso funciona quando o servidor permite
-       download via navegador.
-    */
-
-    try {
-
-        const link =
-            document.createElement("a");
-
-        link.href = url;
-
-        link.download =
-            nomeArquivo ||
-            "musica";
-
-        link.target = "_blank";
-
-        link.rel =
-            "noopener noreferrer";
-
-        document.body.appendChild(link);
-
-        link.click();
-
-        link.remove();
-
-        return;
-
-    } catch (error) {
-
-        console.warn(
-            "Download direto não disponível:",
-            error
-        );
-
-    }
-
-    /*
-       Se o navegador não permitir download direto,
-       abre o arquivo para o usuário salvar.
-    */
-
-    window.open(
-        url,
-        "_blank",
-        "noopener,noreferrer"
     );
 
 }
@@ -1179,14 +1197,7 @@ if (adminPassword) {
                 event.key === "Enter"
             ) {
 
-                if (
-                    typeof entrarAdmin ===
-                    "function"
-                ) {
-
-                    entrarAdmin();
-
-                }
+                entrarAdmin();
 
             }
 
@@ -1205,7 +1216,8 @@ window.addEventListener(
 
         event.preventDefault();
 
-        deferredPrompt = event;
+        deferredPrompt =
+            event;
 
         if (
             localStorage.getItem(
@@ -1279,7 +1291,8 @@ if (installButton) {
 
             }
 
-            deferredPrompt = null;
+            deferredPrompt =
+                null;
 
             const container =
                 document.getElementById(
@@ -1302,7 +1315,8 @@ window.addEventListener(
     "appinstalled",
     () => {
 
-        deferredPrompt = null;
+        deferredPrompt =
+            null;
 
         const container =
             document.getElementById(
@@ -1327,20 +1341,35 @@ window.addEventListener(
     "load",
     () => {
 
-        if (appContent) {
+        /*
+           PRIMEIRA COISA:
+           trava completamente a tela.
 
-            appContent.classList.add(
-                "hidden"
-            );
+           Isso impede que o cliente consiga
+           rolar o site antes de fazer login.
+        */
 
-        }
+        bloquearRolagem();
 
         /*
-           Liga uma única vez a sincronização
-           entre música e vídeo.
+           Esconde o aplicativo enquanto
+           a autorização não estiver concluída.
+        */
+
+        appContent.classList.add(
+            "hidden"
+        );
+
+        /*
+           Liga a sincronização do vídeo
+           com o player de música.
         */
 
         sincronizarVideoComMusica();
+
+        /*
+           Verifica se existe código salvo.
+        */
 
         const codigo =
             localStorage.getItem(
@@ -1349,17 +1378,28 @@ window.addEventListener(
 
         if (codigo) {
 
+            /*
+               Mantém a tela bloqueada
+               enquanto verifica o código.
+            */
+
+            authModal.classList.add(
+                "active"
+            );
+
             verificarAcessoInicial();
 
         } else {
 
-            if (authModal) {
+            /*
+               Sem código:
+               abre imediatamente a tela
+               de bloqueio.
+            */
 
-                authModal.classList.add(
-                    "active"
-                );
-
-            }
+            authModal.classList.add(
+                "active"
+            );
 
         }
 
@@ -1379,29 +1419,29 @@ if (
         () => {
 
             navigator.serviceWorker
-                .register(
-                    "./service-worker.js"
-                )
-                .then(
-                    reg => {
+            .register(
+                "./service-worker.js"
+            )
+            .then(
+                reg => {
 
-                        console.log(
-                            "Nando's Music PWA ativo:",
-                            reg.scope
-                        );
+                    console.log(
+                        "Nando's Music PWA ativo:",
+                        reg.scope
+                    );
 
-                    }
-                )
-                .catch(
-                    error => {
+                }
+            )
+            .catch(
+                error => {
 
-                        console.warn(
-                            "Service Worker:",
-                            error
-                        );
+                    console.warn(
+                        "Service Worker:",
+                        error
+                    );
 
-                    }
-                );
+                }
+            );
 
         }
     );
