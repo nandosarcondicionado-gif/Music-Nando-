@@ -17,12 +17,14 @@ let deferredPrompt = null;
 let backgroundVideos = [];
 let currentBackgroundVideo = "";
 let backgroundVideoInitialized = false;
+let backgroundVideoLoading = false;
 
 /* =========================================================
    DEVICE ID
 ========================================================= */
 
-let deviceId = localStorage.getItem("nando_device_id");
+let deviceId =
+    localStorage.getItem("nando_device_id");
 
 if (!deviceId) {
 
@@ -49,10 +51,152 @@ const authModal =
 const appContent =
     document.getElementById("appContent");
 
-const backgroundVideo =
+/* =========================================================
+   CRIAR VÍDEO DE FUNDO AUTOMATICAMENTE
+========================================================= */
+
+let backgroundVideo =
     document.getElementById(
         "clientBackgroundVideo"
     );
+
+function criarVideoDeFundo() {
+
+    if (backgroundVideo) {
+
+        configurarVideoDeFundo();
+
+        return backgroundVideo;
+
+    }
+
+    backgroundVideo =
+        document.createElement("video");
+
+    backgroundVideo.id =
+        "clientBackgroundVideo";
+
+    document.body.insertBefore(
+        backgroundVideo,
+        document.body.firstChild
+    );
+
+    configurarVideoDeFundo();
+
+    return backgroundVideo;
+}
+
+/* =========================================================
+   CONFIGURAR VÍDEO
+========================================================= */
+
+function configurarVideoDeFundo() {
+
+    if (!backgroundVideo) return;
+
+    backgroundVideo.setAttribute(
+        "playsinline",
+        ""
+    );
+
+    backgroundVideo.setAttribute(
+        "webkit-playsinline",
+        ""
+    );
+
+    backgroundVideo.muted = true;
+
+    backgroundVideo.autoplay = false;
+
+    backgroundVideo.loop = false;
+
+    backgroundVideo.preload = "auto";
+
+    backgroundVideo.controls = false;
+
+    backgroundVideo.style.position =
+        "fixed";
+
+    backgroundVideo.style.left =
+        "0";
+
+    backgroundVideo.style.top =
+        "0";
+
+    backgroundVideo.style.width =
+        "100vw";
+
+    backgroundVideo.style.height =
+        "100vh";
+
+    backgroundVideo.style.objectFit =
+        "cover";
+
+    backgroundVideo.style.zIndex =
+        "-10";
+
+    backgroundVideo.style.pointerEvents =
+        "none";
+
+    backgroundVideo.style.display =
+        "none";
+
+    backgroundVideo.style.opacity =
+        "0.25";
+
+    backgroundVideo.style.background =
+        "#000";
+
+    /*
+       Cria uma aparência escura
+       para o vídeo não atrapalhar
+       a leitura da interface.
+    */
+
+    if (
+        !document.getElementById(
+            "nandoVideoOverlay"
+        )
+    ) {
+
+        const overlay =
+            document.createElement("div");
+
+        overlay.id =
+            "nandoVideoOverlay";
+
+        overlay.style.position =
+            "fixed";
+
+        overlay.style.left =
+            "0";
+
+        overlay.style.top =
+            "0";
+
+        overlay.style.width =
+            "100vw";
+
+        overlay.style.height =
+            "100vh";
+
+        overlay.style.background =
+            "rgba(4,6,14,.60)";
+
+        overlay.style.zIndex =
+            "-9";
+
+        overlay.style.pointerEvents =
+            "none";
+
+        document.body.insertBefore(
+            overlay,
+            document.body.children[1] || null
+        );
+
+    }
+
+}
 
 /* =========================================================
    MOSTRAR APP
@@ -60,9 +204,15 @@ const backgroundVideo =
 
 function mostrarApp() {
 
-    authModal.classList.remove("active");
+    authModal.classList.remove(
+        "active"
+    );
 
-    appContent.classList.remove("hidden");
+    appContent.classList.remove(
+        "hidden"
+    );
+
+    criarVideoDeFundo();
 
 }
 
@@ -70,18 +220,28 @@ function mostrarApp() {
    BLOQUEAR CLIENTE
 ========================================================= */
 
-function bloquearAplicativo(mensagem) {
+function bloquearAplicativo(
+    mensagem
+) {
 
     currentCode = null;
 
-    localStorage.removeItem("nando_autorizado");
-    localStorage.removeItem("nando_codigo");
+    localStorage.removeItem(
+        "nando_autorizado"
+    );
+
+    localStorage.removeItem(
+        "nando_codigo"
+    );
 
     try {
 
-        if (authorizationListenersStarted) {
+        if (
+            authorizationListenersStarted
+        ) {
 
-            authorizationListenersStarted = false;
+            authorizationListenersStarted =
+                false;
 
         }
 
@@ -105,7 +265,9 @@ function bloquearAplicativo(mensagem) {
 
         musicPlayer.pause();
 
-        musicPlayer.removeAttribute("src");
+        musicPlayer.removeAttribute(
+            "src"
+        );
 
         musicPlayer.load();
 
@@ -121,10 +283,13 @@ function bloquearAplicativo(mensagem) {
 
     }
 
-    appContent.classList.add("hidden");
+    appContent.classList.add(
+        "hidden"
+    );
 
     if (
-        typeof adminLogado === "undefined" ||
+        typeof adminLogado ===
+        "undefined" ||
         !adminLogado
     ) {
 
@@ -143,7 +308,9 @@ function bloquearAplicativo(mensagem) {
 
     }
 
-    authModal.classList.add("active");
+    authModal.classList.add(
+        "active"
+    );
 
     mostrarMensagem(
         "authMessage",
@@ -221,7 +388,9 @@ async function processarAcesso() {
 
     }
 
-    await validarCodigoUsuario(valor);
+    await validarCodigoUsuario(
+        valor
+    );
 
 }
 
@@ -229,10 +398,14 @@ async function processarAcesso() {
    VALIDAR CÓDIGO CLIENTE
 ========================================================= */
 
-async function validarCodigoUsuario(codigo) {
+async function validarCodigoUsuario(
+    codigo
+) {
 
     if (
-        !/^ND-[A-Z0-9]{6}$/.test(codigo)
+        !/^ND-[A-Z0-9]{6}$/.test(
+            codigo
+        )
     ) {
 
         mostrarMensagem(
@@ -260,7 +433,9 @@ async function validarCodigoUsuario(codigo) {
             );
 
         const snap =
-            await ref.once("value");
+            await ref.once(
+                "value"
+            );
 
         const dados =
             snap.val();
@@ -334,7 +509,7 @@ async function validarCodigoUsuario(codigo) {
             codigo
         );
 
-        iniciarVideoCliente();
+        await iniciarVideoCliente();
 
     } catch (error) {
 
@@ -378,7 +553,8 @@ function iniciarMonitoramentoAutorizacao(
 
     currentCode = codigo;
 
-    authorizationListenersStarted = true;
+    authorizationListenersStarted =
+        true;
 
     const autorizacaoRef =
         db.ref(
@@ -495,7 +671,9 @@ async function verificarAcessoInicial() {
             await db.ref(
                 "codigos_gerados/" +
                 codigoSalvo
-            ).once("value");
+            ).once(
+                "value"
+            );
 
         if (!snap.exists()) {
 
@@ -527,7 +705,9 @@ async function verificarAcessoInicial() {
             await db.ref(
                 "dispositivos_autorizados/" +
                 codigoSalvo
-            ).once("value");
+            ).once(
+                "value"
+            );
 
         if (!authSnap.exists()) {
 
@@ -543,7 +723,8 @@ async function verificarAcessoInicial() {
             authSnap.val();
 
         if (
-            authData.deviceId !== deviceId
+            authData.deviceId !==
+            deviceId
         ) {
 
             bloquearAplicativo(
@@ -570,7 +751,7 @@ async function verificarAcessoInicial() {
             codigoSalvo
         );
 
-        iniciarVideoCliente();
+        await iniciarVideoCliente();
 
     } catch (error) {
 
@@ -588,34 +769,19 @@ async function verificarAcessoInicial() {
 }
 
 /* =========================================================
-   VÍDEO DE FUNDO
+   CARREGAR VÍDEOS DE FUNDO
 ========================================================= */
-
-/*
-   Busca todos os vídeos cadastrados em:
-
-   fundos/
-
-   O código aceita vários formatos de cadastro,
-   incluindo:
-
-   fundos/
-      id1/
-         url: "https://..."
-      id2/
-         url: "https://..."
-
-   Também aceita registros cujo valor seja
-   diretamente o link do vídeo.
-*/
 
 async function carregarVideosDeFundo() {
 
     try {
 
         const snapshot =
-            await db.ref("fundos")
-            .once("value");
+            await db.ref(
+                "fundos"
+            ).once(
+                "value"
+            );
 
         const dados =
             snapshot.val();
@@ -632,7 +798,9 @@ async function carregarVideosDeFundo() {
 
         }
 
-        Object.keys(dados).forEach(
+        Object.keys(
+            dados
+        ).forEach(
             chave => {
 
                 const item =
@@ -641,14 +809,16 @@ async function carregarVideosDeFundo() {
                 let url = "";
 
                 if (
-                    typeof item === "string"
+                    typeof item ===
+                    "string"
                 ) {
 
                     url = item;
 
                 } else if (
                     item &&
-                    typeof item === "object"
+                    typeof item ===
+                    "object"
                 ) {
 
                     url =
@@ -662,7 +832,8 @@ async function carregarVideosDeFundo() {
                 }
 
                 if (
-                    typeof url === "string" &&
+                    typeof url ===
+                    "string" &&
                     url.trim() !== ""
                 ) {
 
@@ -675,14 +846,12 @@ async function carregarVideosDeFundo() {
             }
         );
 
-        /*
-           Remove links duplicados.
-        */
-
         backgroundVideos =
-            [...new Set(
-                backgroundVideos
-            )];
+            [
+                ...new Set(
+                    backgroundVideos
+                )
+            ];
 
         console.log(
             "Nando's Music: vídeos de fundo encontrados:",
@@ -717,11 +886,6 @@ function escolherVideoAleatorio() {
 
     }
 
-    /*
-       Se houver somente um vídeo,
-       ele pode repetir normalmente.
-    */
-
     if (
         backgroundVideos.length === 1
     ) {
@@ -736,10 +900,6 @@ function escolherVideoAleatorio() {
                 url !==
                 currentBackgroundVideo
         );
-
-    /*
-       Segurança caso o filtro deixe a lista vazia.
-    */
 
     if (
         disponiveis.length === 0
@@ -764,11 +924,21 @@ function escolherVideoAleatorio() {
    REPRODUZIR NOVO VÍDEO
 ========================================================= */
 
-async function reproduzirNovoVideoDeFundo(
-    iniciarAutomaticamente = true
-) {
+async function reproduzirNovoVideoDeFundo() {
 
     if (!backgroundVideo) {
+
+        criarVideoDeFundo();
+
+    }
+
+    if (!backgroundVideo) {
+
+        return;
+
+    }
+
+    if (backgroundVideoLoading) {
 
         return;
 
@@ -786,72 +956,164 @@ async function reproduzirNovoVideoDeFundo(
 
     }
 
+    backgroundVideoLoading =
+        true;
+
     currentBackgroundVideo =
         novoVideo;
 
-    backgroundVideo.style.display =
-        "block";
+    try {
 
-    /*
-       Remove o vídeo anterior.
-    */
+        backgroundVideo.pause();
 
-    backgroundVideo.pause();
+        backgroundVideo.removeAttribute(
+            "src"
+        );
 
-    backgroundVideo.removeAttribute(
-        "src"
-    );
+        backgroundVideo.load();
 
-    backgroundVideo.load();
+        backgroundVideo.src =
+            novoVideo;
 
-    /*
-       Define o novo vídeo.
-    */
+        backgroundVideo.muted =
+            true;
 
-    backgroundVideo.src =
-        novoVideo;
+        backgroundVideo.volume = 0;
 
-    backgroundVideo.muted = true;
+        backgroundVideo.playsInline =
+            true;
 
-    backgroundVideo.playsInline = true;
+        backgroundVideo.loop =
+            false;
 
-    backgroundVideo.loop = false;
+        backgroundVideo.style.display =
+            "block";
 
-    /*
-       Quando terminar, escolhe outro.
-    */
+        /*
+           Aguarda o navegador reconhecer
+           o novo vídeo antes de reproduzir.
+        */
 
-    if (
-        !backgroundVideoInitialized
-    ) {
+        await new Promise(
+            resolve => {
 
-        backgroundVideo.addEventListener(
-            "ended",
-            () => {
+                if (
+                    backgroundVideo.readyState >=
+                    2
+                ) {
 
-                reproduzirNovoVideoDeFundo(
-                    true
+                    resolve();
+
+                    return;
+
+                }
+
+                const finalizar =
+                    () => {
+
+                        backgroundVideo.removeEventListener(
+                            "loadeddata",
+                            finalizar
+                        );
+
+                        backgroundVideo.removeEventListener(
+                            "error",
+                            finalizar
+                        );
+
+                        resolve();
+
+                    };
+
+                backgroundVideo.addEventListener(
+                    "loadeddata",
+                    finalizar,
+                    {
+                        once:true
+                    }
+                );
+
+                backgroundVideo.addEventListener(
+                    "error",
+                    finalizar,
+                    {
+                        once:true
+                    }
                 );
 
             }
         );
 
-        backgroundVideoInitialized = true;
-
-    }
-
-    try {
-
         await backgroundVideo.play();
+
+        console.log(
+            "Nando's Music: vídeo de fundo reproduzindo:",
+            novoVideo
+        );
 
     } catch (error) {
 
         console.warn(
-            "Autoplay do vídeo aguardando interação:",
+            "Não foi possível reproduzir o vídeo de fundo:",
             error
         );
 
+    } finally {
+
+        backgroundVideoLoading =
+            false;
+
     }
+
+}
+
+/* =========================================================
+   EVENTO: VÍDEO TERMINOU
+========================================================= */
+
+function configurarEventoVideo() {
+
+    if (!backgroundVideo) return;
+
+    if (
+        backgroundVideoInitialized
+    ) {
+
+        return;
+
+    }
+
+    backgroundVideo.addEventListener(
+        "ended",
+        async () => {
+
+            const musicPlayer =
+                document.getElementById(
+                    "musicPlayer"
+                );
+
+            /*
+               Só troca para outro vídeo
+               se a música estiver tocando.
+            */
+
+            if (
+                !musicPlayer ||
+                musicPlayer.paused ||
+                musicPlayer.ended
+            ) {
+
+                return;
+
+            }
+
+            await reproduzirNovoVideoDeFundo();
+
+        }
+    );
+
+    backgroundVideoInitialized =
+        true;
 
 }
 
@@ -861,53 +1123,73 @@ async function reproduzirNovoVideoDeFundo(
 
 async function iniciarVideoCliente() {
 
-    if (!backgroundVideo) {
+    criarVideoDeFundo();
 
-        console.warn(
-            "Elemento de vídeo de fundo não encontrado."
-        );
-
-        return;
-
-    }
-
-    /*
-       Busca os vídeos cadastrados.
-    */
-
-    await carregarVideosDeFundo();
+    configurarEventoVideo();
 
     if (
         backgroundVideos.length === 0
     ) {
 
-        backgroundVideo.style.display =
-            "none";
-
-        return;
+        await carregarVideosDeFundo();
 
     }
-
-    backgroundVideo.style.display =
-        "block";
-
-    /*
-       Se já existe um vídeo tocando,
-       não reinicia desnecessariamente.
-    */
 
     if (
-        backgroundVideo.src &&
-        !backgroundVideo.paused
+        backgroundVideos.length === 0
     ) {
+
+        if (backgroundVideo) {
+
+            backgroundVideo.style.display =
+                "none";
+
+        }
 
         return;
 
     }
 
-    await reproduzirNovoVideoDeFundo(
-        true
-    );
+    /*
+       Não começa sozinho.
+       Ele começa quando a música
+       realmente tocar.
+    */
+
+    const musicPlayer =
+        document.getElementById(
+            "musicPlayer"
+        );
+
+    if (
+        musicPlayer &&
+        !musicPlayer.paused &&
+        !musicPlayer.ended
+    ) {
+
+        if (
+            !backgroundVideo.src
+        ) {
+
+            await reproduzirNovoVideoDeFundo();
+
+        } else {
+
+            try {
+
+                await backgroundVideo.play();
+
+            } catch (error) {
+
+                console.warn(
+                    error
+                );
+
+            }
+
+        }
+
+    }
 
 }
 
@@ -917,7 +1199,11 @@ async function iniciarVideoCliente() {
 
 function pararVideoDeFundo() {
 
-    if (!backgroundVideo) return;
+    if (!backgroundVideo) {
+
+        return;
+
+    }
 
     try {
 
@@ -932,6 +1218,9 @@ function pararVideoDeFundo() {
         backgroundVideo.style.display =
             "none";
 
+        currentBackgroundVideo =
+            "";
+
     } catch (error) {
 
         console.warn(
@@ -944,7 +1233,7 @@ function pararVideoDeFundo() {
 }
 
 /* =========================================================
-   SINCRONIZAR VÍDEO COM A MÚSICA
+   SINCRONIZAR VÍDEO COM MÚSICA
 ========================================================= */
 
 function sincronizarVideoComMusica() {
@@ -954,17 +1243,22 @@ function sincronizarVideoComMusica() {
             "musicPlayer"
         );
 
-    if (
-        !musicPlayer ||
-        !backgroundVideo
-    ) {
+    if (!musicPlayer) {
+
+        console.warn(
+            "Player de música não encontrado."
+        );
 
         return;
 
     }
 
+    criarVideoDeFundo();
+
+    configurarEventoVideo();
+
     /*
-       Música começou.
+       MÚSICA COMEÇOU
     */
 
     musicPlayer.addEventListener(
@@ -987,26 +1281,37 @@ function sincronizarVideoComMusica() {
 
             }
 
+            /*
+               Se ainda não existe vídeo,
+               escolhe um aleatório.
+            */
+
             if (
                 !backgroundVideo.src
             ) {
 
-                await reproduzirNovoVideoDeFundo(
-                    true
-                );
+                await reproduzirNovoVideoDeFundo();
 
                 return;
 
             }
 
+            /*
+               Se já existe vídeo,
+               continua de onde parou.
+            */
+
             try {
+
+                backgroundVideo.style.display =
+                    "block";
 
                 await backgroundVideo.play();
 
             } catch (error) {
 
                 console.warn(
-                    "Não foi possível iniciar o vídeo:",
+                    "Não foi possível continuar o vídeo:",
                     error
                 );
 
@@ -1016,7 +1321,7 @@ function sincronizarVideoComMusica() {
     );
 
     /*
-       Música pausou.
+       MÚSICA PAUSOU
     */
 
     musicPlayer.addEventListener(
@@ -1036,19 +1341,14 @@ function sincronizarVideoComMusica() {
     );
 
     /*
-       Música terminou.
-       O vídeo continua sendo controlado
-       independentemente pela própria duração.
+       MÚSICA TERMINOU
     */
 
     musicPlayer.addEventListener(
         "ended",
         () => {
 
-            if (
-                backgroundVideo &&
-                !backgroundVideo.paused
-            ) {
+            if (backgroundVideo) {
 
                 backgroundVideo.pause();
 
@@ -1176,7 +1476,9 @@ document.getElementById(
 
         } catch (error) {
 
-            console.warn(error);
+            console.warn(
+                error
+            );
 
         }
 
@@ -1217,9 +1519,14 @@ window.addEventListener(
         );
 
         /*
-           Liga a sincronização do vídeo
-           com o player de música.
+           Prepara o vídeo, mas não toca.
+           Ele só tocará quando a música
+           começar.
         */
+
+        criarVideoDeFundo();
+
+        configurarEventoVideo();
 
         sincronizarVideoComMusica();
 
