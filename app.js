@@ -1,732 +1,1286 @@
 /* =========================================================
-ACESSO
+   NANDO'S MUSIC
+   APP.JS
+   ACESSO + VÍDEO DE FUNDO + PWA
 ========================================================= */
 
-const CHAVE_ADM="NANDOADM";
+const CHAVE_ADM = "NANDOADM";
 
-let currentCode=null;
-let authorizationListenersStarted=false;
-let deferredPrompt=null;
+let currentCode = null;
+let authorizationListenersStarted = false;
+let deferredPrompt = null;
 
 /* =========================================================
-DEVICE ID
+   VÍDEO DE FUNDO
 ========================================================= */
 
-let deviceId=
-localStorage.getItem("nando_device_id");
-
-if(!deviceId){
-
-deviceId=
-"DEV-"+
-Math.random()
-.toString(36)
-.substring(2,10)
-.toUpperCase();
-
-localStorage.setItem(
-"nando_device_id",
-deviceId
-);
-
-}
+let backgroundVideos = [];
+let currentBackgroundVideo = "";
+let backgroundVideoInitialized = false;
 
 /* =========================================================
-ELEMENTOS
+   DEVICE ID
 ========================================================= */
 
-const authModal=
-document.getElementById("authModal");
+let deviceId = localStorage.getItem("nando_device_id");
 
-const appContent=
-document.getElementById("appContent");
+if (!deviceId) {
 
-/* =========================================================
-MOSTRAR APP
-========================================================= */
+    deviceId =
+        "DEV-" +
+        Math.random()
+        .toString(36)
+        .substring(2, 10)
+        .toUpperCase();
 
-function mostrarApp(){
-
-authModal.classList.remove("active");
-
-appContent.classList.remove("hidden");
-
+    localStorage.setItem(
+        "nando_device_id",
+        deviceId
+    );
 }
 
 /* =========================================================
-BLOQUEAR CLIENTE
+   ELEMENTOS
 ========================================================= */
 
-function bloquearAplicativo(mensagem){
+const authModal =
+    document.getElementById("authModal");
 
-currentCode=null;
+const appContent =
+    document.getElementById("appContent");
 
-localStorage.removeItem("nando_autorizado");
-localStorage.removeItem("nando_codigo");
+const backgroundVideo =
+    document.getElementById(
+        "clientBackgroundVideo"
+    );
 
-try{
+/* =========================================================
+   MOSTRAR APP
+========================================================= */
 
-if(authorizationListenersStarted){
+function mostrarApp() {
 
-authorizationListenersStarted=false;
+    authModal.classList.remove("active");
 
-}
-
-}catch(e){
-
-console.warn(e);
-
-}
-
-const musicPlayer=
-document.getElementById("musicPlayer");
-
-const miniPlayer=
-document.getElementById("miniPlayer");
-
-if(musicPlayer){
-
-musicPlayer.pause();
-
-musicPlayer.removeAttribute("src");
-
-musicPlayer.load();
-
-}
-
-if(miniPlayer){
-
-miniPlayer.classList.remove("visible");
-
-}
-
-appContent.classList.add("hidden");
-
-if(!adminLogado){
-
-document.getElementById(
-"menuButton"
-).classList.remove("visible");
-
-}
-
-authModal.classList.add("active");
-
-mostrarMensagem(
-"authMessage",
-mensagem||
-"Seu acesso foi bloqueado.",
-"error"
-);
+    appContent.classList.remove("hidden");
 
 }
 
 /* =========================================================
-PROCESSAR ACESSO
+   BLOQUEAR CLIENTE
 ========================================================= */
 
-async function processarAcesso(){
+function bloquearAplicativo(mensagem) {
 
-const input=
-document.getElementById(
-"userAccessCode"
-);
+    currentCode = null;
 
-const valor=
-input.value
-.trim()
-.toUpperCase();
+    localStorage.removeItem("nando_autorizado");
+    localStorage.removeItem("nando_codigo");
 
-if(!valor){
+    try {
 
-mostrarMensagem(
-"authMessage",
-"Digite o código de acesso.",
-"error"
-);
+        if (authorizationListenersStarted) {
 
-return;
+            authorizationListenersStarted = false;
+
+        }
+
+    } catch (e) {
+
+        console.warn(e);
+
+    }
+
+    const musicPlayer =
+        document.getElementById(
+            "musicPlayer"
+        );
+
+    const miniPlayer =
+        document.getElementById(
+            "miniPlayer"
+        );
+
+    if (musicPlayer) {
+
+        musicPlayer.pause();
+
+        musicPlayer.removeAttribute("src");
+
+        musicPlayer.load();
+
+    }
+
+    pararVideoDeFundo();
+
+    if (miniPlayer) {
+
+        miniPlayer.classList.remove(
+            "visible"
+        );
+
+    }
+
+    appContent.classList.add("hidden");
+
+    if (
+        typeof adminLogado === "undefined" ||
+        !adminLogado
+    ) {
+
+        const menuButton =
+            document.getElementById(
+                "menuButton"
+            );
+
+        if (menuButton) {
+
+            menuButton.classList.remove(
+                "visible"
+            );
+
+        }
+
+    }
+
+    authModal.classList.add("active");
+
+    mostrarMensagem(
+        "authMessage",
+        mensagem ||
+        "Seu acesso foi bloqueado.",
+        "error"
+    );
 
 }
+
+/* =========================================================
+   PROCESSAR ACESSO
+========================================================= */
+
+async function processarAcesso() {
+
+    const input =
+        document.getElementById(
+            "userAccessCode"
+        );
+
+    const valor =
+        input.value
+        .trim()
+        .toUpperCase();
+
+    if (!valor) {
+
+        mostrarMensagem(
+            "authMessage",
+            "Digite o código de acesso.",
+            "error"
+        );
+
+        return;
+
+    }
+
+    /*
+       NANDOADM abre a tela administrativa.
+       Não utiliza Firebase Authentication.
+    */
+
+    if (valor === CHAVE_ADM) {
+
+        input.value = "";
+
+        authModal.classList.remove(
+            "active"
+        );
+
+        document.getElementById(
+            "adminLoginModal"
+        ).classList.add("active");
+
+        mostrarMensagem(
+            "adminLoginMessage",
+            "",
+            ""
+        );
+
+        document.getElementById(
+            "adminPassword"
+        ).value = "";
+
+        setTimeout(() => {
+
+            document.getElementById(
+                "adminPassword"
+            ).focus();
+
+        }, 150);
+
+        return;
+
+    }
+
+    await validarCodigoUsuario(valor);
+
+}
+
+/* =========================================================
+   VALIDAR CÓDIGO CLIENTE
+========================================================= */
+
+async function validarCodigoUsuario(codigo) {
+
+    if (
+        !/^ND-[A-Z0-9]{6}$/.test(codigo)
+    ) {
+
+        mostrarMensagem(
+            "authMessage",
+            "Digite um código válido no formato ND-XXXXXX.",
+            "error"
+        );
+
+        return;
+
+    }
+
+    mostrarMensagem(
+        "authMessage",
+        "Verificando código...",
+        "success"
+    );
+
+    try {
+
+        const ref =
+            db.ref(
+                "codigos_gerados/" +
+                codigo
+            );
+
+        const snap =
+            await ref.once("value");
+
+        const dados =
+            snap.val();
+
+        if (!dados) {
+
+            throw new Error(
+                "Este código não existe ou foi removido."
+            );
+
+        }
+
+        if (
+            dados.usado === true &&
+            dados.deviceId &&
+            dados.deviceId !== deviceId
+        ) {
+
+            throw new Error(
+                "Este código já está vinculado a outro aparelho."
+            );
+
+        }
+
+        await ref.update({
+
+            usado: true,
+            deviceId: deviceId,
+            ultimoAcesso: Date.now()
+
+        });
+
+        await db.ref(
+            "dispositivos_autorizados/" +
+            codigo
+        ).set({
+
+            codigo: codigo,
+            deviceId: deviceId,
+            data: Date.now()
+
+        });
+
+        currentCode = codigo;
+
+        localStorage.setItem(
+            "nando_autorizado",
+            "true"
+        );
+
+        localStorage.setItem(
+            "nando_codigo",
+            codigo
+        );
+
+        document.getElementById(
+            "userAccessCode"
+        ).value = "";
+
+        mostrarMensagem(
+            "authMessage",
+            "",
+            ""
+        );
+
+        mostrarApp();
+
+        mostrarBotaoInstalar();
+
+        iniciarMonitoramentoAutorizacao(
+            codigo
+        );
+
+        iniciarVideoCliente();
+
+    } catch (error) {
+
+        console.error(
+            "Erro ao validar cliente:",
+            error
+        );
+
+        let mensagem =
+            "Não foi possível validar o código.";
+
+        if (
+            error &&
+            error.message
+        ) {
+
+            mensagem =
+                error.message;
+
+        }
+
+        mostrarMensagem(
+            "authMessage",
+            mensagem,
+            "error"
+        );
+
+    }
+
+}
+
+/* =========================================================
+   MONITORAMENTO
+========================================================= */
+
+function iniciarMonitoramentoAutorizacao(
+    codigo
+) {
+
+    if (!codigo) return;
+
+    currentCode = codigo;
+
+    authorizationListenersStarted = true;
+
+    const autorizacaoRef =
+        db.ref(
+            "dispositivos_autorizados/" +
+            codigo
+        );
+
+    const codigoRef =
+        db.ref(
+            "codigos_gerados/" +
+            codigo
+        );
+
+    autorizacaoRef.off();
+
+    codigoRef.off();
+
+    autorizacaoRef.on(
+        "value",
+        snap => {
+
+            if (
+                currentCode !== codigo
+            ) return;
+
+            if (!snap.exists()) {
+
+                bloquearAplicativo(
+                    "Seu acesso foi revogado pelo administrador."
+                );
+
+                return;
+
+            }
+
+            const dados =
+                snap.val();
+
+            if (
+                dados.deviceId &&
+                dados.deviceId !== deviceId
+            ) {
+
+                bloquearAplicativo(
+                    "Este código foi transferido para outro aparelho."
+                );
+
+            }
+
+        }
+    );
+
+    codigoRef.on(
+        "value",
+        snap => {
+
+            if (
+                currentCode !== codigo
+            ) return;
+
+            if (!snap.exists()) {
+
+                bloquearAplicativo(
+                    "Seu código de acesso foi removido pelo administrador."
+                );
+
+                return;
+
+            }
+
+            const dados =
+                snap.val();
+
+            if (
+                dados.deviceId &&
+                dados.deviceId !== deviceId
+            ) {
+
+                bloquearAplicativo(
+                    "Este código foi transferido para outro aparelho."
+                );
+
+            }
+
+        }
+    );
+
+}
+
+/* =========================================================
+   VERIFICAÇÃO INICIAL
+========================================================= */
+
+async function verificarAcessoInicial() {
+
+    const codigoSalvo =
+        localStorage.getItem(
+            "nando_codigo"
+        );
+
+    if (!codigoSalvo) {
+
+        bloquearAplicativo(
+            "Digite o código de acesso fornecido pelo administrador."
+        );
+
+        return;
+
+    }
+
+    try {
+
+        const snap =
+            await db.ref(
+                "codigos_gerados/" +
+                codigoSalvo
+            ).once("value");
+
+        if (!snap.exists()) {
+
+            bloquearAplicativo(
+                "Seu código não existe ou foi removido."
+            );
+
+            return;
+
+        }
+
+        const dados =
+            snap.val();
+
+        if (
+            dados.deviceId &&
+            dados.deviceId !== deviceId
+        ) {
+
+            bloquearAplicativo(
+                "Este código está vinculado a outro aparelho."
+            );
+
+            return;
+
+        }
+
+        const authSnap =
+            await db.ref(
+                "dispositivos_autorizados/" +
+                codigoSalvo
+            ).once("value");
+
+        if (!authSnap.exists()) {
+
+            bloquearAplicativo(
+                "Seu acesso não está autorizado."
+            );
+
+            return;
+
+        }
+
+        const authData =
+            authSnap.val();
+
+        if (
+            authData.deviceId !== deviceId
+        ) {
+
+            bloquearAplicativo(
+                "Este código está vinculado a outro aparelho."
+            );
+
+            return;
+
+        }
+
+        currentCode =
+            codigoSalvo;
+
+        localStorage.setItem(
+            "nando_autorizado",
+            "true"
+        );
+
+        mostrarApp();
+
+        mostrarBotaoInstalar();
+
+        iniciarMonitoramentoAutorizacao(
+            codigoSalvo
+        );
+
+        iniciarVideoCliente();
+
+    } catch (error) {
+
+        console.error(
+            "Erro na verificação inicial:",
+            error
+        );
+
+        bloquearAplicativo(
+            "Não foi possível verificar seu acesso. Verifique sua conexão com o Firebase."
+        );
+
+    }
+
+}
+
+/* =========================================================
+   VÍDEO DE FUNDO
+========================================================= */
 
 /*
-NANDOADM abre a tela administrativa.
-Não utiliza Firebase Authentication.
+   Busca todos os vídeos cadastrados em:
+
+   fundos/
+
+   O código aceita vários formatos de cadastro,
+   incluindo:
+
+   fundos/
+      id1/
+         url: "https://..."
+      id2/
+         url: "https://..."
+
+   Também aceita registros cujo valor seja
+   diretamente o link do vídeo.
 */
 
-if(valor===CHAVE_ADM){
+async function carregarVideosDeFundo() {
 
-input.value="";
+    try {
 
-authModal.classList.remove("active");
+        const snapshot =
+            await db.ref("fundos")
+            .once("value");
 
-document.getElementById(
-"adminLoginModal"
-).classList.add("active");
+        const dados =
+            snapshot.val();
 
-mostrarMensagem(
-"adminLoginMessage",
-"",
-""
-);
+        backgroundVideos = [];
 
-document.getElementById(
-"adminPassword"
-).value="";
+        if (!dados) {
 
-setTimeout(()=>{
+            console.log(
+                "Nando's Music: nenhum vídeo de fundo cadastrado."
+            );
 
-document.getElementById(
-"adminPassword"
-).focus();
+            return;
 
-},150);
+        }
 
-return;
+        Object.keys(dados).forEach(
+            chave => {
 
-}
+                const item =
+                    dados[chave];
 
-await validarCodigoUsuario(valor);
+                let url = "";
 
-}
+                if (
+                    typeof item === "string"
+                ) {
 
-/* =========================================================
-VALIDAR CÓDIGO CLIENTE
-========================================================= */
+                    url = item;
 
-async function validarCodigoUsuario(codigo){
+                } else if (
+                    item &&
+                    typeof item === "object"
+                ) {
 
-if(!/^ND-[A-Z0-9]{6}$/.test(codigo)){
+                    url =
+                        item.url ||
+                        item.link ||
+                        item.videoUrl ||
+                        item.backgroundUrl ||
+                        item.src ||
+                        "";
 
-mostrarMensagem(
-"authMessage",
-"Digite um código válido no formato ND-XXXXXX.",
-"error"
-);
+                }
 
-return;
+                if (
+                    typeof url === "string" &&
+                    url.trim() !== ""
+                ) {
 
-}
+                    backgroundVideos.push(
+                        url.trim()
+                    );
 
-mostrarMensagem(
-"authMessage",
-"Verificando código...",
-"success"
-);
+                }
 
-try{
+            }
+        );
 
-const ref=
-db.ref(
-"codigos_gerados/"+codigo
-);
+        /*
+           Remove links duplicados.
+        */
 
-const snap=
-await ref.once("value");
+        backgroundVideos =
+            [...new Set(
+                backgroundVideos
+            )];
 
-const dados=snap.val();
+        console.log(
+            "Nando's Music: vídeos de fundo encontrados:",
+            backgroundVideos.length
+        );
 
-if(!dados){
+    } catch (error) {
 
-throw new Error(
-"Este código não existe ou foi removido."
-);
+        console.error(
+            "Erro ao carregar vídeos de fundo:",
+            error
+        );
 
-}
+        backgroundVideos = [];
 
-if(
-dados.usado===true &&
-dados.deviceId &&
-dados.deviceId!==deviceId
-){
-
-throw new Error(
-"Este código já está vinculado a outro aparelho."
-);
-
-}
-
-await ref.update({
-
-usado:true,
-deviceId:deviceId,
-ultimoAcesso:Date.now()
-
-});
-
-await db.ref(
-"dispositivos_autorizados/"+codigo
-).set({
-
-codigo:codigo,
-deviceId:deviceId,
-data:Date.now()
-
-});
-
-currentCode=codigo;
-
-localStorage.setItem(
-"nando_autorizado",
-"true"
-);
-
-localStorage.setItem(
-"nando_codigo",
-codigo
-);
-
-document.getElementById(
-"userAccessCode"
-).value="";
-
-mostrarMensagem(
-"authMessage",
-"",
-""
-);
-
-mostrarApp();
-
-mostrarBotaoInstalar();
-
-iniciarMonitoramentoAutorizacao(codigo);
-
-iniciarVideoCliente();
-
-}catch(error){
-
-console.error(
-"Erro ao validar cliente:",
-error
-);
-
-let mensagem=
-"Não foi possível validar o código.";
-
-if(error&&error.message){
-
-mensagem=error.message;
-
-}
-
-mostrarMensagem(
-"authMessage",
-mensagem,
-"error"
-);
-
-}
+    }
 
 }
 
 /* =========================================================
-MONITORAMENTO
+   ESCOLHER VÍDEO ALEATÓRIO
 ========================================================= */
 
-function iniciarMonitoramentoAutorizacao(codigo){
+function escolherVideoAleatorio() {
 
-if(!codigo)return;
+    if (
+        !backgroundVideos ||
+        backgroundVideos.length === 0
+    ) {
 
-currentCode=codigo;
+        return null;
 
-authorizationListenersStarted=true;
+    }
 
-const autorizacaoRef=
-db.ref(
-"dispositivos_autorizados/"+codigo
-);
+    /*
+       Se houver somente um vídeo,
+       ele pode repetir normalmente.
+    */
 
-const codigoRef=
-db.ref(
-"codigos_gerados/"+codigo
-);
+    if (
+        backgroundVideos.length === 1
+    ) {
 
-autorizacaoRef.off();
+        return backgroundVideos[0];
 
-codigoRef.off();
+    }
 
-autorizacaoRef.on(
-"value",
-snap=>{
+    let disponiveis =
+        backgroundVideos.filter(
+            url =>
+                url !==
+                currentBackgroundVideo
+        );
 
-if(currentCode!==codigo)return;
+    /*
+       Segurança caso o filtro deixe a lista vazia.
+    */
 
-if(!snap.exists()){
+    if (
+        disponiveis.length === 0
+    ) {
 
-bloquearAplicativo(
-"Seu acesso foi revogado pelo administrador."
-);
+        disponiveis =
+            backgroundVideos.slice();
 
-return;
+    }
 
-}
+    const indice =
+        Math.floor(
+            Math.random() *
+            disponiveis.length
+        );
 
-const dados=snap.val();
-
-if(
-dados.deviceId &&
-dados.deviceId!==deviceId
-){
-
-bloquearAplicativo(
-"Este código foi transferido para outro aparelho."
-);
-
-}
-
-});
-
-codigoRef.on(
-"value",
-snap=>{
-
-if(currentCode!==codigo)return;
-
-if(!snap.exists()){
-
-bloquearAplicativo(
-"Seu código de acesso foi removido pelo administrador."
-);
-
-return;
-
-}
-
-const dados=snap.val();
-
-if(
-dados.deviceId &&
-dados.deviceId!==deviceId
-){
-
-bloquearAplicativo(
-"Este código foi transferido para outro aparelho."
-);
-
-}
-
-});
+    return disponiveis[indice];
 
 }
 
 /* =========================================================
-VERIFICAÇÃO INICIAL
+   REPRODUZIR NOVO VÍDEO
 ========================================================= */
 
-async function verificarAcessoInicial(){
+async function reproduzirNovoVideoDeFundo(
+    iniciarAutomaticamente = true
+) {
 
-const codigoSalvo=
-localStorage.getItem(
-"nando_codigo"
-);
+    if (!backgroundVideo) {
 
-if(!codigoSalvo){
+        return;
 
-bloquearAplicativo(
-"Digite o código de acesso fornecido pelo administrador."
-);
+    }
 
-return;
+    const novoVideo =
+        escolherVideoAleatorio();
 
-}
+    if (!novoVideo) {
 
-try{
+        backgroundVideo.style.display =
+            "none";
 
-const snap=
-await db.ref(
-"codigos_gerados/"+codigoSalvo
-).once("value");
+        return;
 
-if(!snap.exists()){
+    }
 
-bloquearAplicativo(
-"Seu código não existe ou foi removido."
-);
+    currentBackgroundVideo =
+        novoVideo;
 
-return;
+    backgroundVideo.style.display =
+        "block";
 
-}
+    /*
+       Remove o vídeo anterior.
+    */
 
-const dados=snap.val();
+    backgroundVideo.pause();
 
-if(
-dados.deviceId &&
-dados.deviceId!==deviceId
-){
+    backgroundVideo.removeAttribute(
+        "src"
+    );
 
-bloquearAplicativo(
-"Este código está vinculado a outro aparelho."
-);
+    backgroundVideo.load();
 
-return;
+    /*
+       Define o novo vídeo.
+    */
 
-}
+    backgroundVideo.src =
+        novoVideo;
 
-const authSnap=
-await db.ref(
-"dispositivos_autorizados/"+codigoSalvo
-).once("value");
+    backgroundVideo.muted = true;
 
-if(!authSnap.exists()){
+    backgroundVideo.playsInline = true;
 
-bloquearAplicativo(
-"Seu acesso não está autorizado."
-);
+    backgroundVideo.loop = false;
 
-return;
+    /*
+       Quando terminar, escolhe outro.
+    */
 
-}
+    if (
+        !backgroundVideoInitialized
+    ) {
 
-const authData=
-authSnap.val();
+        backgroundVideo.addEventListener(
+            "ended",
+            () => {
 
-if(
-authData.deviceId!==deviceId
-){
+                reproduzirNovoVideoDeFundo(
+                    true
+                );
 
-bloquearAplicativo(
-"Este código está vinculado a outro aparelho."
-);
+            }
+        );
 
-return;
+        backgroundVideoInitialized = true;
 
-}
+    }
 
-currentCode=codigoSalvo;
+    try {
 
-localStorage.setItem(
-"nando_autorizado",
-"true"
-);
+        await backgroundVideo.play();
 
-mostrarApp();
+    } catch (error) {
 
-mostrarBotaoInstalar();
+        console.warn(
+            "Autoplay do vídeo aguardando interação:",
+            error
+        );
 
-iniciarMonitoramentoAutorizacao(
-codigoSalvo
-);
-
-iniciarVideoCliente();
-
-}catch(error){
-
-console.error(
-"Erro na verificação inicial:",
-error
-);
-
-bloquearAplicativo(
-"Não foi possível verificar seu acesso. Verifique sua conexão com o Firebase."
-);
-
-}
+    }
 
 }
 
 /* =========================================================
-VIDEO CLIENTE
+   INICIAR VÍDEO DO CLIENTE
 ========================================================= */
 
-function iniciarVideoCliente(){
+async function iniciarVideoCliente() {
 
-/*
-O vídeo de fundo do cliente continua opcional,
-como na versão anterior.
-*/
+    if (!backgroundVideo) {
+
+        console.warn(
+            "Elemento de vídeo de fundo não encontrado."
+        );
+
+        return;
+
+    }
+
+    /*
+       Busca os vídeos cadastrados.
+    */
+
+    await carregarVideosDeFundo();
+
+    if (
+        backgroundVideos.length === 0
+    ) {
+
+        backgroundVideo.style.display =
+            "none";
+
+        return;
+
+    }
+
+    backgroundVideo.style.display =
+        "block";
+
+    /*
+       Se já existe um vídeo tocando,
+       não reinicia desnecessariamente.
+    */
+
+    if (
+        backgroundVideo.src &&
+        !backgroundVideo.paused
+    ) {
+
+        return;
+
+    }
+
+    await reproduzirNovoVideoDeFundo(
+        true
+    );
 
 }
 
 /* =========================================================
-PWA
+   PARAR VÍDEO DE FUNDO
 ========================================================= */
 
-window.addEventListener(
-"beforeinstallprompt",
-event=>{
+function pararVideoDeFundo() {
 
-event.preventDefault();
+    if (!backgroundVideo) return;
 
-deferredPrompt=event;
+    try {
 
-if(
-localStorage.getItem(
-"nando_autorizado"
-)==="true"||
-adminLogado
-){
+        backgroundVideo.pause();
 
-mostrarBotaoInstalar();
+        backgroundVideo.removeAttribute(
+            "src"
+        );
+
+        backgroundVideo.load();
+
+        backgroundVideo.style.display =
+            "none";
+
+    } catch (error) {
+
+        console.warn(
+            "Erro ao parar vídeo de fundo:",
+            error
+        );
+
+    }
 
 }
 
-});
+/* =========================================================
+   SINCRONIZAR VÍDEO COM A MÚSICA
+========================================================= */
 
-function mostrarBotaoInstalar(){
+function sincronizarVideoComMusica() {
 
-const container=
+    const musicPlayer =
+        document.getElementById(
+            "musicPlayer"
+        );
+
+    if (
+        !musicPlayer ||
+        !backgroundVideo
+    ) {
+
+        return;
+
+    }
+
+    /*
+       Música começou.
+    */
+
+    musicPlayer.addEventListener(
+        "play",
+        async () => {
+
+            if (
+                backgroundVideos.length === 0
+            ) {
+
+                await carregarVideosDeFundo();
+
+            }
+
+            if (
+                backgroundVideos.length === 0
+            ) {
+
+                return;
+
+            }
+
+            if (
+                !backgroundVideo.src
+            ) {
+
+                await reproduzirNovoVideoDeFundo(
+                    true
+                );
+
+                return;
+
+            }
+
+            try {
+
+                await backgroundVideo.play();
+
+            } catch (error) {
+
+                console.warn(
+                    "Não foi possível iniciar o vídeo:",
+                    error
+                );
+
+            }
+
+        }
+    );
+
+    /*
+       Música pausou.
+    */
+
+    musicPlayer.addEventListener(
+        "pause",
+        () => {
+
+            if (
+                backgroundVideo &&
+                !backgroundVideo.paused
+            ) {
+
+                backgroundVideo.pause();
+
+            }
+
+        }
+    );
+
+    /*
+       Música terminou.
+       O vídeo continua sendo controlado
+       independentemente pela própria duração.
+    */
+
+    musicPlayer.addEventListener(
+        "ended",
+        () => {
+
+            if (
+                backgroundVideo &&
+                !backgroundVideo.paused
+            ) {
+
+                backgroundVideo.pause();
+
+            }
+
+        }
+    );
+
+}
+
+/* =========================================================
+   ENTER CÓDIGO
+========================================================= */
+
 document.getElementById(
-"installContainer"
-);
-
-if(
-deferredPrompt&&
-container
-){
-
-container.style.display="block";
-
-}
-
-}
-
-document.getElementById(
-"installButton"
+    "userAccessCode"
 ).addEventListener(
-"click",
-async()=>{
+    "keydown",
+    event => {
 
-if(!deferredPrompt){
+        if (
+            event.key === "Enter"
+        ) {
 
-alert(
-"Abra o menu do navegador e procure por "+
-"'Instalar aplicativo' ou "+
-"'Adicionar à tela inicial'."
+            processarAcesso();
+
+        }
+
+    }
 );
 
-return;
-
-}
-
-deferredPrompt.prompt();
-
-try{
-
-await deferredPrompt.userChoice;
-
-}catch(error){
-
-console.warn(error);
-
-}
-
-deferredPrompt=null;
-
-document.getElementById(
-"installContainer"
-).style.display=
-"none";
-
-});
-
-window.addEventListener(
-"appinstalled",
-()=>{
-
-deferredPrompt=null;
-
-document.getElementById(
-"installContainer"
-).style.display=
-"none";
-
-});
-
 /* =========================================================
-ENTER CÓDIGO
+   ENTER ADMIN
 ========================================================= */
 
 document.getElementById(
-"userAccessCode"
+    "adminPassword"
 ).addEventListener(
-"keydown",
-event=>{
+    "keydown",
+    event => {
 
-if(event.key==="Enter"){
+        if (
+            event.key === "Enter"
+        ) {
 
-processarAcesso();
+            entrarAdmin();
 
-}
+        }
 
-});
+    }
+);
 
 /* =========================================================
-ENTER ADMIN
+   PWA
 ========================================================= */
+
+window.addEventListener(
+    "beforeinstallprompt",
+    event => {
+
+        event.preventDefault();
+
+        deferredPrompt = event;
+
+        if (
+            localStorage.getItem(
+                "nando_autorizado"
+            ) === "true" ||
+            (
+                typeof adminLogado !==
+                "undefined" &&
+                adminLogado
+            )
+        ) {
+
+            mostrarBotaoInstalar();
+
+        }
+
+    }
+);
+
+function mostrarBotaoInstalar() {
+
+    const container =
+        document.getElementById(
+            "installContainer"
+        );
+
+    if (
+        deferredPrompt &&
+        container
+    ) {
+
+        container.style.display =
+            "block";
+
+    }
+
+}
 
 document.getElementById(
-"adminPassword"
+    "installButton"
 ).addEventListener(
-"keydown",
-event=>{
+    "click",
+    async () => {
 
-if(event.key==="Enter"){
+        if (!deferredPrompt) {
 
-entrarAdmin();
+            alert(
+                "Abra o menu do navegador e procure por " +
+                "'Instalar aplicativo' ou " +
+                "'Adicionar à tela inicial'."
+            );
 
-}
+            return;
 
-});
+        }
+
+        deferredPrompt.prompt();
+
+        try {
+
+            await deferredPrompt.userChoice;
+
+        } catch (error) {
+
+            console.warn(error);
+
+        }
+
+        deferredPrompt = null;
+
+        document.getElementById(
+            "installContainer"
+        ).style.display =
+            "none";
+
+    }
+);
+
+window.addEventListener(
+    "appinstalled",
+    () => {
+
+        deferredPrompt = null;
+
+        document.getElementById(
+            "installContainer"
+        ).style.display =
+            "none";
+
+    }
+);
 
 /* =========================================================
-INICIALIZAÇÃO
+   INICIALIZAÇÃO
 ========================================================= */
 
 window.addEventListener(
-"load",
-()=>{
+    "load",
+    () => {
 
-appContent.classList.add("hidden");
+        appContent.classList.add(
+            "hidden"
+        );
 
-const codigo=
-localStorage.getItem(
-"nando_codigo"
+        /*
+           Liga a sincronização do vídeo
+           com o player de música.
+        */
+
+        sincronizarVideoComMusica();
+
+        const codigo =
+            localStorage.getItem(
+                "nando_codigo"
+            );
+
+        if (codigo) {
+
+            verificarAcessoInicial();
+
+        } else {
+
+            authModal.classList.add(
+                "active"
+            );
+
+        }
+
+    }
 );
-
-if(codigo){
-
-verificarAcessoInicial();
-
-}else{
-
-authModal.classList.add("active");
-
-}
-
-});
 
 /* =========================================================
-SERVICE WORKER
+   SERVICE WORKER
 ========================================================= */
 
-if(
-"serviceWorker" in navigator
-){
+if (
+    "serviceWorker" in navigator
+) {
 
-window.addEventListener(
-"load",
-()=>{
+    window.addEventListener(
+        "load",
+        () => {
 
-navigator.serviceWorker
-.register("./service-worker.js")
-.then(reg=>{
+            navigator.serviceWorker
+            .register(
+                "./service-worker.js"
+            )
+            .then(
+                reg => {
 
-console.log(
-"Nando's Music PWA ativo:",
-reg.scope
-);
+                    console.log(
+                        "Nando's Music PWA ativo:",
+                        reg.scope
+                    );
 
-})
-.catch(error=>{
+                }
+            )
+            .catch(
+                error => {
 
-console.warn(
-"Service Worker:",
-error
-);
+                    console.warn(
+                        "Service Worker:",
+                        error
+                    );
 
-});
+                }
+            );
 
-});
+        }
+    );
 
 }
