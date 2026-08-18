@@ -25,7 +25,8 @@ font-family:Poppins,sans-serif;
 -webkit-tap-highlight-color:transparent;
 }
 
-html,body{
+html,
+body{
 width:100%;
 min-height:100%;
 background:
@@ -39,7 +40,65 @@ min-height:100vh;
 overflow-x:hidden;
 }
 
-button,input,select{
+/* =========================================================
+VÍDEO DE FUNDO
+========================================================= */
+
+.background-video-layer{
+position:fixed;
+inset:0;
+z-index:0;
+width:100%;
+height:100%;
+overflow:hidden;
+background:#05070d;
+pointer-events:none;
+}
+
+.client-background-video{
+position:absolute;
+inset:0;
+width:100%;
+height:100%;
+display:none;
+object-fit:cover;
+object-position:center center;
+background:#05070d;
+}
+
+.background-video-overlay{
+position:absolute;
+inset:0;
+width:100%;
+height:100%;
+background:
+linear-gradient(
+180deg,
+rgba(7,9,16,.80) 0%,
+rgba(7,9,16,.48) 35%,
+rgba(7,9,16,.65) 68%,
+rgba(7,9,16,.92) 100%
+);
+pointer-events:none;
+}
+
+/*
+Toda a interface fica acima do vídeo.
+*/
+
+#mainInterface{
+position:relative;
+z-index:10;
+min-height:100vh;
+}
+
+/* =========================================================
+GERAL
+========================================================= */
+
+button,
+input,
+select{
 font:inherit;
 }
 
@@ -55,6 +114,10 @@ display:none!important;
 overflow:hidden!important;
 }
 
+/* =========================================================
+HEADER
+========================================================= */
+
 header{
 position:sticky;
 top:0;
@@ -64,7 +127,7 @@ display:flex;
 align-items:center;
 justify-content:space-between;
 padding:0 16px;
-background:rgba(7,9,16,.88);
+background:rgba(7,9,16,.78);
 backdrop-filter:blur(20px);
 -webkit-backdrop-filter:blur(20px);
 border-bottom:1px solid rgba(255,255,255,.05);
@@ -105,23 +168,37 @@ justify-content:center;
 display:flex;
 }
 
+/* =========================================================
+STATUS
+========================================================= */
+
 .connection-status{
+position:relative;
+z-index:20;
 height:25px;
 display:flex;
 align-items:center;
 justify-content:center;
 font-size:.62rem;
 color:#94a3b8;
-background:#080b14;
+background:rgba(8,11,20,.72);
 border-bottom:1px solid rgba(255,255,255,.04);
 }
 
+/* =========================================================
+INSTALAÇÃO
+========================================================= */
+
 #installContainer{
+position:relative;
+z-index:20;
 display:none;
 padding:10px 15px;
-background:#101526;
+background:rgba(16,21,38,.82);
 border-bottom:1px solid var(--border);
 text-align:center;
+backdrop-filter:blur(15px);
+-webkit-backdrop-filter:blur(15px);
 }
 
 #installButton{
@@ -133,11 +210,21 @@ color:white;
 font-weight:700;
 }
 
+/* =========================================================
+CONTEÚDO
+========================================================= */
+
 .app-main{
+position:relative;
+z-index:10;
 max-width:1050px;
 margin:auto;
 padding-bottom:125px;
 }
+
+/* =========================================================
+HERO
+========================================================= */
 
 .hero{
 padding:20px 15px 8px;
@@ -150,9 +237,11 @@ min-height:190px;
 border-radius:25px;
 background:
 linear-gradient(135deg,rgba(99,102,241,.30),rgba(139,92,246,.20)),
-#111629;
+rgba(17,22,41,.72);
 border:1px solid rgba(255,255,255,.07);
 box-shadow:0 20px 60px rgba(0,0,0,.35);
+backdrop-filter:blur(8px);
+-webkit-backdrop-filter:blur(8px);
 }
 
 .hero-card:after{
@@ -203,6 +292,10 @@ transform:rotate(-13deg);
 z-index:2;
 }
 
+/* =========================================================
+BUSCA
+========================================================= */
+
 .search-area{
 padding:13px 15px 4px;
 }
@@ -227,7 +320,7 @@ margin:0;
 padding:0 42px;
 border-radius:14px;
 border:1px solid rgba(255,255,255,.06);
-background:#111625;
+background:rgba(17,22,37,.86);
 color:white;
 outline:none;
 font-size:.78rem;
@@ -251,6 +344,10 @@ background:#222a40;
 color:#cbd5e1;
 }
 
+/* =========================================================
+FILTROS
+========================================================= */
+
 .filter-bar{
 display:flex;
 gap:8px;
@@ -268,7 +365,7 @@ flex-shrink:0;
 border:1px solid rgba(255,255,255,.07);
 border-radius:20px;
 padding:8px 14px;
-background:#131827;
+background:rgba(19,24,39,.88);
 color:#cbd5e1;
 font-size:.72rem;
 font-weight:600;
@@ -281,6 +378,10 @@ border-color:transparent;
 color:white;
 box-shadow:0 6px 20px rgba(116,103,255,.18);
 }
+
+/* =========================================================
+MINI PLAYER
+========================================================= */
 
 .mini-player{
 position:fixed;
@@ -364,6 +465,10 @@ color:white;
 font-size:.95rem;
 }
 
+/* =========================================================
+TÍTULO DAS MÚSICAS
+========================================================= */
+
 .section-title{
 display:flex;
 align-items:center;
@@ -385,6 +490,10 @@ font-size:.65rem;
 color:#7c879c;
 }
 
+/* =========================================================
+PLAYLIST
+========================================================= */
+
 .playlist-container{
 padding:0 15px;
 }
@@ -400,6 +509,8 @@ border-radius:16px;
 background:linear-gradient(135deg,rgba(255,255,255,.045),rgba(255,255,255,.018));
 border:1px solid rgba(255,255,255,.055);
 transition:.18s;
+backdrop-filter:blur(5px);
+-webkit-backdrop-filter:blur(5px);
 }
 
 .song-item:active{
@@ -464,6 +575,10 @@ color:white;
 background:rgba(255,255,255,.06);
 }
 
+/* =========================================================
+NAVEGAÇÃO INFERIOR
+========================================================= */
+
 .bottom-nav{
 position:fixed;
 left:0;
@@ -474,7 +589,7 @@ height:64px;
 display:flex;
 align-items:center;
 justify-content:space-around;
-background:rgba(7,9,16,.95);
+background:rgba(7,9,16,.94);
 border-top:1px solid rgba(255,255,255,.07);
 backdrop-filter:blur(20px);
 -webkit-backdrop-filter:blur(20px);
@@ -505,6 +620,10 @@ color:white;
 .nav-btn.active i{
 color:#9185ff;
 }
+
+/* =========================================================
+PLAYER COMPLETO
+========================================================= */
 
 .full-player{
 position:fixed;
@@ -666,6 +785,10 @@ color:#9c91ff;
 margin-right:7px;
 }
 
+/* =========================================================
+LETRAS
+========================================================= */
+
 .lyrics-modal{
 position:fixed;
 inset:0;
@@ -720,6 +843,10 @@ color:#cbd5e1;
 white-space:pre-wrap;
 }
 
+/* =========================================================
+RESULTADOS
+========================================================= */
+
 .search-results{
 padding:4px 15px 0;
 display:none;
@@ -742,6 +869,10 @@ text-align:center;
 font-size:.72rem;
 color:#64748b;
 }
+
+/* =========================================================
+MODAIS
+========================================================= */
 
 .modal{
 position:fixed;
@@ -815,7 +946,8 @@ letter-spacing:2px;
 text-transform:uppercase;
 }
 
-input,select{
+input,
+select{
 width:100%;
 padding:11px 12px;
 margin:6px 0 10px;
@@ -826,7 +958,8 @@ background:#080c16;
 color:white;
 }
 
-input:focus,select:focus{
+input:focus,
+select:focus{
 border-color:#7467ff;
 box-shadow:0 0 0 3px rgba(116,103,255,.10);
 }
@@ -885,6 +1018,10 @@ background:rgba(34,197,94,.12);
 color:#4ade80;
 }
 
+/* =========================================================
+MENU LATERAL
+========================================================= */
+
 .side-menu{
 position:fixed;
 inset:0;
@@ -892,6 +1029,7 @@ z-index:4500;
 display:none;
 background:rgba(0,0,0,.62);
 backdrop-filter:blur(7px);
+-webkit-backdrop-filter:blur(7px);
 }
 
 .side-menu.active{
@@ -936,6 +1074,10 @@ text-align:left;
 width:22px;
 color:#9c91ff;
 }
+
+/* =========================================================
+ADMINISTRAÇÃO
+========================================================= */
 
 .admin-content{
 max-width:850px;
@@ -1060,6 +1202,10 @@ border-top:1px solid var(--border);
 margin:20px 0;
 }
 
+/* =========================================================
+RESPONSIVO
+========================================================= */
+
 @media(max-width:600px){
 
 .hero-card{
@@ -1082,6 +1228,22 @@ width:78vw;
 gap:18px;
 }
 
+.client-background-video{
+object-fit:cover;
+object-position:center center;
+}
+
+.background-video-overlay{
+background:
+linear-gradient(
+180deg,
+rgba(7,9,16,.86) 0%,
+rgba(7,9,16,.58) 40%,
+rgba(7,9,16,.72) 72%,
+rgba(7,9,16,.94) 100%
+);
+}
+
 }
 
 @media(min-width:700px){
@@ -1100,9 +1262,21 @@ transform:translateX(-50%);
 
 }
 
+/* =========================================================
+ACESSIBILIDADE
+========================================================= */
+
 button:focus-visible,
 input:focus-visible,
 select:focus-visible{
 outline:2px solid #a89cff;
 outline-offset:2px;
+}
+
+@media(prefers-reduced-motion:reduce){
+
+.client-background-video{
+transition:none;
+}
+
 }
