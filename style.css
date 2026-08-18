@@ -25,8 +25,7 @@ font-family:Poppins,sans-serif;
 -webkit-tap-highlight-color:transparent;
 }
 
-html,
-body{
+html,body{
 width:100%;
 min-height:100%;
 background:
@@ -40,9 +39,7 @@ min-height:100vh;
 overflow-x:hidden;
 }
 
-button,
-input,
-select{
+button,input,select{
 font:inherit;
 }
 
@@ -56,12 +53,7 @@ display:none!important;
 
 .no-scroll{
 overflow:hidden!important;
-height:100vh!important;
 }
-
-/* =========================================================
-HEADER
-========================================================= */
 
 header{
 position:sticky;
@@ -113,10 +105,6 @@ justify-content:center;
 display:flex;
 }
 
-/* =========================================================
-STATUS / INSTALAÇÃO
-========================================================= */
-
 .connection-status{
 height:25px;
 display:flex;
@@ -144,10 +132,6 @@ background:linear-gradient(135deg,var(--primary),var(--purple));
 color:white;
 font-weight:700;
 }
-
-/* =========================================================
-CONTEÚDO
-========================================================= */
 
 .app-main{
 max-width:1050px;
@@ -219,10 +203,6 @@ transform:rotate(-13deg);
 z-index:2;
 }
 
-/* =========================================================
-BUSCA
-========================================================= */
-
 .search-area{
 padding:13px 15px 4px;
 }
@@ -271,10 +251,6 @@ background:#222a40;
 color:#cbd5e1;
 }
 
-/* =========================================================
-FILTROS
-========================================================= */
-
 .filter-bar{
 display:flex;
 gap:8px;
@@ -305,10 +281,6 @@ border-color:transparent;
 color:white;
 box-shadow:0 6px 20px rgba(116,103,255,.18);
 }
-
-/* =========================================================
-MINI PLAYER
-========================================================= */
 
 .mini-player{
 position:fixed;
@@ -391,10 +363,6 @@ background:transparent;
 color:white;
 font-size:.95rem;
 }
-
-/* =========================================================
-TÍTULOS / PLAYLIST
-========================================================= */
 
 .section-title{
 display:flex;
@@ -496,10 +464,6 @@ color:white;
 background:rgba(255,255,255,.06);
 }
 
-/* =========================================================
-NAVEGAÇÃO INFERIOR
-========================================================= */
-
 .bottom-nav{
 position:fixed;
 left:0;
@@ -541,10 +505,6 @@ color:white;
 .nav-btn.active i{
 color:#9185ff;
 }
-
-/* =========================================================
-PLAYER COMPLETO
-========================================================= */
 
 .full-player{
 position:fixed;
@@ -706,10 +666,6 @@ color:#9c91ff;
 margin-right:7px;
 }
 
-/* =========================================================
-LETRAS
-========================================================= */
-
 .lyrics-modal{
 position:fixed;
 inset:0;
@@ -764,10 +720,6 @@ color:#cbd5e1;
 white-space:pre-wrap;
 }
 
-/* =========================================================
-RESULTADOS
-========================================================= */
-
 .search-results{
 padding:4px 15px 0;
 display:none;
@@ -790,10 +742,6 @@ text-align:center;
 font-size:.72rem;
 color:#64748b;
 }
-
-/* =========================================================
-MODAIS
-========================================================= */
 
 .modal{
 position:fixed;
@@ -867,8 +815,7 @@ letter-spacing:2px;
 text-transform:uppercase;
 }
 
-input,
-select{
+input,select{
 width:100%;
 padding:11px 12px;
 margin:6px 0 10px;
@@ -879,8 +826,7 @@ background:#080c16;
 color:white;
 }
 
-input:focus,
-select:focus{
+input:focus,select:focus{
 border-color:#7467ff;
 box-shadow:0 0 0 3px rgba(116,103,255,.10);
 }
@@ -939,10 +885,6 @@ background:rgba(34,197,94,.12);
 color:#4ade80;
 }
 
-/* =========================================================
-MENU LATERAL
-========================================================= */
-
 .side-menu{
 position:fixed;
 inset:0;
@@ -994,10 +936,6 @@ text-align:left;
 width:22px;
 color:#9c91ff;
 }
-
-/* =========================================================
-ADMIN
-========================================================= */
 
 .admin-content{
 max-width:850px;
@@ -1116,100 +1054,11 @@ color:#8490a5;
 font-size:.75rem;
 }
 
-/* =========================================================
-UTILITÁRIOS
-========================================================= */
-
 hr{
 border:0;
 border-top:1px solid var(--border);
 margin:20px 0;
 }
-
-/* =========================================================
-CORREÇÃO DEFINITIVA
-TELA DE ACESSO SEM ROLAGEM
-========================================================= */
-
-#authModal{
-position:fixed !important;
-inset:0 !important;
-
-width:100vw !important;
-height:100vh !important;
-min-height:100vh !important;
-
-z-index:99999 !important;
-
-display:none;
-
-align-items:center !important;
-justify-content:center !important;
-
-padding:20px !important;
-
-overflow:hidden !important;
-}
-
-#authModal.active{
-display:flex !important;
-}
-
-#authModal .modal-content{
-position:relative !important;
-
-width:100% !important;
-max-width:480px !important;
-
-max-height:calc(100vh - 40px) !important;
-
-margin:auto !important;
-
-overflow-y:auto !important;
-overflow-x:hidden !important;
-
-flex-shrink:0;
-
-transform:none !important;
-}
-
-body:has(#authModal.active){
-overflow:hidden !important;
-height:100vh !important;
-}
-
-/* =========================================================
-VÍDEO DE FUNDO DO CLIENTE
-========================================================= */
-
-#clientBackgroundVideo{
-position:fixed;
-inset:0;
-
-width:100%;
-height:100%;
-
-object-fit:cover;
-
-z-index:-10;
-
-display:none;
-
-background:#000;
-
-pointer-events:none;
-}
-
-#clientBackgroundVideo::after{
-content:"";
-position:absolute;
-inset:0;
-background:rgba(0,0,0,.35);
-}
-
-/* =========================================================
-RESPONSIVIDADE
-========================================================= */
 
 @media(max-width:600px){
 
@@ -1231,17 +1080,6 @@ width:78vw;
 
 .full-controls{
 gap:18px;
-}
-
-#authModal{
-padding:16px !important;
-}
-
-#authModal .modal-content{
-width:100% !important;
-max-width:430px !important;
-max-height:calc(100vh - 32px) !important;
-margin:auto !important;
 }
 
 }
