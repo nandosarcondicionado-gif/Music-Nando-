@@ -1,2 +1,9 @@
 [
+  {
+    "id": "musica-001",
+    "title": "Nome da música",
+    "artist": "Nome do artista",
+    "category": "Sertanejo",
+    "url": "URL-DIRETA-DO-MP3"
+  }
 ]
