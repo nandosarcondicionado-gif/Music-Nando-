@@ -1,542 +1,1104 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#0b0f19">
-<meta name="description" content="Nando's Music Pro">
-<link rel="manifest" href="manifest.json">
-<title>Nando's Music Pro</title>
 
-<style>
-:root{
---p:#a855f7;
---p2:#ec4899;
---bg:#080b13;
---panel:#121827;
---muted:#94a3b8
-}
-*{
-box-sizing:border-box;
-margin:0;
-padding:0;
-font-family:Arial,sans-serif
-}
-body{
-background:var(--bg);
-color:#fff;
-min-height:100vh
-}
-button,input,select{font:inherit}
-button{cursor:pointer}
-header{
-position:sticky;
-top:0;
-z-index:20;
-background:#0f172add;
-backdrop-filter:blur(12px);
-padding:14px 16px;
-display:flex;
-justify-content:space-between;
-align-items:center;
-border-bottom:1px solid #fff1
-}
-.logo{
-font-weight:800;
-background:linear-gradient(135deg,var(--p),var(--p2));
-background-clip:text;
--webkit-background-clip:text;
-color:transparent
-}
-.btn,.chip{
-border:1px solid #fff2;
-background:#ffffff0d;
-color:#fff;
-border-radius:9px;
-padding:8px 12px
-}
-.filters{
-display:flex;
-gap:8px;
-overflow:auto;
-padding:11px 14px;
-background:#0e1524
-}
-.chip{
-border:0;
-border-radius:20px;
-white-space:nowrap
-}
-.chip.active{background:var(--p)}
-.hero{
-max-width:900px;
-margin:auto;
-padding:14px;
-position:relative
-}
-.bg{
-width:100%;
-height:280px;
-object-fit:cover;
-border-radius:16px;
-background:#000
-}
-.shade{
-position:absolute;
-left:14px;
-right:14px;
-top:14px;
-height:280px;
-border-radius:16px;
-background:linear-gradient(#0001,#000b);
-pointer-events:none
-}
-.player{
-position:relative;
-margin-top:-210px;
-margin-bottom:145px;
-text-align:center;
-padding:0 24px;
-z-index:2
-}
-.cover{
-width:100px;
-height:100px;
-margin:auto;
-border-radius:50%;
-display:grid;
-place-items:center;
-background:linear-gradient(135deg,var(--p),var(--p2));
-font-size:42px;
-border:4px solid #fff4;
-box-shadow:0 10px 35px #0009
-}
-.title{
-font-weight:800;
-margin-top:10px;
-text-shadow:0 2px 8px #000
-}
-.sub{
-color:#ddd;
-font-size:.8rem;
-margin-top:4px
-}
-.controls{
-display:flex;
-justify-content:center;
-gap:8px;
-margin-top:10px
-}
-.circle{
-border:0;
-border-radius:50%;
-width:43px;
-height:43px;
-background:#ffffff1a;
-color:#fff
-}
-.main{
-width:52px;
-height:52px;
-background:linear-gradient(135deg,var(--p),var(--p2))
-}
-.actions{
-display:flex;
-justify-content:center;
-gap:7px;
-flex-wrap:wrap;
-margin-top:9px
-}
-.content{
-max-width:900px;
-margin:auto;
-padding:0 14px 30px
-}
-.search,.field{
-width:100%;
-padding:11px 12px;
-background:#080b13;
-border:1px solid #fff2;
-color:#fff;
-border-radius:9px;
-margin:6px 0 10px
-}
-.song{
-display:flex;
-gap:8px;
-align-items:center;
-background:#151b2c;
-border:1px solid #fff1;
-border-radius:11px;
-padding:10px;
-margin-bottom:8px
-}
-.info{
-flex:1;
-min-width:0
-}
-.songtitle{
-font-weight:700;
-white-space:nowrap;
-overflow:hidden;
-text-overflow:ellipsis
-}
-.meta{
-font-size:.72rem;
-color:var(--muted);
-margin-top:3px
-}
-.song button{
-border:0;
-background:#fff1;
-color:#fff;
-border-radius:8px;
-padding:8px
-}
-.modal{
-display:none;
-position:fixed;
-inset:0;
-background:#000c;
-backdrop-filter:blur(6px);
-z-index:100;
-align-items:center;
-justify-content:center;
-padding:15px
-}
-.modal.open{display:flex}
-.box{
-width:100%;
-max-width:560px;
-max-height:92vh;
-overflow:auto;
-background:#111827;
-border:1px solid #fff2;
-border-radius:16px;
-padding:18px
-}
-.primary{
-width:100%;
-border:0;
-border-radius:9px;
-padding:11px;
-color:#fff;
-font-weight:800;
-background:linear-gradient(135deg,var(--p),var(--p2));
-margin-top:4px
-}
-.row{
-display:flex;
-gap:8px;
-align-items:center
-}
-.muted{
-color:var(--muted);
-font-size:.8rem
-}
-.notice{
-background:#fff1;
-border-radius:9px;
-padding:10px;
-margin:9px 0;
-font-size:.78rem
-}
-.adminitem{
-display:flex;
-justify-content:space-between;
-gap:8px;
-align-items:center;
-background:#080b13;
-border-radius:8px;
-padding:9px;
-margin-top:6px;
-font-size:.8rem
-}
-.danger{background:#ef4444!important}
-.install{
-display:none;
-position:fixed;
-right:14px;
-bottom:14px;
-z-index:30;
-border:0;
-border-radius:25px;
-padding:11px 15px;
-background:linear-gradient(135deg,var(--p),var(--p2));
-color:#fff;
-box-shadow:0 8px 30px #0008
-}
-@media(max-width:600px){
-.bg,.shade{height:225px}
-.player{
-margin-top:-170px;
-margin-bottom:110px
-}
-}
-</style>
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+
+<meta name="theme-color" content="#080b16">
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Nando's Music">
+
+<meta name="mobile-web-app-capable" content="yes">
+
+<title>Nando's Music</title>
+
+<link rel="manifest" href="./manifest.json">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+rel="stylesheet">
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+<link rel="stylesheet" href="./style.css">
+
 </head>
 
 <body>
 
 <header>
-<div class="logo">🎧 Nando's Music Pro</div>
 
-<div class="row">
-<button class="btn" id="installTop">📲 Instalar</button>
-<button class="btn" onclick="openAdmin()">⚙️ ADM</button>
+<div class="logo">
+
+<i class="fa-solid fa-headphones"></i>
+
+<span>Nando's Music</span>
+
 </div>
+
+<button
+id="menuButton"
+class="header-menu"
+type="button"
+onclick="abrirMenu()"
+aria-label="Configurações">
+
+<i class="fa-solid fa-bars"></i>
+
+</button>
+
 </header>
 
-<div class="filters" id="filters"></div>
+
+<div id="connectionStatus" class="connection-status">
+
+● Conectando ao servidor...
+
+</div>
+
+
+<div id="installContainer">
+
+<button id="installButton" type="button">
+
+<i class="fa-solid fa-download"></i>
+
+Instalar Nando's Music
+
+</button>
+
+</div>
+
+
+<main id="appContent" class="app-main hidden">
+
 
 <section class="hero">
 
-<video
-id="bgVideo"
-class="bg"
-autoplay
-muted
-playsinline>
-</video>
+<div class="hero-card">
 
-<div class="shade"></div>
+<div class="hero-content">
 
-<div class="player">
+<div class="eyebrow">
 
-<div class="cover">🎵</div>
-
-<div class="title" id="nowTitle">
-Nenhuma música
-</div>
-
-<div class="sub" id="nowMeta">
-Escolha uma música
-</div>
-
-<audio
-id="audio"
-controls
-style="width:100%;margin-top:10px">
-</audio>
-
-<div class="controls">
-
-<button class="circle" onclick="previousSong()">⏮</button>
-
-<button
-class="circle main"
-id="playBtn"
-onclick="togglePlay()">
-▶
-</button>
-
-<button class="circle" onclick="nextSong()">⏭</button>
-
-<button
-class="circle"
-onclick="shuffle=!shuffle">
-🔀
-</button>
-
-<button
-class="circle"
-onclick="repeat=!repeat">
-🔁
-</button>
+NANDO'S MUSIC
 
 </div>
 
-<div class="actions">
+<h1>
 
-<button class="btn" onclick="showDownloads()">
-📥 Baixadas
-</button>
+Sua música.<br>
+Do seu jeito.
 
-<button class="btn" onclick="downloadCurrent()">
-⬇️ Baixar
-</button>
+</h1>
 
-<button
-class="btn"
-onclick="document.documentElement.requestFullscreen?.()">
-⛶
-</button>
+<p>
+
+Escolha uma música e aproveite sua experiência musical
+de forma simples, rápida e confortável.
+
+</p>
+
+</div>
+
+
+<div class="hero-icon">
+
+<i class="fa-solid fa-music"></i>
 
 </div>
 
 </div>
+
 </section>
 
-<main class="content">
+
+
+<section class="search-area">
+
+<div class="search-box">
+
+<i class="fa-solid fa-magnifying-glass"></i>
 
 <input
-id="search"
-class="search"
-placeholder="🔎 Procurar música"
-oninput="renderSongs()">
+id="searchInput"
+type="search"
+placeholder="O que você quer ouvir?"
+autocomplete="off">
 
-<div id="playlist"></div>
+<button
+id="clearSearch"
+class="clear-search"
+type="button"
+onclick="limparBusca()">
 
-<section id="offline" style="display:none">
+<i class="fa-solid fa-xmark"></i>
 
-<h3 style="margin:15px 0 8px">
-📥 Minhas músicas offline
-</h3>
+</button>
 
-<div id="downloads"></div>
+</div>
 
 </section>
+
+
+
+<div class="filter-bar">
+
+<button
+class="filter-btn active"
+data-category="Todas">
+
+Todas
+
+</button>
+
+<button
+class="filter-btn"
+data-category="Sertanejo">
+
+Sertanejo
+
+</button>
+
+<button
+class="filter-btn"
+data-category="Funk">
+
+Funk
+
+</button>
+
+<button
+class="filter-btn"
+data-category="Forró">
+
+Forró
+
+</button>
+
+<button
+class="filter-btn"
+data-category="Pagode">
+
+Pagode
+
+</button>
+
+<button
+class="filter-btn"
+data-category="Eletrônica">
+
+Eletrônica
+
+</button>
+
+<button
+class="filter-btn"
+data-category="Trap">
+
+Trap
+
+</button>
+
+<button
+class="filter-btn"
+data-category="Pop">
+
+Pop
+
+</button>
+
+<button
+class="filter-btn"
+data-category="Rock">
+
+Rock
+
+</button>
+
+<button
+class="filter-btn"
+data-category="Engraçado">
+
+Engraçados
+
+</button>
+
+</div>
+
+
+
+<div id="searchResults" class="search-results">
+
+<div class="search-result-title">
+
+RESULTADOS
+
+</div>
+
+<div id="searchResultList"></div>
+
+</div>
+
+
+
+<div class="section-title">
+
+<h2>
+
+<i class="fa-solid fa-headphones"></i>
+
+Músicas
+
+</h2>
+
+<span id="musicCounter">
+
+0 músicas
+
+</span>
+
+</div>
+
+
+
+<div
+id="playlistContainer"
+class="playlist-container">
+
+<div class="loading">
+
+Carregando músicas...
+
+</div>
+
+</div>
 
 </main>
 
+
+
+<div id="miniPlayer" class="mini-player">
+
+<div class="mini-cover">
+
+<i class="fa-solid fa-music"></i>
+
+</div>
+
+
+<div class="mini-info">
+
+<div id="miniTitle" class="mini-title">
+
+Nenhuma música
+
+</div>
+
+<div id="miniCategory" class="mini-subtitle">
+
+Nando's Music
+
+</div>
+
+</div>
+
+
 <button
-class="install"
-id="installBtn">
-📲 Instalar Nando's Music
+id="miniPlay"
+class="mini-btn"
+type="button"
+onclick="togglePlay()">
+
+<i class="fa-solid fa-play"></i>
+
 </button>
 
-<!-- LOGIN -->
 
-<div id="authModal" class="modal open">
+<button
+class="mini-btn"
+type="button"
+onclick="abrirPlayerCompleto()">
+
+<i class="fa-solid fa-chevron-up"></i>
+
+</button>
+
+
+<div class="mini-progress">
 
 <div
-class="box"
-style="max-width:430px;text-align:center">
+id="miniProgressFill"
+class="mini-progress-fill">
 
-<h2>🔐 Acesso restrito</h2>
+</div>
 
-<p
-class="muted"
-style="margin:10px 0 15px">
-Digite o código recebido do administrador.
+</div>
+
+</div>
+
+
+
+<audio
+id="musicPlayer"
+preload="metadata">
+</audio>
+
+
+
+<div id="fullPlayer" class="full-player">
+
+
+<div class="full-header">
+
+<button
+type="button"
+onclick="fecharPlayerCompleto()">
+
+<i class="fa-solid fa-chevron-down"></i>
+
+</button>
+
+
+<div class="full-header-title">
+
+TOCANDO AGORA
+
+</div>
+
+
+<button
+type="button"
+onclick="abrirLetras()">
+
+<i class="fa-solid fa-align-left"></i>
+
+</button>
+
+</div>
+
+
+
+<div class="full-cover-area">
+
+<div
+id="fullCover"
+class="full-cover">
+
+<i class="fa-solid fa-music"></i>
+
+</div>
+
+</div>
+
+
+
+<div class="full-info">
+
+<div
+id="fullTitle"
+class="full-title">
+
+Nenhuma música
+
+</div>
+
+
+<div
+id="fullCategory"
+class="full-category">
+
+Nando's Music
+
+</div>
+
+</div>
+
+
+
+<div class="progress-area">
+
+<div
+id="progressBar"
+class="progress">
+
+<div
+id="progressFill"
+class="progress-fill">
+
+</div>
+
+</div>
+
+
+<div class="time-row">
+
+<span id="currentTime">
+0:00
+</span>
+
+<span id="duration">
+0:00
+</span>
+
+</div>
+
+</div>
+
+
+
+<div class="full-controls">
+
+<button
+class="full-control"
+type="button"
+onclick="voltarMusica()">
+
+<i class="fa-solid fa-backward-step"></i>
+
+</button>
+
+
+<button
+class="full-control"
+type="button"
+onclick="retroceder()">
+
+<i class="fa-solid fa-rotate-left"></i>
+
+</button>
+
+
+<button
+id="fullPlay"
+class="full-control main"
+type="button"
+onclick="togglePlay()">
+
+<i class="fa-solid fa-play"></i>
+
+</button>
+
+
+<button
+class="full-control"
+type="button"
+onclick="avancar()">
+
+<i class="fa-solid fa-forward"></i>
+
+</button>
+
+
+<button
+id="shuffleButton"
+class="full-control"
+type="button"
+onclick="ativarAleatorio()">
+
+<i class="fa-solid fa-shuffle"></i>
+
+</button>
+
+</div>
+
+
+
+<button
+class="lyrics-button"
+type="button"
+onclick="abrirLetras()">
+
+<i class="fa-solid fa-align-left"></i>
+
+Letra
+
+</button>
+
+</div>
+
+
+
+<div id="lyricsModal" class="lyrics-modal">
+
+
+<div class="lyrics-header">
+
+<button
+type="button"
+onclick="fecharLetras()">
+
+<i class="fa-solid fa-chevron-left"></i>
+
+</button>
+
+
+<div>
+
+<div class="lyrics-title">
+
+LETRA
+
+</div>
+
+
+<div
+id="lyricsHeaderTitle"
+class="small">
+
+Nando's Music
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<div class="lyrics-content">
+
+<h2 id="lyricsSongTitle">
+
+Nenhuma música
+
+</h2>
+
+
+<div
+id="lyricsText"
+class="lyrics-text">
+
+A letra desta música ainda não foi cadastrada.
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<nav class="bottom-nav">
+
+
+<button
+class="nav-btn active"
+type="button"
+onclick="irInicio()">
+
+<i class="fa-solid fa-house"></i>
+
+<span>Início</span>
+
+</button>
+
+
+<button
+class="nav-btn"
+type="button"
+onclick="abrirBusca()">
+
+<i class="fa-solid fa-magnifying-glass"></i>
+
+<span>Buscar</span>
+
+</button>
+
+
+<button
+class="nav-btn"
+type="button"
+onclick="irMusicas()">
+
+<i class="fa-solid fa-music"></i>
+
+<span>Músicas</span>
+
+</button>
+
+
+</nav>
+
+
+
+<div
+id="sideMenu"
+class="side-menu"
+onclick="fecharMenuFora(event)">
+
+
+<div class="menu-panel">
+
+
+<div class="menu-header">
+
+<div>
+
+<strong>
+
+<i
+class="fa-solid fa-sliders"
+style="color:#9c91ff">
+</i>
+
+Configurações
+
+</strong>
+
+
+<div class="small">
+
+Área administrativa
+
+</div>
+
+</div>
+
+
+<button
+class="close"
+type="button"
+onclick="fecharMenu()">
+
+×
+
+</button>
+
+</div>
+
+
+
+<button
+class="menu-item"
+type="button"
+onclick="abrirAdminPainel()">
+
+
+<i class="fa-solid fa-user-shield"></i>
+
+
+<div>
+
+<strong>
+
+Painel administrativo
+
+</strong>
+
+
+<div class="small">
+
+Gerenciar músicas, vídeos e códigos
+
+</div>
+
+</div>
+
+</button>
+
+
+
+<button
+class="menu-item"
+type="button"
+onclick="sairAdministrador()">
+
+
+<i class="fa-solid fa-right-from-bracket"></i>
+
+
+<div>
+
+<strong>
+
+Sair do administrador
+
+</strong>
+
+
+<div class="small">
+
+Encerrar sessão administrativa
+
+</div>
+
+</div>
+
+</button>
+
+
+</div>
+
+</div>
+
+
+
+<div
+id="authModal"
+class="modal active">
+
+
+<div class="modal-content">
+
+
+<div class="lock-screen">
+
+
+<div class="lock-icon">
+
+<i class="fa-solid fa-lock"></i>
+
+</div>
+
+
+<h2>
+
+Acesso restrito
+
+</h2>
+
+
+<p>
+
+Digite o código de acesso fornecido pelo administrador
+para entrar no Nando's Music.
+
 </p>
 
+</div>
+
+
+
 <input
-id="accessCode"
-class="field"
-style="text-align:center;text-transform:uppercase;letter-spacing:2px"
-placeholder="NANDO-XXXX-XXXX">
+id="userAccessCode"
+class="auth-input"
+placeholder="ND-XXXXXX"
+maxlength="9"
+autocomplete="off"
+spellcheck="false">
 
-<button
-class="primary"
-onclick="authorize()">
-Entrar
-</button>
 
-<div
-id="authMsg"
-class="notice"
-style="display:none">
-</div>
-
-<button
-onclick="openAdmin()"
-style="margin-top:12px;background:none;border:0;color:#c084fc;text-decoration:underline">
-Sou administrador
-</button>
-
-</div>
-</div>
-
-<!-- ADMIN -->
-
-<div id="adminModal" class="modal">
-
-<div class="box">
-
-<div class="row">
-
-<h2 style="flex:1">
-⚙️ Painel ADM
-</h2>
 
 <button
 class="btn"
-onclick="closeAdmin()">
-✕
+type="button"
+onclick="processarAcesso()">
+
+<i class="fa-solid fa-right-to-bracket"></i>
+
+Entrar
+
 </button>
+
+
+
+<div
+id="authMessage"
+class="message">
 
 </div>
 
-<div id="loginBox">
+</div>
 
-<p
-class="muted"
-style="margin:10px 0">
-Primeiro acesso: crie uma senha com pelo menos 6 caracteres.
+</div>
+
+
+
+<div
+id="adminLoginModal"
+class="modal">
+
+
+<div class="modal-content">
+
+
+<div class="auth-brand">
+
+
+<div class="auth-brand-icon">
+
+<i class="fa-solid fa-user-shield"></i>
+
+</div>
+
+
+<h2>
+
+Acesso administrativo
+
+</h2>
+
+
+<p>
+
+Digite a senha administrativa para entrar no painel.
+
 </p>
 
+</div>
+
+
+
 <input
-id="admPass"
-class="field"
 type="password"
-placeholder="Senha ADM">
+id="adminPassword"
+placeholder="Senha do administrador"
+autocomplete="off">
+
+
 
 <button
-class="primary"
-onclick="adminLogin()">
+class="btn"
+type="button"
+onclick="entrarAdmin()">
+
+<i class="fa-solid fa-shield-halved"></i>
+
 Entrar
+
 </button>
 
+
+
+<button
+class="btn btn-secondary"
+type="button"
+onclick="fecharLoginAdmin()">
+
+Voltar
+
+</button>
+
+
+
 <div
-id="adminMsg"
-class="notice"
-style="display:none">
+id="adminLoginMessage"
+class="message">
+
 </div>
 
 </div>
 
-<div
-id="dashboard"
-style="display:none">
+</div>
+
+
 
 <div
-class="filters"
-style="margin:12px -18px 15px">
+id="adminModal"
+class="modal">
+
+
+<div class="modal-content admin-content">
+
+
+<div
+style="
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:10px;">
+
+<div>
+
+<h2>
+
+<i
+class="fa-solid fa-sliders"
+style="color:#9c91ff">
+</i>
+
+Configurações
+
+</h2>
+
+
+<div class="small">
+
+Administrador conectado
+
+</div>
+
+</div>
+
 
 <button
-class="chip active"
-onclick="tab('songs',this)">
-🎵 Músicas
-</button>
+class="close"
+type="button"
+onclick="fecharAdminPainel()">
 
-<button
-class="chip"
-onclick="tab('bg',this)">
-🎬 Fundos
-</button>
+×
 
-<button
-class="chip"
-onclick="tab('codes',this)">
-🔑 Códigos
-</button>
-
-<button
-class="chip"
-onclick="tab('pass',this)">
-🔐 Senha
 </button>
 
 </div>
 
-<section id="tabSongs">
 
-<h3>Adicionar música</h3>
+
+<div class="admin-tabs">
+
+
+<button
+class="filter-btn active"
+data-admin-tab="player">
+
+Player
+
+</button>
+
+
+<button
+class="filter-btn"
+data-admin-tab="musicas">
+
+Músicas
+
+</button>
+
+
+<button
+class="filter-btn"
+data-admin-tab="fundos">
+
+Fundos
+
+</button>
+
+
+<button
+class="filter-btn"
+data-admin-tab="codigos">
+
+Códigos
+
+</button>
+
+
+</div>
+
+
+
+<div
+id="aba-player"
+class="admin-section active">
+
+
+<h3>
+
+Player
+
+</h3>
+
+
+<p class="small">
+
+Teste as músicas e vídeos cadastrados.
+
+</p>
+
+
+
+<div class="admin-player">
+
+
+<div class="admin-video">
+
+
+<video
+id="adminBackgroundPlayer"
+playsinline
+muted
+loop>
+</video>
+
+
+</div>
+
+
+
+<audio
+id="adminMusicPlayer"
+controls
+style="width:100%;margin-top:10px;">
+</audio>
+
+
+
+<div
+id="adminNowPlaying"
+class="small"
+style="text-align:center;margin-top:8px;">
+
+Nenhuma música reproduzindo
+
+</div>
+
+</div>
+
+
+
+<div
+id="adminPlayerList"
+style="margin-top:10px">
+</div>
+
+
+
+<button
+class="btn btn-secondary"
+onclick="pararPlayer()">
+
+<i class="fa-solid fa-stop"></i>
+
+Parar
+
+</button>
+
+</div>
+
+
+
+<div
+id="aba-musicas"
+class="admin-section">
+
+
+<h3>
+
+Adicionar música
+
+</h3>
+
+
 
 <input
-id="sTitle"
-class="field"
-placeholder="Título">
+id="songTitle"
+placeholder="Título da música">
+
+
 
 <input
-id="sUrl"
-class="field"
-placeholder="URL direta do arquivo .mp3/.mp4">
+id="songUrl"
+placeholder="Link direto .mp3 ou .mp4">
 
-<select
-id="sCat"
-class="field">
+
+
+<input
+id="songLyrics"
+placeholder="Letra da música (opcional)">
+
+
+
+<select id="songCategory">
 
 <option>Sertanejo</option>
 <option>Funk</option>
@@ -550,1475 +1112,198 @@ class="field">
 
 </select>
 
-<button
-class="primary"
-onclick="saveSong()">
-Salvar música
-</button>
 
-<div id="adminSongs"></div>
-
-</section>
-
-<section
-id="tabBg"
-style="display:none">
-
-<h3>Vídeo de fundo</h3>
-
-<p
-class="muted"
-style="margin:7px 0">
-O fundo toca junto com a música. Ao terminar, outro é escolhido aleatoriamente.
-</p>
-
-<input
-id="bgUrl"
-class="field"
-placeholder="URL direta do .mp4">
-
-<input
-id="bgName"
-class="field"
-placeholder="Nome do fundo">
 
 <button
-class="primary"
-onclick="saveBg()">
-Salvar fundo
+class="btn"
+onclick="salvarMusica()">
+
+<i class="fa-solid fa-plus"></i>
+
+Adicionar música
+
 </button>
 
-<div id="adminBg"></div>
 
-</section>
-
-<section
-id="tabCodes"
-style="display:none">
-
-<h3>Códigos de clientes</h3>
-
-<button
-class="primary"
-onclick="generateCode()">
-🔑 Gerar novo código
-</button>
-
-<div class="notice">
-O código é vinculado ao navegador/aparelho pelo identificador local.
-</div>
-
-<div id="adminCodes"></div>
-
-</section>
-
-<section
-id="tabPass"
-style="display:none">
-
-<h3>Alterar senha ADM</h3>
-
-<input
-id="oldPass"
-class="field"
-type="password"
-placeholder="Senha atual">
-
-<input
-id="newPass"
-class="field"
-type="password"
-placeholder="Nova senha">
-
-<input
-id="newPass2"
-class="field"
-type="password"
-placeholder="Confirme">
-
-<button
-class="primary"
-onclick="changePass()">
-Alterar senha
-</button>
-
-</section>
-
-</div>
-</div>
-</div>
-
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-
-<script>
-
-const firebaseConfig={
-databaseURL:"https://music-nando-default-rtdb.firebaseio.com/"
-};
-
-firebase.initializeApp(firebaseConfig);
-
-const db=firebase.database();
-
-const audio=document.getElementById('audio');
-
-const bg=document.getElementById('bgVideo');
-
-let songs=[];
-
-let backgroundSongs=[];
-
-let backgrounds=[];
-
-let current=-1;
-
-let shuffle=false;
-
-let repeat=false;
-
-let filter='Todas';
-
-let deferred=null;
-
-const deviceId=
-localStorage.getItem('nando_device_id')||
-'DEV-'+
-Math.random()
-.toString(36)
-.slice(2,10)
-.toUpperCase();
-
-localStorage.setItem(
-'nando_device_id',
-deviceId
-);
-
-const TEST_SONG={
-id:'test-song',
-title:'Música de teste',
-category:'Pop',
-url:''
-};
-
-const TEST_BG={
-id:'test-bg',
-name:'Fundo de teste',
-url:''
-};
-
-const esc=s=>
-String(s??'')
-.replace(
-/[&<>"']/g,
-m=>({
-'&':'&amp;',
-'<':'&lt;',
-'>':'&gt;',
-'"':'&quot;',
-"'":'&#039;'
-}[m])
-);
-
-function notice(id,t){
-
-const e=document.getElementById(id);
-
-e.textContent=t;
-
-e.style.display='block';
-
-}
-
-
-/* =====================================================
-   CARREGAR CATÁLOGO JSON
-===================================================== */
-
-async function loadCatalog(){
-
-try{
-
-const response=
-await fetch(
-'catalogo.json?cache='+Date.now()
-);
-
-if(!response.ok)
-throw new Error(
-'Não foi possível carregar catalogo.json'
-);
-
-const catalog=
-await response.json();
-
-if(Array.isArray(catalog)){
-
-const catalogSongs=
-catalog
-.filter(x=>x && x.url)
-.map((x,index)=>({
-
-id:x.id||
-'catalog-'+index,
-
-title:x.title||
-'Sem título',
-
-category:x.category||
-'Outros',
-
-url:x.url,
-
-cover:x.cover||
-'',
-
-artist:x.artist||
-''
-}));
-
-songs=catalogSongs;
-
-}
-
-}catch(error){
-
-console.error(
-'Erro no catálogo:',
-error
-);
-
-}
-
-}
-
-
-/* =====================================================
-   CARREGAR SISTEMA
-===================================================== */
-
-async function load(){
-
-await loadCatalog();
-
-db.ref('musicas').on(
-'value',
-s=>{
-
-const d=s.val()||{};
-
-const firebaseSongs=[];
-
-Object.keys(d).forEach(id=>{
-
-firebaseSongs.push({
-id,
-...d[id]
-});
-
-});
-
-/*
-Não substituímos o catálogo.
-As músicas cadastradas no Firebase
-são adicionadas junto.
-*/
-
-songs=[
-...songs,
-...firebaseSongs
-];
-
-if(!songs.length)
-songs=[TEST_SONG];
-
-renderFilters();
-
-renderSongs();
-
-renderAdminSongs();
-
-}
-);
-
-db.ref('background_videos').on(
-'value',
-s=>{
-
-backgrounds=[];
-
-const d=s.val()||{};
-
-Object.keys(d).forEach(id=>{
-
-backgrounds.push({
-id,
-...d[id]
-});
-
-});
-
-if(!backgrounds.length)
-backgrounds=[TEST_BG];
-
-renderAdminBg();
-
-nextBg();
-
-}
-);
-
-db.ref('codigos_gerados').on(
-'value',
-s=>renderCodes(s.val()||{})
-);
-
-}
-
-
-/* =====================================================
-   FILTROS
-===================================================== */
-
-function renderFilters(){
-
-const c=[
-'Todas',
-...new Set(
-songs
-.map(x=>x.category)
-.filter(Boolean)
-)
-];
-
-document.getElementById(
-'filters'
-).innerHTML=
-
-c.map(
-(x,i)=>
-`<button
-class="chip ${i?'':'active'}"
-onclick="setFilter('${esc(x)}',this)">
-${esc(x)}
-</button>`
-).join('');
-
-}
-
-function setFilter(x,b){
-
-filter=x;
-
-document
-.querySelectorAll('#filters .chip')
-.forEach(
-e=>e.classList.remove('active')
-);
-
-b.classList.add('active');
-
-renderSongs();
-
-}
-
-
-/* =====================================================
-   LISTA DE MÚSICAS
-===================================================== */
-
-function renderSongs(){
-
-const q=
-document
-.getElementById('search')
-.value
-.toLowerCase();
-
-const list=
-songs.filter(
-x=>
-(filter==='Todas'||x.category===filter)&&
-(`${x.title} ${x.category}`
-.toLowerCase()
-.includes(q))
-);
-
-document.getElementById(
-'playlist'
-).innerHTML=
-
-list.map(
-x=>
-`<div class="song">
 
 <div
-class="info"
-onclick="playSong('${esc(x.id)}')">
-
-<div class="songtitle">
-${esc(x.title)}
-</div>
-
-<div class="meta">
-${esc(x.artist||'')}
-${x.artist?' • ':''}
-${esc(x.category||'')}
+id="musicAdminList"
+style="margin-top:15px">
 </div>
 
 </div>
 
-<button
-onclick="playSong('${esc(x.id)}')">
-▶
-</button>
+
+
+<div
+id="aba-fundos"
+class="admin-section">
+
+
+<h3>
+
+Vídeos de fundo
+
+</h3>
+
+
+<p class="small">
+
+Adicione links diretos de vídeos MP4.
+
+</p>
+
+
+
+<input
+id="backgroundUrl"
+placeholder="Link direto do vídeo .mp4">
+
+
 
 <button
-onclick="downloadSong('${esc(x.id)}')">
-⬇
+class="btn"
+onclick="salvarFundo()">
+
+<i class="fa-solid fa-video"></i>
+
+Adicionar vídeo
+
 </button>
 
-</div>`
-).join('')
 
-||
-'<div class="notice">
-Nenhuma música encontrada.
-</div>';
 
-}
-
-
-/* =====================================================
-   REPRODUÇÃO
-===================================================== */
-
-function playSong(id){
-
-const i=
-songs.findIndex(
-x=>x.id===id
-);
-
-if(i<0)return;
-
-current=i;
-
-const s=songs[i];
-
-if(!s.url){
-
-alert(
-'Esta música não possui uma URL válida.'
-);
-
-return;
-
-}
-
-audio.src=s.url;
-
-document.getElementById(
-'nowTitle'
-).textContent=s.title;
-
-document.getElementById(
-'nowMeta'
-).textContent=
-(s.artist?s.artist+' • ':'')+
-(s.category||'');
-
-audio.play().catch(
-console.error
-);
-
-/*
-IMPORTANTE:
-quando o usuário aperta PLAY,
-o vídeo de fundo também começa.
-*/
-
-if(
-!bg.src ||
-bg.paused
-){
-
-nextBg();
-
-}else{
-
-bg.play().catch(
-console.error
-);
-
-}
-
-document.getElementById(
-'playBtn'
-).textContent='⏸';
-
-}
-
-
-/* =====================================================
-   PLAY / PAUSE
-===================================================== */
-
-function togglePlay(){
-
-if(!audio.src)
-return;
-
-if(audio.paused){
-
-audio.play().catch(
-console.error
-);
-
-if(!bg.src)
-nextBg();
-else
-bg.play().catch(
-console.error
-);
-
-}else{
-
-audio.pause();
-
-bg.pause();
-
-}
-
-}
-
-audio.onplay=()=>{
-
-document.getElementById(
-'playBtn'
-).textContent='⏸';
-
-if(!bg.src)
-nextBg();
-else
-bg.play().catch(()=>{});
-
-};
-
-audio.onpause=()=>{
-
-document.getElementById(
-'playBtn'
-).textContent='▶';
-
-bg.pause();
-
-};
-
-audio.onended=()=>{
-
-if(repeat){
-
-audio.currentTime=0;
-
-audio.play();
-
-}else{
-
-nextSong();
-
-}
-
-};
-
-
-/* =====================================================
-   PRÓXIMA / ANTERIOR
-===================================================== */
-
-function nextSong(){
-
-if(!songs.length)return;
-
-current=
-shuffle
-?Math.floor(
-Math.random()*songs.length
-)
-:(current+1)%songs.length;
-
-playSong(
-songs[current].id
-);
-
-}
-
-function previousSong(){
-
-if(!songs.length)return;
-
-current=
-(current-1+songs.length)
-%songs.length;
-
-playSong(
-songs[current].id
-);
-
-}
-
-
-/* =====================================================
-   VÍDEO DE FUNDO
-===================================================== */
-
-function nextBg(){
-
-const a=
-backgrounds.filter(
-x=>x.url
-);
-
-if(!a.length){
-
-bg.removeAttribute('src');
-
-return;
-
-}
-
-let c=a;
-
-if(
-a.length>1 &&
-bg.dataset.last
-){
-
-c=
-a.filter(
-x=>x.url!==bg.dataset.last
-);
-
-}
-
-const x=
-c[
-Math.floor(
-Math.random()*c.length
-)
-];
-
-bg.dataset.last=x.url;
-
-bg.src=x.url;
-
-bg.muted=true;
-
-bg.playsInline=true;
-
-bg.play().catch(
-console.error
-);
-
-}
-
-/*
-Quando um vídeo termina,
-outro vídeo aleatório entra
-automaticamente.
-*/
-
-bg.onended=nextBg;
-
-
-/* =====================================================
-   ADMIN
-===================================================== */
-
-function openAdmin(){
-
-document
-.getElementById('adminModal')
-.classList.add('open');
-
-}
-
-function closeAdmin(){
-
-document
-.getElementById('adminModal')
-.classList.remove('open');
-
-}
-
-function adminLogin(){
-
-const p=
-document
-.getElementById('admPass')
-.value;
-
-const s=
-localStorage.getItem(
-'nando_admin_pass'
-);
-
-if(!s){
-
-if(p.length<6)
-return notice(
-'adminMsg',
-'Use pelo menos 6 caracteres.'
-);
-
-localStorage.setItem(
-'nando_admin_pass',
-p
-);
-
-showDash();
-
-return;
-
-}
-
-if(p!==s)
-return notice(
-'adminMsg',
-'Senha incorreta.'
-);
-
-showDash();
-
-}
-
-function showDash(){
-
-document.getElementById(
-'loginBox'
-).style.display='none';
-
-document.getElementById(
-'dashboard'
-).style.display='block';
-
-}
-
-function tab(t,b){
-
-document
-.querySelectorAll(
-'#dashboard section'
-)
-.forEach(
-x=>x.style.display='none'
-);
-
-document.getElementById(
-'tab'+
-t[0].toUpperCase()+
-t.slice(1)
-).style.display='block';
-
-document
-.querySelectorAll(
-'#dashboard .chip'
-)
-.forEach(
-x=>x.classList.remove('active')
-);
-
-b.classList.add('active');
-
-}
-
-function changePass(){
-
-const o=oldPass.value;
-
-const n=newPass.value;
-
-const n2=newPass2.value;
-
-if(
-o!==
-localStorage.getItem(
-'nando_admin_pass'
-)
-)
-return alert(
-'Senha atual incorreta.'
-);
-
-if(
-n.length<6||
-n!==n2
-)
-return alert(
-'Nova senha inválida.'
-);
-
-localStorage.setItem(
-'nando_admin_pass',
-n
-);
-
-alert(
-'Senha alterada.'
-);
-
-}
-
-
-/* =====================================================
-   ADMIN - MÚSICAS
-===================================================== */
-
-function saveSong(){
-
-const title=
-sTitle.value.trim();
-
-const url=
-sUrl.value.trim();
-
-const category=
-sCat.value;
-
-if(!title||!url)
-return alert(
-'Preencha título e URL.'
-);
-
-db.ref('musicas')
-.push({
-title,
-url,
-category
-})
-.then(()=>{
-
-sTitle.value='';
-
-sUrl.value='';
-
-alert(
-'Música salva.'
-);
-
-})
-.catch(
-e=>alert(e.message)
-);
-
-}
-
-
-/* =====================================================
-   ADMIN - FUNDOS
-===================================================== */
-
-function saveBg(){
-
-const url=
-bgUrl.value.trim();
-
-const name=
-bgName.value.trim()||
-'Vídeo de fundo';
-
-if(!url)
-return alert(
-'Informe a URL.'
-);
-
-db.ref('background_videos')
-.push({
-url,
-name
-})
-.then(()=>{
-
-bgUrl.value='';
-
-bgName.value='';
-
-alert(
-'Fundo salvo.'
-);
-
-})
-.catch(
-e=>alert(e.message)
-);
-
-}
-
-
-/* =====================================================
-   CÓDIGOS
-===================================================== */
-
-function generateCode(){
-
-let c='NANDO-';
-
-const a=
-'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-
-for(
-let i=0;
-i<4;
-i++
-)
-c+=
-a[
-Math.floor(
-Math.random()*a.length
-)
-];
-
-c+='-';
-
-for(
-let i=0;
-i<4;
-i++
-)
-c+=
-a[
-Math.floor(
-Math.random()*a.length
-)
-];
-
-db.ref(
-'codigos_gerados/'+c
-)
-.set({
-usado:false,
-deviceId:null,
-createdAt:Date.now()
-})
-.then(
-()=>
-navigator.clipboard
-?.writeText(c)
-.catch(()=>{})
-)
-.then(
-()=>
-alert(
-'Código criado: '+c
-)
-)
-.catch(
-e=>alert(e.message)
-);
-
-}
-
-function del(path,id){
-
-if(
-confirm('Excluir?')
-)
-db.ref(
-path+'/'+id
-).remove();
-
-}
-
-function renderAdminSongs(){
-
-adminSongs.innerHTML=
-songs
-.filter(
-x=>x.id!=='test-song'
-)
-.map(
-x=>
-`<div class="adminitem">
-
-<span>
-${esc(x.title)}
-<br>
-<small>
-${esc(x.category)}
-</small>
-</span>
-
-<button
-class="btn danger"
-onclick="del('musicas','${esc(x.id)}')">
-Excluir
-</button>
-
-</div>`
-)
-.join('')
-
-||
-'<div class="notice">
-Nenhuma música cadastrada.
-</div>';
-
-}
-
-function renderAdminBg(){
-
-adminBg.innerHTML=
-backgrounds
-.filter(
-x=>x.id!=='test-bg'
-)
-.map(
-x=>
-`<div class="adminitem">
-
-<span>
-${esc(x.name||'Fundo')}
-</span>
-
-<button
-class="btn danger"
-onclick="del('background_videos','${esc(x.id)}')">
-Excluir
-</button>
-
-</div>`
-)
-.join('')
-
-||
-'<div class="notice">
-Nenhum fundo cadastrado.
-</div>';
-
-}
-
-function renderCodes(d){
-
-adminCodes.innerHTML=
-Object.keys(d)
-.map(
-id=>
-`<div class="adminitem">
-
-<span>
-<b>${esc(id)}</b>
-<br>
-
-<small>
-${
-d[id].usado
-?
-'🔴 Usado • '+
-esc(d[id].deviceId||'')
-:
-'🟢 Disponível'
-}
-</small>
-
-</span>
-
-<button
-class="btn danger"
-onclick="del('codigos_gerados','${esc(id)}')">
-Excluir
-</button>
-
-</div>`
-)
-.join('')
-
-||
-'<div class="notice">
-Nenhum código.
-</div>';
-
-}
-
-
-/* =====================================================
-   AUTORIZAÇÃO
-===================================================== */
-
-function authorize(){
-
-const code=
-accessCode.value
-.trim()
-.toUpperCase();
-
-if(!code)
-return notice(
-'authMsg',
-'Digite o código.'
-);
-
-db.ref(
-'codigos_gerados/'+code
-)
-.once('value')
-.then(
-s=>{
-
-const d=s.val();
-
-if(!d)
-return notice(
-'authMsg',
-'Código inválido.'
-);
-
-if(
-d.usado &&
-d.deviceId!==deviceId
-)
-return notice(
-'authMsg',
-'Código já está em outro aparelho.'
-);
-
-return db.ref(
-'codigos_gerados/'+code
-)
-.update({
-usado:true,
-deviceId
-})
-.then(
-()=>db.ref(
-'dispositivos_autorizados/'+code
-)
-.set({deviceId})
-)
-.then(()=>{
-
-localStorage.setItem(
-'nando_access_code',
-code
-);
-
-authModal
-.classList
-.remove('open');
-
-});
-
-}
-)
-.catch(
-e=>notice(
-'authMsg',
-'Erro: '+e.message
-)
-);
-
-}
-
-function checkAuth(){
-
-const c=
-localStorage.getItem(
-'nando_access_code'
-);
-
-if(!c)return;
-
-db.ref(
-'codigos_gerados/'+c
-)
-.once('value')
-.then(
-s=>{
-
-const d=s.val();
-
-if(
-d &&
-d.usado &&
-d.deviceId===deviceId
-)
-authModal
-.classList
-.remove('open');
-
-}
-);
-
-}
-
-
-/* =====================================================
-   OFFLINE
-===================================================== */
-
-function openOfflineDB(){
-
-return new Promise(
-(res,rej)=>{
-
-const r=
-indexedDB.open(
-'NandosMusicOffline',
-1
-);
-
-r.onupgradeneeded=()=>{
-
-r.result
-.createObjectStore(
-'songs',
-{keyPath:'id'}
-);
-
-};
-
-r.onsuccess=()=>
-res(r.result);
-
-r.onerror=()=>
-rej(r.error);
-
-}
-);
-
-}
-
-async function downloadSong(id){
-
-const s=
-songs.find(
-x=>x.id===id
-);
-
-if(!s?.url)
-return alert(
-'Esta música não possui arquivo.'
-);
-
-try{
-
-const r=
-await fetch(
-s.url,
-{mode:'cors'}
-);
-
-if(!r.ok)
-throw Error(
-'HTTP '+r.status
-);
-
-const blob=
-await r.blob();
-
-const d=
-await openOfflineDB();
-
-d.transaction(
-'songs',
-'readwrite'
-)
-.objectStore('songs')
-.put({
-id,
-title:s.title,
-category:s.category,
-artist:s.artist||'',
-blob
-});
-
-alert(
-'Música baixada para uso offline.'
-);
-
-}catch(e){
-
-alert(
-'Não foi possível baixar. '+
-'O servidor precisa permitir CORS '+
-'e fornecer o arquivo diretamente.'
-);
-
-}
-
-}
-
-async function downloadCurrent(){
-
-if(current<0)
-return alert(
-'Escolha uma música.'
-);
-
-downloadSong(
-songs[current].id
-);
-
-}
-
-async function showDownloads(){
-
-offline.style.display='block';
-
-const d=
-await openOfflineDB();
-
-const r=
-d.transaction(
-'songs',
-'readonly'
-)
-.objectStore('songs')
-.getAll();
-
-r.onsuccess=()=>{
-
-downloads.innerHTML=
-(r.result||[])
-.map(
-x=>
-`<div class="song">
-
-<div class="info">
-
-<div class="songtitle">
-${esc(x.title)}
-</div>
-
-<div class="meta">
-${esc(x.artist||'')}
-${x.artist?' • ':''}
-${esc(x.category||'')}
- • offline
+<div
+id="backgroundAdminList"
+style="margin-top:15px">
 </div>
 
 </div>
 
+
+
+<div
+id="aba-codigos"
+class="admin-section">
+
+
+<h3>
+
+Códigos para clientes
+
+</h3>
+
+
+<p class="small">
+
+Gere códigos únicos para liberar o aplicativo em aparelhos.
+
+</p>
+
+
+
 <button
-onclick="playOffline('${esc(x.id)}')">
-▶
+class="btn"
+onclick="gerarCodigoCliente()">
+
+<i class="fa-solid fa-key"></i>
+
+Gerar novo código
+
 </button>
 
-</div>`
-)
-.join('')
-
-||
-'<div class="notice">
-Nenhuma música baixada.
-</div>';
-
-};
-
-}
-
-async function playOffline(id){
-
-const d=
-await openOfflineDB();
-
-const r=
-d.transaction(
-'songs',
-'readonly'
-)
-.objectStore('songs')
-.get(id);
-
-r.onsuccess=()=>{
-
-const x=r.result;
-
-if(!x)return;
-
-audio.src=
-URL.createObjectURL(
-x.blob
-);
-
-nowTitle.textContent=
-x.title;
-
-nowMeta.textContent=
-(x.artist?
-x.artist+' • ':
-'')+
-(x.category||'')+
-' • offline';
-
-audio.play().catch(()=>{});
-
-if(!bg.src)
-nextBg();
-else
-bg.play().catch(()=>{});
-
-};
-
-}
 
 
-/* =====================================================
-   INSTALAÇÃO PWA
-===================================================== */
-
-window.addEventListener(
-'beforeinstallprompt',
-e=>{
-
-e.preventDefault();
-
-deferred=e;
-
-installBtn.style.display='block';
-
-}
-);
-
-function install(){
-
-if(deferred){
-
-deferred.prompt();
-
-deferred=null;
-
-}else{
-
-alert(
-'No navegador Android, use o menu e escolha “Instalar aplicativo” ou “Adicionar à tela inicial”.'
-);
-
-}
-
-}
-
-installBtn.onclick=install;
-
-installTop.onclick=install;
+<div
+id="generatedCodeBox"
+class="code-box"
+style="display:none">
 
 
-/* =====================================================
-   INICIAR
-===================================================== */
+<div class="small">
 
-if(
-'serviceWorker' in navigator
-)
-navigator.serviceWorker
-.register('sw.js')
-.catch(console.error);
+NOVO CÓDIGO
 
-load();
+</div>
 
-checkAuth();
 
-</script>
+<div
+id="generatedCode"
+class="generated-code">
+</div>
+
+
+
+<button
+class="btn btn-success"
+onclick="copiarCodigo()">
+
+<i class="fa-solid fa-copy"></i>
+
+Copiar código
+
+</button>
+
+
+
+<div
+id="copyMessage"
+class="small"
+style="margin-top:8px">
+</div>
+
+</div>
+
+
+
+<h4 style="margin-top:22px">
+
+Códigos existentes
+
+</h4>
+
+
+
+<div id="codesAdminList">
+
+Carregando...
+
+</div>
+
+</div>
+
+
+
+<hr>
+
+
+
+<button
+class="btn btn-danger"
+onclick="sairAdministrador()">
+
+<i class="fa-solid fa-right-from-bracket"></i>
+
+Sair do administrador
+
+</button>
+
+
+</div>
+
+</div>
+
+
+
+<script src="./firebase.js"></script>
+
+<script src="./player.js"></script>
+
+<script src="./admin.js"></script>
+
+<script src="./app.js"></script>
+
 
 </body>
+
 </html>
